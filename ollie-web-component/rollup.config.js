@@ -36,7 +36,7 @@ export default {
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
-		file: '../ollie-chatbox-plugin/chatbox.js'
+		file: './public/ollie-chatbox-plugin/chatbox.js'
 	},
 	plugins: [
 		image(),
