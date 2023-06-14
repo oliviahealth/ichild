@@ -1,7 +1,7 @@
 <svelte:options tag="my-card" />
 <script>
 	async function sendUserQuery(query) {
-        
+
         const queryResponse = await fetch('', {
             method: "POST",
             body: new URLSearchParams({ "data": query })
@@ -15,7 +15,7 @@
             if (curr > 0.3){
                 acc.push({ 
                     confidence: curr, 
-                    name: queryData.names[index].replace( /(<([^>]+)>)/ig, ''), 
+                    name: queryData.names[index].replace( /(<([^>]+)>)/ig, ''),   // sanitizing api responses in-case db gets compromised
                     description: queryData.descriptions[index].replace( /(<([^>]+)>)/ig, ''),
                     address: queryData.address[index * 2 + 1].replace( /(<([^>]+)>)/ig, ''),
                     encodedAddress: queryData.address[index * 2].replace( /(<([^>]+)>)/ig, ''),
