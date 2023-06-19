@@ -1,8 +1,10 @@
+import ChatComponent from "./components/Chat";
+
 function App() {
   return (
-    <>
-      <h1>Hello World</h1>
-    </>
+    <div className="h-full">
+      <ChatComponent />
+    </div>
   );
 }
 
