@@ -4,7 +4,7 @@ import TamuBoxLogo from "../assets/logos/TAMU-Box-Logo.png";
 
 const Navbar: React.FC = () => {
   return (
-    <div className="navbar w-3/4 mx-auto p-4">
+    <div className="navbar lg:w-3/4 mx-auto p-4">
       <div className="navbar-start">
         <div className="dropdown">
           <label tabIndex={0} className="btn btn-ghost lg:hidden">
@@ -33,7 +33,7 @@ const Navbar: React.FC = () => {
           </ul>
         </div>
         <a href="www.tamu.edu" target="_blank" className="flex-1 flex items-center">
-          <img src={TamuBoxLogo} className="btn btn-ghost normal-case object-contain transform scale-150 hover:bg-transparent hover:text-current" />
+          <img src={TamuBoxLogo} alt="Texas A&M University Logo" className="btn btn-ghost normal-case object-contain transform scale-150 hover:bg-transparent hover:text-current" />
 
           <div>
             <p className="font-semibold text-sm">Texas A&M University</p>
