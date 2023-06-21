@@ -36,7 +36,7 @@ def connection_and_setup():
     global collection_name
     collection_name = db["Preprocess"]
     global embedder
-    embedder = SentenceTransformer('../unit_testing_models_tcat/model1')
+    embedder = SentenceTransformer('../models/model1')
 
     resources = collection_name.find({}, {"Organization": 1, "Description": 1, "Email": 1, "Work Phone": 1, "PDescription": 1})
     global corpus
