@@ -10,6 +10,8 @@ interface ChatProps {
   isResponse: boolean;
 }
 const ChatBubble: React.FC<ChatProps> = ({ text, isResponse }) => {
+  const withLineBreaks = text.replace(/(\r\n|\n|\r)/g, "<br>");
+
   return (
     <div className={`chat w-full ${isResponse ? "chat-start" : "chat-end"} `}>
       <div className="chat-image avatar">
@@ -18,7 +20,7 @@ const ChatBubble: React.FC<ChatProps> = ({ text, isResponse }) => {
           <img className={`${isResponse ? "hidden" : ""}`} src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541" />
         </div>
       </div>
-      <p className={`chat-bubble ${isResponse ? "bg-primary" : "bg-gray-500"} text-white`}>{text}</p>
+      <p className={`chat-bubble whitespace-pre-wrap ${isResponse ? "bg-primary" : "bg-gray-500"} text-white`} dangerouslySetInnerHTML={{ __html: withLineBreaks }} />
     </div>
   );
 };
@@ -52,15 +54,32 @@ const ChatComponent: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-100 opacity-80 rounded-b-lg">
-      <div className="h-full p-4">
+    <div className="flex flex-col h-full opacity-80 bg-gray-100 rounded-b-lg">
+      <div className="h-full p-4 flex flex-col justify-end">
         <ChatBubble text="Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?" isResponse={true} />
-        {queries.map((query, index) => (
-          <>
-            <ChatBubble key={`${index} - question`} text={query.question} isResponse={false} />
-            <ChatBubble key={`${index} - question`} text={`I've found ${query.answer.names.length} possible matches for you, hover over a facility name for a description:`} isResponse={true} />
-          </>
-        ))}
+        {queries.map((query, index) => {
+          const locationsArray = query.answer.names.map((name, index) => ({
+            location: name,
+            description: query.answer.descriptions[index],
+            address: query.answer.address[index + 1],
+            phone: query.answer.phone[index],
+          }));
+
+          const formattedLocationsArray = locationsArray.map((location) => `${location.location}\n${location.phone}\n`);
+
+          return (
+            <>
+              <ChatBubble key={`${index} - question`} text={query.question} isResponse={false} />
+              <ChatBubble
+                key={`${index} - question`}
+                text={`I've found ${locationsArray.length} possible matches for you, hover over a facility name for a description:\n\n${formattedLocationsArray.reduce(
+                  (accr, curr) => `${accr}\n${curr}`
+                )}`}
+                isResponse={true}
+              />
+            </>
+          );
+        })}
       </div>
       <form className="form-control" onSubmit={handleFormSubmit}>
         <div className="input-group">
