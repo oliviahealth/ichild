@@ -3,8 +3,6 @@ import React from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
-import Background from "../assets/background.png";
-
 interface Props {
   children: React.ReactNode;
 }
@@ -16,7 +14,7 @@ const Layout: React.FC<Props> = ({ children }) => {
         <Navbar />
       </div>
 
-      <div className="container mx-auto px-4 flex-1 mb-2">{children}</div>
+      <div className="container mx-auto px-4 flex-1 mb-2 ">{children}</div>
 
       <Footer />
     </div>
