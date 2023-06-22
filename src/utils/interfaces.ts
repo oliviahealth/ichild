@@ -1,7 +1,8 @@
-export interface IQuery {
+export interface IOllieResponse {
     question: string
     answer: {
         address: string[]
+        unencodedAddress: string[]
         confidences: number[]
         descriptions: string[]
         names: string[]

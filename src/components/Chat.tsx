@@ -2,33 +2,45 @@ import React, { FormEvent, useState, useRef, useEffect } from "react";
 import axios from "axios";
 
 import { MdArrowForwardIos } from "react-icons/md";
-import { IQuery } from "../utils/interfaces";
+import { IOllieResponse } from "../utils/interfaces";
+
 import Ollie from "../assets/ollie.png";
+import ChatBubble from "./Chat/ChatBubble";
 
-interface ChatProps {
-  text: string;
-  isResponse: boolean;
+interface OllieResponseProps {
+  response: IOllieResponse;
 }
-const ChatBubble: React.FC<ChatProps> = ({ text, isResponse }) => {
-  const withLineBreaks = text.replace(/(\r\n|\n|\r)/g, "<br>");
-
+const OllieResponse: React.FC<OllieResponseProps> = ({ response }) => {
   return (
-    <div className={`chat w-full ${isResponse ? "chat-start" : "chat-end"} `}>
-      <div className="chat-image avatar">
-        <div className="w-10 rounded-full">
-          <img src={Ollie} className={`${!isResponse ? "hidden" : ""}`} />
-          <img className={`${isResponse ? "hidden" : ""}`} src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541" />
+    <>
+      <div className={`chat w-full chat-start `}>
+        <div className="chat-image avatar">
+          <div className="w-10 rounded-full">
+            <img src={Ollie} />
+          </div>
         </div>
+        <p className={`chat-bubble whitespace-pre-wrap bg-primary`}>
+          I've found {response.answer.names.length} possible matches for you, hover over a facility name for a description
+          {response.answer.names.map((name, index) => (
+            <div className="text-sm" key={index}>
+              <br />
+              <p className="text-base tooltip" data-tip={response.answer.descriptions[index]}>
+                {name}
+              </p>
+              <p>{response.answer.phone[index]}</p>
+              <p>{response.answer.unencodedAddress[index]}</p>
+            </div>
+          ))}
+        </p>
       </div>
-      <p className={`chat-bubble whitespace-pre-wrap ${isResponse ? "bg-primary" : "bg-gray-500"} text-white`} dangerouslySetInnerHTML={{ __html: withLineBreaks }} />
-    </div>
+    </>
   );
 };
 
 const ChatComponent: React.FC = () => {
   const containerRef = useRef(null);
   const [query, setQuery] = useState("");
-  const [queries, setQueries] = useState<IQuery[]>([]);
+  const [responses, setResponses] = useState<IOllieResponse[]>([]);
 
   useEffect(() => {
     // Scroll to the bottom of the container with smooth animation
@@ -38,7 +50,7 @@ const ChatComponent: React.FC = () => {
       top: containerRef.current.scrollHeight,
       behavior: "smooth",
     });
-  }, [queries]);
+  }, [responses]);
 
   const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(evt.target.value);
@@ -56,12 +68,12 @@ const ChatComponent: React.FC = () => {
 
     await axios.post("http://localhost:5000/results", formData, { headers: { "Content-Type": "multipart/form-data" } }).then((response) => {
       console.log(response.data);
-      setQueries([...queries, { question: query, answer: response.data }]);
+      setResponses([...responses, { question: query, answer: response.data }]);
 
       setQuery("");
     });
 
-    console.log(queries);
+    console.log(responses);
   };
 
   return (
@@ -69,7 +81,7 @@ const ChatComponent: React.FC = () => {
       <div className="h-full p-4 flex flex-col justify-end overflow-hidden">
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-18rem)]">
           <ChatBubble text="Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?" isResponse={true} />
-          {queries.map((query, index) => {
+          {responses.map((query, index) => {
             const locationsArray = query.answer.names.map((name, index) => ({
               location: name,
               description: query.answer.descriptions[index],
@@ -82,13 +94,7 @@ const ChatComponent: React.FC = () => {
             return (
               <>
                 <ChatBubble key={`${index} - question`} text={query.question} isResponse={false} />
-                <ChatBubble
-                  key={`${index} - question`}
-                  text={`I've found ${locationsArray.length} possible matches for you, hover over a facility name for a description:\n\n${formattedLocationsArray.reduce(
-                    (accr, curr) => `${accr}\n${curr}`
-                  )}`}
-                  isResponse={true}
-                />
+                <OllieResponse response={query} />
               </>
             );
           })}
