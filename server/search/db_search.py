@@ -180,6 +180,7 @@ def db_search():
         'confidences': [winningConfidence.item(), secondConfidence.item(), thirdConfidence.item(), fourthConfidence.item(), fifthConfidence.item()],
         'phone': [winningWorkPhone, secondWorkPhone, thirdWorkPhone, fourthWorkPhone, fifthWorkPhone],
         'address': [winningAddress, winningAddressUnencoded, secondAddress, secondAddressUnencoded, thirdAddress, thirdAddressUnencoded, fourthAddress, fourthAddressUnencoded, fifthAddress, fifthAddressUnencoded ],
+        'unencodedAddress': [winningAddressUnencoded, secondAddressUnencoded, thirdAddressUnencoded, fourthAddressUnencoded, fifthAddressUnencoded],
         'notFoundMessage': "Unfortunately we did not find any results for your question. Maybe try asking in a different way?",
     } 
 
