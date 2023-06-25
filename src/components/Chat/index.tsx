@@ -45,7 +45,7 @@ const ChatComponent: React.FC = () => {
   })
 
   return (
-    <div className="flex flex-col h-full opacity-80 bg-gray-100 rounded-b-lg">
+    <div className="flex flex-col h-full bg-opacity-80 bg-gray-100 ">
       <div className="h-full p-4 flex flex-col justify-end overflow-hidden">
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-15rem)] ">
           <ChatBubble text="Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?" isResponse={true} />
@@ -68,13 +68,15 @@ const ChatComponent: React.FC = () => {
         </div>
       </div>
 
-      { /* input field with the submit button */ }
+      { /* input field with the submit button */}
       <form className="form-control" onSubmit={handleSubmit((data) => getResponseMutation.mutate(data))}>
         <div className="input-group">
-          <input placeholder="Ask me a question" className="input w-full bg-white" {...register("query")} />
-          <button className="btn btn-square bg-primary border-none hover:bg-primary active:bg-primary-focus ">
+          <input placeholder="Ask me a question" className="input w-full bg-white" {...register("query")} style={{ "borderRadius": 0 }} />
+          <button className="btn btn-square bg-white border-none hover:bg-primary active:bg-primary-focus" style={{ "borderRadius": 0 }}>
             <p>
-              <MdArrowForwardIos className="text-3xl" />
+              <svg width="32" height="34" viewBox="0 0 32 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path id="Subtract" d="M0.655396 34L31.263 17L0.655396 0L4.89595 13.1308L21.2664 17L4.89595 21.2815L0.655396 34Z" fill="lightGrey" />
+              </svg>
             </p>
           </button>
         </div>
@@ -95,7 +97,7 @@ const OllieResponse: React.FC<OllieResponseProps> = ({ response }) => {
             <img src={Ollie} />
           </div>
         </div>
-        <p className={`chat-bubble whitespace-pre-wrap bg-primary`}>
+        <p className={`py-2 px-4 rounded-lg whitespace-pre-wrap bg-white`}>
           I've found {response.answer.names.length} possible matches for you, hover over a facility name for a description
 
           {response.answer.names.map((name, index) => (

@@ -10,13 +10,12 @@ interface Props {
 const ChatBubble: React.FC<Props> = ({ text, isResponse }) => {
   return (
     <div className={`chat w-full ${isResponse ? "chat-start" : "chat-end"} `}>
-      <div className="chat-image avatar">
+      <div className={`chat-image avatar ${!isResponse ? "hidden" : ""}`}>
         <div className="w-10 rounded-full">
-          <img src={Ollie} className={`${!isResponse ? "hidden" : ""}`} />
-          <img className={`${isResponse ? "hidden" : ""}`} src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541" />
+          <img src={Ollie} />
         </div>
       </div>
-      <p className={`chat-bubble whitespace-pre-wrap ${isResponse ? "bg-primary" : "bg-gray-500"} text-white`}>{text}</p>
+      <p className={`py-2 px-4 rounded-lg whitespace-pre-wrap ${isResponse ? "bg-white text-black" : "bg-primary text-white"} `}>{text}</p>
     </div>
   );
 };
