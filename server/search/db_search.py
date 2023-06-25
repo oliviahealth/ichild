@@ -173,16 +173,36 @@ def db_search():
 
     
     winningAddress, winningAddressUnencoded, secondAddress, secondAddressUnencoded, thirdAddress, thirdAddressUnencoded, fourthAddress, fourthAddressUnencoded, fifthAddress, fifthAddressUnencoded = create_addresses(winningPDescription, secondPDescription, thirdPDescription, fourthPDescription, fifthPDescription)
+
+    namesList = [winningName, secondName, thirdName, fourthName, fifthName]
+    descList = [winningDescription, secondDescription, thirdDescription, fourthDescription, fifthDescription]
+    confList = [winningConfidence.item(), secondConfidence.item(), thirdConfidence.item(), fourthConfidence.item(), fifthConfidence.item()]
+    phoneList = [winningWorkPhone, secondWorkPhone, thirdWorkPhone, fourthWorkPhone, fifthWorkPhone]
+    addList = [winningAddress, winningAddressUnencoded, secondAddress, secondAddressUnencoded, thirdAddress, thirdAddressUnencoded, fourthAddress, fourthAddressUnencoded, fifthAddress, fifthAddressUnencoded]
+    unencAddList = [winningAddressUnencoded, secondAddressUnencoded, thirdAddressUnencoded, fourthAddressUnencoded, fifthAddressUnencoded]
+
+    results_list = [namesList, descList, confList, phoneList, addList, unencAddList] # list of unfiltered results
+    validThreshold = 0.25 #threshold for "valid" results
+
+    for val in reversed(confList):
+        if float(val) < validThreshold:
+            namesList.pop(confList.index(val))
+            descList.pop(confList.index(val))
+            phoneList.pop(confList.index(val))
+            addList.pop(confList.index(val))
+            unencAddList.pop(confList.index(val))
+            confList.pop(confList.index(val))
+
     results_dict = {
         'userQuery': query,
-        'names': [winningName, secondName, thirdName, fourthName, fifthName],
-        'descriptions': [winningDescription, secondDescription, thirdDescription, fourthDescription, fifthDescription],
-        'confidences': [winningConfidence.item(), secondConfidence.item(), thirdConfidence.item(), fourthConfidence.item(), fifthConfidence.item()],
-        'phone': [winningWorkPhone, secondWorkPhone, thirdWorkPhone, fourthWorkPhone, fifthWorkPhone],
-        'address': [winningAddress, winningAddressUnencoded, secondAddress, secondAddressUnencoded, thirdAddress, thirdAddressUnencoded, fourthAddress, fourthAddressUnencoded, fifthAddress, fifthAddressUnencoded ],
-        'unencodedAddress': [winningAddressUnencoded, secondAddressUnencoded, thirdAddressUnencoded, fourthAddressUnencoded, fifthAddressUnencoded],
+        'names': namesList,
+        'descriptions': descList,
+        'confidences': confList,
+        'phone': phoneList,
+        'address': addList,
+        'unencodedAddress': unencAddList,
         'notFoundMessage': "Unfortunately we did not find any results for your question. Maybe try asking in a different way?",
-    } 
+    }
 
     return jsonify(results_dict)
     """return render_template('results.html',
