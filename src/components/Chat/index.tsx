@@ -11,12 +11,14 @@ import ChatBubble from ".././Chat/ChatBubble";
 
 
 const ChatComponent: React.FC = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const [responses, setResponses] = useState<IOllieResponse[]>([]);
+
+  // Using react-hook-form to manage the state of the input field
+  // https://www.react-hook-form.com/
+  const { register, handleSubmit, reset, getValues } = useForm();
 
   // Creates the auto scroll when ollie responds
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const [responses, setResponses] = useState<IOllieResponse[]>([]);
 
   useEffect(() => {
     // Scroll to the bottom of the container with smooth animation
@@ -36,7 +38,7 @@ const ChatComponent: React.FC = () => {
 
     console.log(response);
 
-    setResponses([...responses, { question: response.userQuery, answer: response }])
+    setResponses([...responses, { question: data.query, answer: response }])
 
     // reset the value of the input field
     reset();
@@ -56,11 +58,17 @@ const ChatComponent: React.FC = () => {
             );
           })}
 
+
           { /* Render loading dots while fetching ollie response */}
-          {getResponseMutation.isLoading ? <ChatBubble text={<span className="loading loading-dots loading-md"></span>} isResponse={true} /> : ""}
+          {getResponseMutation.isLoading ? (<>
+            <ChatBubble text={getValues("query")} isResponse={false} />
+            <ChatBubble text={<span className="loading loading-dots loading-md"></span>} isResponse={true} />
+          </>) : ""}
 
         </div>
       </div>
+
+      { /* input field with the submit button */ }
       <form className="form-control" onSubmit={handleSubmit((data) => getResponseMutation.mutate(data))}>
         <div className="input-group">
           <input placeholder="Ask me a question" className="input w-full bg-white" {...register("query")} />
