@@ -3,7 +3,7 @@ import React from "react";
 import Ollie from "../../assets/ollie.png";
 
 interface Props {
-  text: string;
+  text: string | React.ReactNode;
   isResponse: boolean;
 }
 
