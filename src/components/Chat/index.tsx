@@ -3,9 +3,9 @@ import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
-import { MdArrowForwardIos } from "react-icons/md";
 import { IOllieResponse } from "../../utils/interfaces";
 
+import { BiCopy } from "react-icons/bi";
 import Ollie from "../../assets/ollie.png";
 import ChatBubble from ".././Chat/ChatBubble";
 
@@ -97,21 +97,28 @@ const OllieResponse: React.FC<OllieResponseProps> = ({ response }) => {
             <img src={Ollie} />
           </div>
         </div>
-        <p className={`py-2 px-4 rounded-lg whitespace-pre-wrap bg-white`}>
-          I've found {response.answer.names.length} possible matches for you, hover over a facility name for a description
+        <div className={`flex items-center py-2 px-4 rounded-lg whitespace-pre-wrap bg-white`}>
+          <p>
+            I've found {response.answer.names.length} possible matches for you, hover over a facility name for a description
 
-          {response.answer.names.map((name, index) => (
-            <div className="text-sm" key={index}>
-              <br />
-              <p className="text-base tooltip" data-tip={response.answer.descriptions[index]}>
-                {name}
-              </p>
-              <p>{response.answer.phone[index]}</p>
-              <p>{response.answer.unencodedAddress[index]}</p>
-            </div>
-          ))}
+            {response.answer.names.map((name, index) => (
+              <div className="text-sm" key={index}>
+                <br />
+                <p className="text-base tooltip" data-tip={response.answer.descriptions[index]}>
+                  {name}
+                </p>
+                <p>{response.answer.phone[index]}</p>
+                <p>{response.answer.unencodedAddress[index]}</p>
+              </div>
+            ))}
 
-        </p>
+          </p>
+
+          <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`}>
+            <BiCopy className="text-xl text-black" />
+          </button>
+        </div>
+
       </div>
     </>
   );
