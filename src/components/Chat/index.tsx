@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { IOllieResponse } from "../../utils/interfaces";
 
-import OllieResponse from "./OllieResponse";
 import ChatBubble from ".././Chat/ChatBubble";
 
 
@@ -49,11 +48,26 @@ const ChatComponent: React.FC = () => {
       <div className="h-full p-4 flex flex-col justify-end overflow-hidden">
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-15rem)] ">
           <ChatBubble text="Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?" isResponse={true} />
-          {responses.map((query, index) => {
+          {responses.map((response, index) => {
             return (
               <div key={`${index} - question`}>
-                <ChatBubble text={query.question} isResponse={false} />
-                <OllieResponse response={query} />
+                <ChatBubble text={response.question} isResponse={false} />
+                <ChatBubble
+                  text={<p>
+                    I've found {response.answer.names.length} possible matches for you, hover over a facility name for a description
+
+                    {response.answer.names.map((name, index) => (
+                      <div className="text-sm" key={index}>
+                        <br />
+                        <p className="text-base font-semibold tooltip text-left" data-tip={response.answer.descriptions[index]}>
+                          {name}
+                        </p>
+                        <p>{response.answer.phone[index]}</p>
+                        <p>{response.answer.unencodedAddress[index]}</p>
+                      </div>
+                    ))}
+                  </p>}
+                  isResponse={true} />
               </div>
             );
           })}

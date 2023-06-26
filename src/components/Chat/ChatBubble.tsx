@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useRef } from "react";
 
+import { BiCopy } from "react-icons/bi";
 import Ollie from "../../assets/ollie.png";
 
 interface Props {
@@ -8,7 +9,14 @@ interface Props {
 }
 
 const ChatBubble: React.FC<Props> = ({ text, isResponse }) => {
+  const textRef = useRef<HTMLParagraphElement>(null);
 
+  const copyText = () => {
+    if (textRef.current) {
+      const currentText = textRef.current.innerText;
+      navigator.clipboard.writeText(currentText);
+    }
+  }
 
   return (
     <div className={`chat w-full ${isResponse ? "chat-start" : "chat-end"} `}>
@@ -19,8 +27,11 @@ const ChatBubble: React.FC<Props> = ({ text, isResponse }) => {
       </div>
 
       <div className={`flex items-center rounded-lg py-2 px-4 whitespace-pre-wrap ${isResponse ? "bg-white text-black" : "bg-primary text-white"}`}>
-        <p>{text}</p>
+        <p ref={textRef}>{text}</p>
 
+        <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200 ${ !isResponse ? "hidden" : "" }`} onClick={copyText}>
+          <BiCopy className="text-xl text-black" />
+        </button>
       </div>
     </div>
   );
