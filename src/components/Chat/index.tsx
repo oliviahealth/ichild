@@ -44,7 +44,7 @@ const ChatComponent: React.FC = () => {
   })
 
   return (
-    <div className="flex flex-col h-full bg-opacity-80 bg-gray-100 ">
+    <div className="flex flex-col h-full">
       <div className="h-full p-4 flex flex-col justify-end overflow-hidden">
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-15rem)] ">
           <ChatBubble text="Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?" isResponse={true} />
