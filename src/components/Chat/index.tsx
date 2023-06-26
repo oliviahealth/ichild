@@ -51,10 +51,10 @@ const ChatComponent: React.FC = () => {
           <ChatBubble text="Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?" isResponse={true} />
           {responses.map((query, index) => {
             return (
-              <>
-                <ChatBubble key={`${index} - question`} text={query.question} isResponse={false} />
+              <div key={`${index} - question`}>
+                <ChatBubble text={query.question} isResponse={false} />
                 <OllieResponse response={query} />
-              </>
+              </div>
             );
           })}
 

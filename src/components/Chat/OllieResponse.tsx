@@ -29,7 +29,7 @@ const OllieResponse: React.FC<OllieResponseProps> = ({ response }) => {
                     </div>
                 </div>
                 <div className={`flex items-center py-2 px-4 rounded-lg whitespace-pre-wrap bg-white`}>
-                    <p ref={ollieResponseRef}>
+                    <div ref={ollieResponseRef}>
                         I've found {response.answer.names.length} possible matches for you, hover over a facility name for a description
 
                         {response.answer.names.map((name, index) => (
@@ -43,7 +43,7 @@ const OllieResponse: React.FC<OllieResponseProps> = ({ response }) => {
                             </div>
                         ))}
 
-                    </p>
+                    </div>
 
                     <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={copyOllieResponse}>
                         <BiCopy className="text-xl text-black" />
