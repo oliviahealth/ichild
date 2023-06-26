@@ -2,11 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-
 import { IOllieResponse } from "../../utils/interfaces";
 
-import { BiCopy } from "react-icons/bi";
-import Ollie from "../../assets/ollie.png";
+import OllieResponse from "./OllieResponse";
 import ChatBubble from ".././Chat/ChatBubble";
 
 
@@ -22,10 +20,12 @@ const ChatComponent: React.FC = () => {
 
   useEffect(() => {
     // Scroll to the bottom of the container with smooth animation
-    containerRef.current ? containerRef.current.scrollTo({
-      top: containerRef.current.scrollHeight,
-      behavior: "smooth",
-    }) : ""
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+        behavior: "smooth",
+      })
+    }
   }, [responses]);
 
   // Call the backend with the user entered query to get a response
@@ -82,45 +82,6 @@ const ChatComponent: React.FC = () => {
         </div>
       </form>
     </div>
-  );
-};
-
-interface OllieResponseProps {
-  response: IOllieResponse;
-}
-const OllieResponse: React.FC<OllieResponseProps> = ({ response }) => {
-  return (
-    <>
-      <div className={`chat w-full chat-start `}>
-        <div className="chat-image avatar">
-          <div className="w-10 rounded-full">
-            <img src={Ollie} />
-          </div>
-        </div>
-        <div className={`flex items-center py-2 px-4 rounded-lg whitespace-pre-wrap bg-white`}>
-          <p>
-            I've found {response.answer.names.length} possible matches for you, hover over a facility name for a description
-
-            {response.answer.names.map((name, index) => (
-              <div className="text-sm" key={index}>
-                <br />
-                <p className="text-base tooltip" data-tip={response.answer.descriptions[index]}>
-                  {name}
-                </p>
-                <p>{response.answer.phone[index]}</p>
-                <p>{response.answer.unencodedAddress[index]}</p>
-              </div>
-            ))}
-
-          </p>
-
-          <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`}>
-            <BiCopy className="text-xl text-black" />
-          </button>
-        </div>
-
-      </div>
-    </>
   );
 };
 
