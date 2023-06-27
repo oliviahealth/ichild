@@ -1,9 +1,17 @@
 import React from "react";
 
+import useAppState from "../stores/useAppState";
+
 import { AiOutlinePlus, AiOutlineUnorderedList } from "react-icons/ai";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
 const SidePanel: React.FC = () => {
+    const setSidePanelOpen = useAppState((state) => state.setSidePanelOpen);
+
+    const handleCloseSidePanel = () => {
+        setSidePanelOpen(false);
+    }
+
     return (
         <div className="bg-white h-full p-4">
             <div className="flex justify-evenly">
@@ -12,7 +20,7 @@ const SidePanel: React.FC = () => {
                     New Chat
                 </button>
 
-                <button className="btn btn-primary btn-outline border-primary">
+                <button className="btn btn-primary btn-outline border-primary" onClick={handleCloseSidePanel}>
                     <AiOutlineUnorderedList className="text-lg" />
                 </button>
             </div>

@@ -1,18 +1,25 @@
+import React from "react";
+
+import useAppState from "./stores/useAppState";
+
 import ChatComponent from "./components/Chat";
 import SidePanel from "./components/SidePanel";
 
-function App() {
+const App: React.FC = () => {
+  const sidePanelOpen = useAppState((state) => state.sidePanelOpen);
+
   return (
-    <div className="grid grid-cols-5 h-full">
-      <div className="col-span-1 shadow-lg">
-       <SidePanel />
+    <div className="flex h-full bg-opacity-80 bg-gray-100">
+      <div className={`w-1/5 ${ !sidePanelOpen ? "hidden" : "" }`}>
+        <SidePanel />
       </div>
 
-      <div className="col-span-4 bg-opacity-80 bg-gray-100">
+
+      <div className="w-full">
         <ChatComponent />
       </div>
     </div>
   );
-}
+};
 
 export default App;

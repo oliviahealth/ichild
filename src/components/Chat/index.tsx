@@ -1,14 +1,19 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+
+import useAppState from "../../stores/useAppState";
 import { IOllieResponse } from "../../utils/interfaces";
 
 import ChatBubble from ".././Chat/ChatBubble";
 
 
 const ChatComponent: React.FC = () => {
-  const [responses, setResponses] = useState<IOllieResponse[]>([]);
+  // Use Zustand to manage app state such as the questions the user asks and the response from the api
+  // https://github.com/pmndrs/zustand
+  const ollieResponses = useAppState((state) => state.ollieResponses);
+  const setOllieResponses = useAppState((state) => state.setOllieResponses);
 
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
@@ -25,7 +30,7 @@ const ChatComponent: React.FC = () => {
         behavior: "smooth",
       })
     }
-  }, [responses]);
+  }, [ollieResponses]);
 
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
@@ -33,37 +38,37 @@ const ChatComponent: React.FC = () => {
     const formData = new FormData();
     formData.append("data", data.query);
 
-    const response = (await axios.post("http://localhost:5000/results", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
+    const response: IOllieResponse = (await axios.post("http://localhost:5000/results", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
 
     console.log(response);
 
-    setResponses([...responses, { question: data.query, answer: response }])
+    setOllieResponses([...ollieResponses, response])
 
     // reset the value of the input field
     reset();
   })
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex w-full flex-col h-full">
       <div className="h-full p-4 flex flex-col justify-end overflow-hidden">
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-15rem)] ">
           <ChatBubble text="Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?" isResponse={true} />
-          {responses.map((response, index) => {
+          {ollieResponses.map((response, index) => {
             return (
               <div key={`${index} - question`}>
-                <ChatBubble text={response.question} isResponse={false} />
+                <ChatBubble text={response.userQuery} isResponse={false} />
                 <ChatBubble
                   text={<p>
-                    I've found {response.answer.names.length} possible matches for you, hover over a facility name for a description
+                    I've found {response.names.length} possible matches for you, hover over a facility name for a description
 
-                    {response.answer.names.map((name, index) => (
+                    {response.names.map((name, index) => (
                       <div className="text-sm" key={index}>
                         <br />
-                        <p className="text-base font-semibold tooltip text-left" data-tip={response.answer.descriptions[index]}>
+                        <p className="text-base font-semibold tooltip text-left" data-tip={response.descriptions[index]}>
                           {name}
                         </p>
-                        <p>{response.answer.phone[index]}</p>
-                        <p>{response.answer.unencodedAddress[index]}</p>
+                        <p>{response.phone[index]}</p>
+                        <p>{response.unencodedAddress[index]}</p>
                       </div>
                     ))}
                   </p>}
