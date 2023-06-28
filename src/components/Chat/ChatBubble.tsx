@@ -27,7 +27,7 @@ const ChatBubble: React.FC<Props> = ({ text, isResponse }) => {
       </div>
 
       <div className={`flex items-center rounded-lg py-2 px-4 whitespace-pre-wrap ${isResponse ? "bg-white text-black" : "bg-primary text-white"}`}>
-        <p ref={textRef}>{text}</p>
+        <div ref={textRef}>{text}</div>
 
         <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200 ${ !isResponse ? "hidden" : "" }`} onClick={copyText}>
           <BiCopy className="text-xl text-black" />

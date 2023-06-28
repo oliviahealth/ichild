@@ -1,19 +1,26 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import { v4 as uuid } from "uuid";
 import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
-import useAppState from "../../stores/useAppState";
+import useAppState from "../../stores/useAppStore";
 import { IOllieResponse } from "../../utils/interfaces";
 
 import ChatBubble from ".././Chat/ChatBubble";
 
-
 const ChatComponent: React.FC = () => {
+  const [chatId, _] = useState(uuid());
+
+  const questionRef = useRef<HTMLParagraphElement>(null)
+  const responseRef = useRef<HTMLParagraphElement>(null);
+
   // Use Zustand to manage app state such as the questions the user asks and the response from the api
   // https://github.com/pmndrs/zustand
   const ollieResponses = useAppState((state) => state.ollieResponses);
   const setOllieResponses = useAppState((state) => state.setOllieResponses);
+
+  const addQueryToConversation = useAppState((state) => state.addQueryToConversation);
 
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
@@ -32,6 +39,15 @@ const ChatComponent: React.FC = () => {
     }
   }, [ollieResponses]);
 
+  // Log the current question and response to the AppStore so we can save this conversation in localstorage
+  // See useAppStore.ts for more details
+  useEffect(() => {
+    if(responseRef.current) {
+      addQueryToConversation(chatId, questionRef.current!.innerText, responseRef.current.innerText)
+    }
+
+  }, [responseRef.current])
+
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
   const getResponseMutation = useMutation(async (data: any) => {
@@ -42,8 +58,8 @@ const ChatComponent: React.FC = () => {
 
     console.log(response);
 
-    setOllieResponses([...ollieResponses, response])
-
+    setOllieResponses([...ollieResponses, response]);
+    
     // reset the value of the input field
     reset();
   })
@@ -56,22 +72,22 @@ const ChatComponent: React.FC = () => {
           {ollieResponses.map((response, index) => {
             return (
               <div key={`${index} - question`}>
-                <ChatBubble text={response.userQuery} isResponse={false} />
+                <ChatBubble text={<div ref={ questionRef }>{ response.userQuery }</div>} isResponse={false} />
                 <ChatBubble
-                  text={<p>
+                  text={<div ref={ responseRef }>
                     I've found {response.names.length} possible matches for you, hover over a facility name for a description
 
                     {response.names.map((name, index) => (
                       <div className="text-sm" key={index}>
                         <br />
-                        <p className="text-base font-semibold tooltip text-left" data-tip={response.descriptions[index]}>
+                        <div className="text-base font-semibold tooltip text-left" data-tip={response.descriptions[index]}>
                           {name}
-                        </p>
-                        <p>{response.phone[index]}</p>
-                        <p>{response.unencodedAddress[index]}</p>
+                        </div>
+                        <div>{response.phone[index]}</div>
+                        <div>{response.unencodedAddress[index]}</div>
                       </div>
                     ))}
-                  </p>}
+                  </div>}
                   isResponse={true} />
               </div>
             );
