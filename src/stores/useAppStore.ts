@@ -14,6 +14,9 @@ interface AppState {
    */
     conversations: IConversation[]
     addQueryToConversation: (id: string, response: IOllieResponse) => void,
+    switchConversation: (id: string) => void
+
+    currentConversationId: string | null,
 }
 
 const useAppState = create<AppState>()((set) => ({
@@ -41,8 +44,15 @@ const useAppState = create<AppState>()((set) => ({
             responses: [response],
         };
 
-        return { conversations: [...state.conversations, newConversation] };
-    })
+        return { conversations: [...state.conversations, newConversation], currentConversationId: id };
+    }),
+    switchConversation: (id) => set((state) => {
+        const conversation = state.conversations.find(elm => elm.id === id);
+
+        return { ollieResponses: conversation?.responses, currentConversationId: id }
+    }),
+
+    currentConversationId: null,
 }));
 
 export default useAppState;

@@ -17,7 +17,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-full bg-opacity-80 bg-gray-100">
-      <div className={`w-1/5 xl:block hidden`}>
+      <div className={`w-2/7 xl:block hidden`}>
         <SidePanel />
       </div>
 

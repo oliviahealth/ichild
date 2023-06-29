@@ -10,17 +10,20 @@ import { IOllieResponse } from "../../utils/interfaces";
 import ChatBubble from ".././Chat/ChatBubble";
 
 const ChatComponent: React.FC = () => {
-  const [chatId, _] = useState(uuid());
-
-  const questionRef = useRef<HTMLParagraphElement>(null)
-  const responseRef = useRef<HTMLParagraphElement>(null);
-
   // Use Zustand to manage app state such as the questions the user asks and the response from the api
   // https://github.com/pmndrs/zustand
   const ollieResponses = useAppState((state) => state.ollieResponses);
   const setOllieResponses = useAppState((state) => state.setOllieResponses);
 
+  // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
   const addQueryToConversation = useAppState((state) => state.addQueryToConversation);
+  const currentConversationId = useAppState((state) => state.currentConversationId);
+
+  // Use the current conversation's id if a conversation exists or if its a new conversation, generate an id
+  const [chatId, _] = useState(currentConversationId ?? uuid());
+
+  const questionRef = useRef<HTMLParagraphElement>(null)
+  const responseRef = useRef<HTMLParagraphElement>(null);
 
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
@@ -39,12 +42,6 @@ const ChatComponent: React.FC = () => {
     }
   }, [ollieResponses]);
 
-  useEffect(() => {
-    if(ollieResponses.length > 0) {
-      addQueryToConversation(chatId, ollieResponses[ollieResponses.length - 1]);
-    }
-  }, [ollieResponses]);
-
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
   const getResponseMutation = useMutation(async (data: any) => {
@@ -56,6 +53,7 @@ const ChatComponent: React.FC = () => {
     console.log(response);
 
     setOllieResponses([...ollieResponses, response]);
+    addQueryToConversation(chatId, response)
 
     // reset the value of the input field
     reset();
