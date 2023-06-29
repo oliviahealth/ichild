@@ -7,11 +7,6 @@ import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
 const SidePanel: React.FC = () => {
     const conversations = useAppState((state) => state.conversations);
-    const setSidePanelOpen = useAppState((state) => state.setSidePanelOpen);
-
-    const handleCloseSidePanel = () => {
-        setSidePanelOpen(false);
-    }
 
     return (
         <div className="bg-white h-full p-4">
@@ -21,20 +16,20 @@ const SidePanel: React.FC = () => {
                     New Chat
                 </button>
 
-                <button className="btn btn-primary btn-outline border-primary" onClick={handleCloseSidePanel}>
+                <button className="btn btn-primary btn-outline border-primary" >
                     <AiOutlineUnorderedList className="text-lg" />
                 </button>
             </div>
 
-
             <p className="text-sm text-gray-500 font-medium my-4">Recent Activity</p>
 
-            <div>
-                {conversations.map((conversations, index) => (
-                    <button className="btn btn-ghost text-black border-none w-full flex justify-start my-2 hover:bg-gray-100" key={index}>
-                        <HiOutlineChatBubbleOvalLeft className="text-lg" />
-                        {conversations.title}
-                    </button>))}
+            <div className="flex flex-col">
+                {conversations.map((conversation, index) => (
+                    <div key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
+                        <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
+                        <p className="ml-4">{ conversation.title }</p>
+                    </div>
+                    ))}
             </div>
         </div>
     )

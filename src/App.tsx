@@ -8,19 +8,16 @@ import SidePanel from "./components/SidePanel";
 const App: React.FC = () => {
   const conversations = useAppState((state) => state.conversations);
 
-  const sidePanelOpen = useAppState((state) => state.sidePanelOpen);
-
+  // Save the updated conversations to localStorage on unmount
   window.addEventListener("beforeunload", (ev) => {
     ev.preventDefault();
 
     localStorage.setItem("conversations", JSON.stringify(conversations));
-
-    return;
   });
 
   return (
     <div className="flex h-full bg-opacity-80 bg-gray-100">
-      <div className={`w-1/5 ${!sidePanelOpen ? "hidden" : ""}`}>
+      <div className={`w-1/5 xl:block hidden`}>
         <SidePanel />
       </div>
 

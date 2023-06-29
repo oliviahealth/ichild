@@ -16,5 +16,5 @@ export interface IConversation {
     id: string
     created: Date
     lastAccessed: Date
-    queries: {question: string, response: string}[]
+    responses: IOllieResponse[]
 }

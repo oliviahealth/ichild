@@ -39,14 +39,11 @@ const ChatComponent: React.FC = () => {
     }
   }, [ollieResponses]);
 
-  // Log the current question and response to the AppStore so we can save this conversation in localstorage
-  // See useAppStore.ts for more details
   useEffect(() => {
-    if(responseRef.current) {
-      addQueryToConversation(chatId, questionRef.current!.innerText, responseRef.current.innerText)
+    if(ollieResponses.length > 0) {
+      addQueryToConversation(chatId, ollieResponses[ollieResponses.length - 1]);
     }
-
-  }, [responseRef.current])
+  }, [ollieResponses]);
 
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
@@ -59,7 +56,7 @@ const ChatComponent: React.FC = () => {
     console.log(response);
 
     setOllieResponses([...ollieResponses, response]);
-    
+
     // reset the value of the input field
     reset();
   })
@@ -72,9 +69,9 @@ const ChatComponent: React.FC = () => {
           {ollieResponses.map((response, index) => {
             return (
               <div key={`${index} - question`}>
-                <ChatBubble text={<div ref={ questionRef }>{ response.userQuery }</div>} isResponse={false} />
+                <ChatBubble text={<div ref={questionRef}>{response.userQuery}</div>} isResponse={false} />
                 <ChatBubble
-                  text={<div ref={ responseRef }>
+                  text={<div ref={responseRef}>
                     I've found {response.names.length} possible matches for you, hover over a facility name for a description
 
                     {response.names.map((name, index) => (
