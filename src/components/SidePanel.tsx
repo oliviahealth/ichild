@@ -10,11 +10,12 @@ const SidePanel: React.FC = () => {
     
     const currentConversationId = useAppState((state) => state.currentConversationId);
     const switchConversation = useAppState((state) => state.switchConversation);
+    const createNewConversaion = useAppState((state) => state.createNewConversation);
 
     return (
         <div className="bg-white h-full p-4">
             <div className="flex justify-around">
-                <button className="btn btn-primary btn-outline border-primary">
+                <button className="btn btn-primary btn-outline border-primary" onClick={() => createNewConversaion()}>
                     <AiOutlinePlus className="text-lg" />
                     New Chat
                 </button>

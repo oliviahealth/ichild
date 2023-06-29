@@ -20,7 +20,7 @@ const ChatComponent: React.FC = () => {
   const currentConversationId = useAppState((state) => state.currentConversationId);
 
   // Use the current conversation's id if a conversation exists or if its a new conversation, generate an id
-  const [chatId, _] = useState(currentConversationId ?? uuid());
+  const [conversationId, _] = useState(currentConversationId ?? uuid());
 
   const questionRef = useRef<HTMLParagraphElement>(null)
   const responseRef = useRef<HTMLParagraphElement>(null);
@@ -45,6 +45,8 @@ const ChatComponent: React.FC = () => {
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
   const getResponseMutation = useMutation(async (data: any) => {
+    if(data.query === "") return
+
     const formData = new FormData();
     formData.append("data", data.query);
 
@@ -53,7 +55,7 @@ const ChatComponent: React.FC = () => {
     console.log(response);
 
     setOllieResponses([...ollieResponses, response]);
-    addQueryToConversation(chatId, response)
+    addQueryToConversation(conversationId, response)
 
     // reset the value of the input field
     reset();

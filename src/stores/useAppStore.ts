@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { v4 as uuid } from "uuid";
 
 import { IOllieResponse, IConversation } from "../utils/interfaces";
 
@@ -15,6 +16,7 @@ interface AppState {
     conversations: IConversation[]
     addQueryToConversation: (id: string, response: IOllieResponse) => void,
     switchConversation: (id: string) => void
+    createNewConversation: () => void
 
     currentConversationId: string | null,
 }
@@ -51,6 +53,7 @@ const useAppState = create<AppState>()((set) => ({
 
         return { ollieResponses: conversation?.responses, currentConversationId: id }
     }),
+    createNewConversation: () => set(() => ({ ollieResponses: [], currentConversationId: uuid() })),
 
     currentConversationId: null,
 }));
