@@ -7,6 +7,7 @@ import axios from "axios";
 import useAppState from "../../stores/useAppStore";
 import { IOllieResponse } from "../../utils/interfaces";
 
+import { HiOutlineArrowPath } from "react-icons/hi2";
 import ChatBubble from ".././Chat/ChatBubble";
 
 const ChatComponent: React.FC = () => {
@@ -22,12 +23,9 @@ const ChatComponent: React.FC = () => {
   // Use the current conversation's id if a conversation exists or if its a new conversation, generate an id
   const [conversationId, _] = useState(currentConversationId ?? uuid());
 
-  const questionRef = useRef<HTMLParagraphElement>(null)
-  const responseRef = useRef<HTMLParagraphElement>(null);
-
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
-  const { register, handleSubmit, reset, getValues } = useForm();
+  const { register, handleSubmit, reset, getValues, setValue } = useForm();
 
   // Creates the auto scroll when ollie responds
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,7 +43,7 @@ const ChatComponent: React.FC = () => {
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
   const getResponseMutation = useMutation(async (data: any) => {
-    if(data.query === "") return
+    if (data.query === "") return
 
     const formData = new FormData();
     formData.append("data", data.query);
@@ -59,7 +57,14 @@ const ChatComponent: React.FC = () => {
 
     // reset the value of the input field
     reset();
-  })
+  });
+
+  const regenerateResponse = () => {
+    const previousQuery = ollieResponses[ollieResponses.length - 1].userQuery;
+
+    setValue("query", previousQuery);
+    getResponseMutation.mutate({ query: previousQuery });
+  }
 
   return (
     <div className="flex w-full flex-col h-full">
@@ -69,9 +74,9 @@ const ChatComponent: React.FC = () => {
           {ollieResponses.map((response, index) => {
             return (
               <div key={`${index} - question`}>
-                <ChatBubble text={<div ref={questionRef}>{response.userQuery}</div>} isResponse={false} />
+                <ChatBubble text={<div>{response.userQuery}</div>} isResponse={false} />
                 <ChatBubble
-                  text={<div ref={responseRef}>
+                  text={<div>
                     I've found {response.names.length} possible matches for you, hover over a facility name for a description
 
                     {response.names.map((name, index) => (
@@ -89,6 +94,10 @@ const ChatComponent: React.FC = () => {
               </div>
             );
           })}
+          <button onClick={regenerateResponse} className="ml-14 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400">
+            <HiOutlineArrowPath className="text-lg" />
+            <p>Regenerate response</p>
+          </button>
 
 
           { /* Render loading dots while fetching ollie response */}

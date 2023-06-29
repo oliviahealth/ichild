@@ -2,7 +2,7 @@ import React from "react";
 
 import useAppState from "../stores/useAppStore";
 
-import { AiOutlinePlus, AiOutlineUnorderedList } from "react-icons/ai";
+import { AiOutlinePlus } from "react-icons/ai";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
 const SidePanel: React.FC = () => {
@@ -15,13 +15,9 @@ const SidePanel: React.FC = () => {
     return (
         <div className="bg-white h-full p-4">
             <div className="flex justify-around">
-                <button className="btn btn-primary btn-outline border-primary" onClick={() => createNewConversaion()}>
+                <button className="btn btn-primary w-full btn-outline border-primary" onClick={() => createNewConversaion()}>
                     <AiOutlinePlus className="text-lg" />
                     New Chat
-                </button>
-
-                <button className="btn btn-primary btn-outline border-primary" >
-                    <AiOutlineUnorderedList className="text-lg" />
                 </button>
             </div>
 
