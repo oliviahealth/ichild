@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
@@ -19,9 +19,6 @@ const ChatComponent: React.FC = () => {
   // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
   const addQueryToConversation = useAppState((state) => state.addQueryToConversation);
   const currentConversationId = useAppState((state) => state.currentConversationId);
-
-  // Use the current conversation's id if a conversation exists or if its a new conversation, generate an id
-  const [conversationId, _] = useState(currentConversationId ?? uuid());
 
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
@@ -53,7 +50,7 @@ const ChatComponent: React.FC = () => {
     console.log(response);
 
     setOllieResponses([...ollieResponses, response]);
-    addQueryToConversation(conversationId, response)
+    addQueryToConversation(currentConversationId ?? uuid(), response)
 
     // reset the value of the input field
     reset();
