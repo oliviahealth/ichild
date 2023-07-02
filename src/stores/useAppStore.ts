@@ -17,24 +17,30 @@ interface AppState {
     addQueryToConversation: (id: string, response: IOllieResponse) => void,
     switchConversation: (id: string) => void
     createNewConversation: () => void
+    deleteConversation: (id: string) => void,
 
     currentConversationId: string | null,
 }
 
-const useAppState = create<AppState>()((set) => ({
+const useAppStore = create<AppState>()((set) => ({
     ollieResponses: [],
     setOllieResponses: (ollieResponses) => set(() => ({ ollieResponses: [...ollieResponses] })),
 
     conversations: JSON.parse(localStorage.getItem("conversations") ?? "[]"),
     addQueryToConversation: (id, response) => set((state) => {
         const conversationIndex = state.conversations.findIndex(conversation => conversation.id === id);
-
-        // Conversation exists
+    
         if (conversationIndex !== -1) {
-            const updatedConversations = [...state.conversations];
-            updatedConversations[conversationIndex].responses.push(response);
-
-            return { conversations: updatedConversations };
+            // Conversation exists
+            const conversations = [...state.conversations];
+            const updatedConversation = {...conversations[conversationIndex]};
+            updatedConversation.responses.push(response);
+            
+            // Move the updated conversation to the top of the conversations array
+            conversations.splice(conversationIndex, 1);
+            conversations.unshift(updatedConversation);
+    
+            return { conversations };
         }
 
         // Conversation doesn't exist
@@ -46,16 +52,34 @@ const useAppState = create<AppState>()((set) => ({
             responses: [response],
         };
 
-        return { conversations: [...state.conversations, newConversation], currentConversationId: id };
+        return {
+            conversations: [newConversation, ...state.conversations],
+            currentConversationId: id
+        };
     }),
     switchConversation: (id) => set((state) => {
-        const conversation = state.conversations.find(elm => elm.id === id);
+        const conversation = state.conversations.find(elm => elm.id === id)!;
 
-        return { ollieResponses: conversation?.responses, currentConversationId: id }
+        const updatedConversation = state.conversations.map((conversation) => conversation.id === id ? { ...conversation, lastAccessed: new Date() } : conversation)
+
+        return { ollieResponses: conversation.responses, currentConversationId: id, conversations: updatedConversation }
     }),
     createNewConversation: () => set(() => ({ ollieResponses: [], currentConversationId: uuid() })),
+    deleteConversation: (id) => set((state) => {
+        const newConversations = state.conversations.filter(conversation => conversation.id !== id);
+
+        const newCurrentConversation = newConversations[newConversations.length - 1];
+
+        // Create a new conversation if there are no more conversations
+        if(!newCurrentConversation) {
+            state.createNewConversation();
+            return { conversations: newConversations }
+        }
+
+        return { conversations: newConversations, ollieResponses: newCurrentConversation.responses, currentConversationId: newCurrentConversation.id };
+    }),
 
     currentConversationId: null,
 }));
 
-export default useAppState;
+export default useAppStore;

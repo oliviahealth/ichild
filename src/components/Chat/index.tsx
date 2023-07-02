@@ -4,7 +4,7 @@ import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
-import useAppState from "../../stores/useAppStore";
+import useAppStore from "../../stores/useAppStore";
 import { IOllieResponse } from "../../utils/interfaces";
 
 import { HiOutlineArrowPath } from "react-icons/hi2";
@@ -13,12 +13,12 @@ import ChatBubble from ".././Chat/ChatBubble";
 const ChatComponent: React.FC = () => {
   // Use Zustand to manage app state such as the questions the user asks and the response from the api
   // https://github.com/pmndrs/zustand
-  const ollieResponses = useAppState((state) => state.ollieResponses);
-  const setOllieResponses = useAppState((state) => state.setOllieResponses);
+  const ollieResponses = useAppStore((state) => state.ollieResponses);
+  const setOllieResponses = useAppStore((state) => state.setOllieResponses);
 
   // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
-  const addQueryToConversation = useAppState((state) => state.addQueryToConversation);
-  const currentConversationId = useAppState((state) => state.currentConversationId);
+  const addQueryToConversation = useAppStore((state) => state.addQueryToConversation);
+  const currentConversationId = useAppStore((state) => state.currentConversationId);
 
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
@@ -27,8 +27,8 @@ const ChatComponent: React.FC = () => {
   // Creates the auto scroll when ollie responds
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Scroll to the bottom of the container with smooth animation when a new response is returned from the api
   useEffect(() => {
-    // Scroll to the bottom of the container with smooth animation
     if (containerRef.current) {
       containerRef.current.scrollTo({
         top: containerRef.current.scrollHeight,
@@ -91,7 +91,7 @@ const ChatComponent: React.FC = () => {
               </div>
             );
           })}
-          <button onClick={regenerateResponse} className="ml-14 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400">
+          <button onClick={regenerateResponse} className={`ml-14 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400 ${ !(ollieResponses[0]) ? "hidden" : "" }`}>
             <HiOutlineArrowPath className="text-lg" />
             <p>Regenerate response</p>
           </button>
