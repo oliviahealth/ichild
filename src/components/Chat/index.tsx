@@ -39,7 +39,7 @@ const ChatComponent: React.FC = () => {
 
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
-  const getResponseMutation = useMutation(async (data: any) => {
+  const { mutate: getResponse, isLoading } = useMutation(async (data: any) => {
     if (data.query === "") return
 
     const formData = new FormData();
@@ -50,6 +50,9 @@ const ChatComponent: React.FC = () => {
     console.log(response);
 
     setOllieResponses([...ollieResponses, response]);
+
+    // Add the query and ollieResponse to the conversations array
+    // Use the current conversation id if a question has been asked, or if its a new conversation, generate a UUID
     addQueryToConversation(currentConversationId ?? uuid(), response)
 
     // reset the value of the input field
@@ -60,7 +63,7 @@ const ChatComponent: React.FC = () => {
     const previousQuery = ollieResponses[ollieResponses.length - 1].userQuery;
 
     setValue("query", previousQuery);
-    getResponseMutation.mutate({ query: previousQuery });
+    getResponse({ query: previousQuery });
   }
 
   return (
@@ -98,7 +101,7 @@ const ChatComponent: React.FC = () => {
 
 
           { /* Render loading dots while fetching ollie response */}
-          {getResponseMutation.isLoading ? (<>
+          {isLoading ? (<>
             <ChatBubble text={getValues("query")} isResponse={false} />
             <ChatBubble text={<span className="loading loading-dots loading-md"></span>} isResponse={true} />
           </>) : ""}
@@ -107,7 +110,7 @@ const ChatComponent: React.FC = () => {
       </div>
 
       { /* input field with the submit button */}
-      <form className="form-control" onSubmit={handleSubmit((data) => getResponseMutation.mutate(data))}>
+      <form className="form-control" onSubmit={handleSubmit((data) => getResponse(data))}>
         <div className="input-group">
           <input placeholder="Ask me a question" className="input w-full bg-white" {...register("query")} style={{ "borderRadius": 0 }} />
           <button className="btn btn-square bg-white border-none hover:bg-primary active:bg-primary-focus" style={{ "borderRadius": 0 }}>

@@ -4,7 +4,7 @@ import useAppStore from "../stores/useAppStore";
 
 import { AiOutlinePlus } from "react-icons/ai";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
-import { BsFillTrashFill } from "react-icons/bs";
+import { BsTrash } from "react-icons/bs";
 
 const SidePanel: React.FC = () => {
     const conversations = useAppStore((state) => state.conversations);
@@ -40,7 +40,7 @@ const SidePanel: React.FC = () => {
                         </div>
 
                         <button onClick={(evt) => handleConversationDelete(evt, conversation.id)} className={`btn btn-ghost btn-sm ${!(conversation.id === currentConversationId) ? "hidden" : ""}`}>
-                            <BsFillTrashFill className="text-lg" />
+                            <BsTrash className="text-lg" />
                         </button>
                     </div>
                 ))}
