@@ -2,6 +2,7 @@
 export interface IOllieResponse {
     address: string[]
     unencodedAddress: string[]
+    addressLinks: string[]
     confidences: number[]
     descriptions: string[]
     names: string[]

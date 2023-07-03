@@ -8,7 +8,9 @@ import useAppStore from "../../stores/useAppStore";
 import { IOllieResponse } from "../../utils/interfaces";
 
 import { HiOutlineArrowPath } from "react-icons/hi2";
-import ChatBubble from ".././Chat/ChatBubble";
+import OllieAvatar from "./OllieAvatar";
+import ChatBubble from "./ChatBubble";
+import OllieResponse from "./OllieResponse";
 
 const ChatComponent: React.FC = () => {
   // Use Zustand to manage app state such as the questions the user asks and the response from the api
@@ -70,31 +72,29 @@ const ChatComponent: React.FC = () => {
     <div className="flex w-full flex-col h-full">
       <div className="h-full p-4 flex flex-col justify-end overflow-hidden">
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-15rem)] ">
-          <ChatBubble text="Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?" isResponse={true} />
+
+        { /* Initial Ollie greeting */}
+          <div className="flex gap-4">
+            <OllieAvatar />
+            <ChatBubble isResponse={true}>
+              <p>Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?</p>
+            </ChatBubble>
+          </div>
+
+          { /* Ollie response to user query */}
           {ollieResponses.map((response, index) => {
             return (
               <div key={`${index} - question`}>
-                <ChatBubble text={<div>{response.userQuery}</div>} isResponse={false} />
-                <ChatBubble
-                  text={<div>
-                    I've found {response.names.length} possible matches for you, hover over a facility name for a description
+                <ChatBubble isResponse={false}>
+                  {response.userQuery}
+                </ChatBubble>
 
-                    {response.names.map((name, index) => (
-                      <div className="text-sm" key={index}>
-                        <br />
-                        <div className="text-base font-semibold tooltip text-left" data-tip={response.descriptions[index]}>
-                          {name}
-                        </div>
-                        <div>{response.phone[index]}</div>
-                        <div>{response.unencodedAddress[index]}</div>
-                      </div>
-                    ))}
-                  </div>}
-                  isResponse={true} />
+                <OllieResponse ollieResponse={response} />
               </div>
             );
           })}
-          <button onClick={regenerateResponse} className={`ml-14 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400 ${ !(ollieResponses[0]) ? "hidden" : "" }`}>
+
+          <button onClick={regenerateResponse} className={`ml-14 my-1 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400 ${!(ollieResponses[0]) ? "hidden" : ""}`}>
             <HiOutlineArrowPath className="text-lg" />
             <p>Regenerate response</p>
           </button>
@@ -102,8 +102,16 @@ const ChatComponent: React.FC = () => {
 
           { /* Render loading dots while fetching ollie response */}
           {isLoading ? (<>
-            <ChatBubble text={getValues("query")} isResponse={false} />
-            <ChatBubble text={<span className="loading loading-dots loading-md"></span>} isResponse={true} />
+            <ChatBubble isResponse={false}>
+              <p>{getValues("query")}</p>
+            </ChatBubble>
+
+            <div className="flex gap-4">
+              <OllieAvatar /> 
+              <ChatBubble isResponse={true}>
+                <span className="loading loading-dots loading-md"></span>
+              </ChatBubble>
+            </div>
           </>) : ""}
 
         </div>
