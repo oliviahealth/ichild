@@ -180,6 +180,7 @@ def db_search():
     phoneList = [winningWorkPhone, secondWorkPhone, thirdWorkPhone, fourthWorkPhone, fifthWorkPhone]
     addList = [winningAddress, winningAddressUnencoded, secondAddress, secondAddressUnencoded, thirdAddress, thirdAddressUnencoded, fourthAddress, fourthAddressUnencoded, fifthAddress, fifthAddressUnencoded]
     unencAddList = [winningAddressUnencoded, secondAddressUnencoded, thirdAddressUnencoded, fourthAddressUnencoded, fifthAddressUnencoded]
+    addLinksList = [winningAddress, secondAddress, thirdAddress, fourthAddress, fifthAddress]
 
     results_list = [namesList, descList, confList, phoneList, addList, unencAddList] # list of unfiltered results
     validThreshold = 0.25 #threshold for "valid" results
@@ -201,6 +202,7 @@ def db_search():
         'phone': phoneList,
         'address': addList,
         'unencodedAddress': unencAddList,
+        "addressLinks": addLinksList,
         'notFoundMessage': "Unfortunately we did not find any results for your question. Maybe try asking in a different way?",
     }
 
