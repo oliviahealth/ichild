@@ -89,16 +89,10 @@ const ChatComponent: React.FC = () => {
                   {response.userQuery}
                 </ChatBubble>
 
-                <OllieResponse ollieResponse={response} />
+                <OllieResponse ollieResponse={response} regenerateResponse={regenerateResponse} />
               </div>
             );
           })}
-
-          <button onClick={regenerateResponse} className={`ml-14 my-1 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400 ${!(ollieResponses[0]) ? "hidden" : ""}`}>
-            <HiOutlineArrowPath className="text-lg" />
-            <p>Regenerate response</p>
-          </button>
-
 
           { /* Render loading dots while fetching ollie response */}
           {isLoading ? (<>

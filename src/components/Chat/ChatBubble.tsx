@@ -5,8 +5,7 @@ interface Props {
     isResponse: boolean
 }
 
-const ChatBubbleV2: React.FC<Props> = ({ children, isResponse }) => {
-
+const ChatBubble: React.FC<Props> = ({ children, isResponse }) => {
     return (
         <div className={`chat w-full ${isResponse ? "chat-start" : "chat-end"}`}>
             <div className={`rounded-lg py-2 px-4 whitespace-pre-wrap ${isResponse ? "bg-white text-black" : "bg-primary text-white"}`}>
@@ -16,4 +15,4 @@ const ChatBubbleV2: React.FC<Props> = ({ children, isResponse }) => {
     )
 };
 
-export default ChatBubbleV2;
+export default ChatBubble;

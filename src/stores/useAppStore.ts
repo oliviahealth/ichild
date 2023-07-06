@@ -68,7 +68,7 @@ const useAppStore = create<AppState>()((set) => ({
     deleteConversation: (id) => set((state) => {
         const newConversations = state.conversations.filter(conversation => conversation.id !== id);
 
-        const newCurrentConversation = newConversations[newConversations.length - 1];
+        const newCurrentConversation = newConversations[0];
 
         // Create a new conversation if there are no more conversations
         if(!newCurrentConversation) {

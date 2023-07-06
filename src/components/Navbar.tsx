@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
               <a>Resources</a>
             </li>
             <li>
-              <a href="www.oliviahealth.org" target="_blank">OliviaHealth</a>
+              <a href="https://www.oliviahealth.org" target="_blank">OliviaHealth</a>
             </li>
           </ul>
         </div>
@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
             <a>Resources</a>
           </li>
           <li>
-            <a href="www.oliviahealth.org" target="_blank">OliviaHealth</a>
+            <a href="https://www.oliviahealth.org" target="_blank">OliviaHealth</a>
           </li>
         </ul>
       </div>
