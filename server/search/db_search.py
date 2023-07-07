@@ -24,9 +24,6 @@ else:
 app = Flask(__name__)
 cors = CORS(app)
 
-
-
-
 # Executes when first user accesses site
 @app.before_first_request
 def connection_and_setup():
@@ -162,6 +159,52 @@ def create_addresses(winningPDescription, secondPDescription, thirdPDescription,
 @app.route('/', methods=['POST', 'GET'])
 def msg():
     return render_template('index.html')
+
+@app.route("/formattedresults", methods=['POST', 'GET'])
+def formatted_db_search():
+    query = request.form['data']
+
+    crossEncoderItems, crossEncoderScoresDict = core_search(query, embedder, corpus, encoding_dict)
+    winningPDescription, secondPDescription, thirdPDescription, fourthPDescription, fifthPDescription, winningName, secondName, thirdName, fourthName, fifthName, winningDescription, secondDescription, thirdDescription, fourthDescription, fifthDescription, winningWorkPhone, secondWorkPhone, thirdWorkPhone, fourthWorkPhone, fifthWorkPhone, winningConfidence, secondConfidence, thirdConfidence, fourthConfidence, fifthConfidence = grab_info(crossEncoderItems, crossEncoderScoresDict, collection_name)
+
+    winningAddress, winningAddressUnencoded, secondAddress, secondAddressUnencoded, thirdAddress, thirdAddressUnencoded, fourthAddress, fourthAddressUnencoded, fifthAddress, fifthAddressUnencoded = create_addresses(winningPDescription, secondPDescription, thirdPDescription, fourthPDescription, fifthPDescription)
+
+    namesList = [winningName, secondName, thirdName, fourthName, fifthName]
+    descList = [winningDescription, secondDescription, thirdDescription, fourthDescription, fifthDescription]
+    confList = [winningConfidence.item(), secondConfidence.item(), thirdConfidence.item(), fourthConfidence.item(), fifthConfidence.item()]
+    phoneList = [winningWorkPhone, secondWorkPhone, thirdWorkPhone, fourthWorkPhone, fifthWorkPhone]
+    addList = [winningAddress, winningAddressUnencoded, secondAddress, secondAddressUnencoded, thirdAddress, thirdAddressUnencoded, fourthAddress, fourthAddressUnencoded, fifthAddress, fifthAddressUnencoded]
+    unencAddList = [winningAddressUnencoded, secondAddressUnencoded, thirdAddressUnencoded, fourthAddressUnencoded, fifthAddressUnencoded]
+    addLinksList = [winningAddress, secondAddress, thirdAddress, fourthAddress, fifthAddress]
+
+    results_list = [namesList, descList, confList, phoneList, addList, unencAddList] # list of unfiltered results
+
+    validThreshold = 0.25 #threshold for "valid" results
+
+    testResults = []
+
+    for (index, name) in enumerate(namesList):
+        description = descList[index]
+        confidence = confList[index]
+        phone = phoneList[index]
+        address = unencAddList[index]
+        addressLink = addLinksList[index]
+
+        if(confidence < validThreshold):
+            break
+
+        testResults.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink })
+
+    results = {
+        'userQuery': query,
+        'locations': testResults
+    }
+
+    return jsonify(results)
+    """return render_template('results.html',
+                            userQuery = query,
+                            results = results
+"""
 
 # results page
 @app.route('/results', methods=['POST', 'GET'])
