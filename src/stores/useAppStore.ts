@@ -18,11 +18,14 @@ interface AppState {
     switchConversation: (id: string) => void
     createNewConversation: () => void
     deleteConversation: (id: string) => void,
+    
+    // Determine if a conversation is outdated. A conversation is considered outdated if the last time it was accessed is 30+ days ago
+    isConversationOutdated: (id: string) => boolean,
 
     currentConversationId: string | null,
 }
 
-const useAppStore = create<AppState>()((set) => ({
+const useAppStore = create<AppState>()((set, get) => ({
     ollieResponses: [],
     setOllieResponses: (ollieResponses) => set(() => ({ ollieResponses: [...ollieResponses] })),
 
@@ -78,6 +81,23 @@ const useAppStore = create<AppState>()((set) => ({
 
         return { conversations: newConversations, ollieResponses: newCurrentConversation.responses, currentConversationId: newCurrentConversation.id };
     }),
+    isConversationOutdated: (id) => {
+        const conversation = get().conversations.find(elm => elm.id === id)!;
+
+        const lastAccessedDate = new Date(conversation.lastAccessed);
+        const currentDate = new Date();
+
+        // Calculate the difference in milliseconds between the current date and the last accessed date
+        const timeDifference = currentDate.getTime() - lastAccessedDate.getTime();
+
+        // Calculate the number of days
+        const daysDifference = timeDifference / (1000 * 3600 * 24);
+
+        // Conversation is outdated if it was last accessed over 30 days ago
+        if(daysDifference > 30) return true
+
+        return false
+    },
 
     currentConversationId: null,
 }));

@@ -19,7 +19,9 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
 
     const [focusedLocation, setFocusedLocation] = useState(ollieResponse.unencodedAddress[0] ?? null);
 
-    const copyText = (text: string) => {
+    const copyText = (evt: React.MouseEvent, text: string) => {
+        evt.stopPropagation();
+        
         navigator.clipboard.writeText(text);
     }
 
@@ -64,7 +66,7 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
                                             </div>
                                         </div>
 
-                                        <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={() => copyText(unencodedAddress)}>
+                                        <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={(evt) => copyText(evt, unencodedAddress)}>
                                             <BiCopy className="text-xl text-black" />
                                         </button>
                                     </div>

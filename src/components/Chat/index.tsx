@@ -7,7 +7,6 @@ import axios from "axios";
 import useAppStore from "../../stores/useAppStore";
 import { IOllieResponse } from "../../utils/interfaces";
 
-import { HiOutlineArrowPath } from "react-icons/hi2";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import OllieResponse from "./OllieResponse";

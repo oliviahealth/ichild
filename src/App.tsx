@@ -7,12 +7,16 @@ import SidePanel from "./components/SidePanel";
 
 const App: React.FC = () => {
   const conversations = useAppState((state) => state.conversations);
+  const isConversationOutdated = useAppState((state) => state.isConversationOutdated);
 
   // Save the updated conversations to localStorage on unmount
   window.addEventListener("beforeunload", (ev) => {
     ev.preventDefault();
 
-    localStorage.setItem("conversations", JSON.stringify(conversations));
+    // Filter out all of the conversations that are outdated (30+ days since the last time it was accessed)
+    const saveConversations = conversations.filter(conversation => isConversationOutdated(conversation.id) === false);
+    
+    localStorage.setItem("conversations", JSON.stringify(saveConversations));
   });
 
   return (
