@@ -73,7 +73,7 @@ const ChatComponent: React.FC = () => {
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-15rem)] ">
 
         { /* Initial Ollie greeting */}
-          <div className="flex gap-4">
+          <div className="sm:flex gap-4">
             <OllieAvatar />
             <ChatBubble isResponse={true}>
               <p>Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?</p>
