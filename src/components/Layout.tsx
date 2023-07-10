@@ -10,13 +10,7 @@ interface Props {
 const Layout: React.FC<Props> = ({ children }) => {
   const [authorized, setAuthorized] = useState(false);
 
-  const handleAuth = () => {
-    const password = prompt("Password: ")
-
-    if (password === "Ol1v1aStud3nt!2023" || password === "Intell1g3ntB@by2323") {
-      setAuthorized(true);
-    }
-  }
+  const handleAuth = () => setAuthorized(true);
 
   useEffect(() => {
     handleAuth();
