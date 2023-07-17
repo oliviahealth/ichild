@@ -7,6 +7,8 @@ import axios from "axios";
 import useAppStore from "../../stores/useAppStore";
 import { IOllieResponse } from "../../utils/interfaces";
 
+import { TfiMenuAlt } from "react-icons/tfi";
+
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import OllieResponse from "./OllieResponse";
@@ -20,6 +22,9 @@ const ChatComponent: React.FC = () => {
   // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
   const addQueryToConversation = useAppStore((state) => state.addQueryToConversation);
   const currentConversationId = useAppStore((state) => state.currentConversationId);
+
+  const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
+  const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
@@ -46,7 +51,7 @@ const ChatComponent: React.FC = () => {
     const formData = new FormData();
     formData.append("data", data.query);
 
-    const response: IOllieResponse = (await axios.post("/api/ollie/results", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
+    const response: IOllieResponse = (await axios.post("http://localhost:5000/api/ollie/results", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
 
     console.log(response);
 
@@ -69,10 +74,16 @@ const ChatComponent: React.FC = () => {
 
   return (
     <div className="flex w-full flex-col h-full">
+      {!isSidePanelOpen && (
+        <button className="absolute btn w-12 m-4 btn-primary btn-outline border-primary bg-gray-50 opacity-95 z-10" onClick={() => setisSidePanelOpen(true)}>
+          <TfiMenuAlt className="text-lg" />
+        </button>
+      )}
+
       <div className="h-full p-4 flex flex-col justify-end overflow-hidden">
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-15rem)] ">
 
-        { /* Initial Ollie greeting */}
+          { /* Initial Ollie greeting */}
           <div className="sm:flex gap-4">
             <OllieAvatar />
             <ChatBubble isResponse={true}>
@@ -100,7 +111,7 @@ const ChatComponent: React.FC = () => {
             </ChatBubble>
 
             <div className="flex gap-4">
-              <OllieAvatar /> 
+              <OllieAvatar />
               <ChatBubble isResponse={true}>
                 <span className="loading loading-dots loading-md"></span>
               </ChatBubble>

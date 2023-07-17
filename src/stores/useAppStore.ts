@@ -4,6 +4,9 @@ import { v4 as uuid } from "uuid";
 import { IOllieResponse, IConversation } from "../utils/interfaces";
 
 interface AppState {
+    isSidePanelOpen: boolean
+    setisSidePanelOpen: (isSidePanelOpen: boolean) => void
+
     ollieResponses: IOllieResponse[]
     setOllieResponses: (ollieResponse: IOllieResponse[]) => void
 
@@ -26,6 +29,9 @@ interface AppState {
 }
 
 const useAppStore = create<AppState>()((set, get) => ({
+    isSidePanelOpen: true,
+    setisSidePanelOpen: (isSidePanelOpen) => set(() => ({ isSidePanelOpen })),
+
     ollieResponses: [],
     setOllieResponses: (ollieResponses) => set(() => ({ ollieResponses: [...ollieResponses] })),
 

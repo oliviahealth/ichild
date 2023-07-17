@@ -7,26 +7,35 @@ import SidePanel from "./components/SidePanel";
 
 const App: React.FC = () => {
   const conversations = useAppState((state) => state.conversations);
-  const isConversationOutdated = useAppState((state) => state.isConversationOutdated);
+  const isConversationOutdated = useAppState(
+    (state) => state.isConversationOutdated
+  );
+
+  const isSidePanelOpen = useAppState((state) => state.isSidePanelOpen);
 
   // Save the updated conversations to localStorage on unmount
   window.addEventListener("beforeunload", (ev) => {
     ev.preventDefault();
 
     // Filter out all of the conversations that are outdated (30+ days since the last time it was accessed)
-    const saveConversations = conversations.filter(conversation => isConversationOutdated(conversation.id) === false);
-    
+    const saveConversations = conversations.filter(
+      (conversation) => isConversationOutdated(conversation.id) === false
+    );
+
     localStorage.setItem("conversations", JSON.stringify(saveConversations));
   });
 
   return (
     <div className="flex h-full bg-opacity-80 bg-gray-100">
-      <div className={`max-w-[20%] w-full xl:block hidden`}>
-        <SidePanel />
-      </div>
-
-      <div className="w-full">
-        <ChatComponent />
+      <div className="flex h-full w-full">
+        <div className={`h-full w-full max-w-[20%] bg-gray-200 ${isSidePanelOpen ? "block" : "hidden"} `}>
+          {/* Content for the side panel */}
+          <SidePanel />
+        </div>
+        {/* Content for the main container */}
+        <div className="w-full h-full">
+          <ChatComponent />
+        </div>
       </div>
     </div>
   );

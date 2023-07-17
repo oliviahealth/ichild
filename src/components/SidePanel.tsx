@@ -5,8 +5,11 @@ import useAppStore from "../stores/useAppStore";
 import { AiOutlinePlus } from "react-icons/ai";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { BsTrash } from "react-icons/bs";
+import { TfiMenuAlt } from "react-icons/tfi";
 
 const SidePanel: React.FC = () => {
+    const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
+
     const conversations = useAppStore((state) => state.conversations);
 
     const currentConversationId = useAppStore((state) => state.currentConversationId);
@@ -23,9 +26,13 @@ const SidePanel: React.FC = () => {
     return (
         <div className="bg-white h-full p-4">
             <div className="flex justify-around">
-                <button className="btn btn-primary w-full btn-outline border-primary" onClick={() => createNewConversaion()}>
+                <button className="btn btn-primary w-2/3 btn-outline border-primary" onClick={() => createNewConversaion()}>
                     <AiOutlinePlus className="text-lg" />
                     New Chat
+                </button>
+
+                <button className="btn btn-primary btn-outline border-primary" onClick={() => setisSidePanelOpen(false)}>
+                    <TfiMenuAlt className="text-lg" />
                 </button>
             </div>
 

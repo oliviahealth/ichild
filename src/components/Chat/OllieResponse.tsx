@@ -7,7 +7,6 @@ import { MdOutlineOpenInNew } from "react-icons/md"
 import { BiCopy } from "react-icons/bi";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
-import placeholderMap from "../../assets/placeholder-map.png";
 
 interface Props {
     ollieResponse: IOllieResponse
@@ -46,14 +45,12 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
                         {focusedLocation && (
                             <div className="flex flex-col w-full h-96 p-3 pb-1 bg-white rounded-xl">
                                 <iframe
-                                    className={`w-full h-full ${mapLoading ? "hidden" : ""}`}
+                                    className={`w-full h-full`}
                                     loading="lazy"
                                     allowFullScreen={true}
                                     onLoad={() => setMapLoading(false)}
                                     src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0&q=${focusedLocation}`}>
                                 </iframe>
-
-                                <img src={placeholderMap} className={!mapLoading ? "hidden" : ""} />
 
                                 <a href={ollieResponse.addressLinks[ollieResponse.unencodedAddress.indexOf(focusedLocation)]} target="_blank" className={`max-w-[200px] my-2 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400`}>
                                     <MdOutlineOpenInNew className="text-lg" />
@@ -62,7 +59,7 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
                             </div>
                         )}
 
-                        <div>
+                        <div className="w-full">
                             {ollieResponse.names.map((response, index) => {
                                 const addressLink = ollieResponse.addressLinks[index];
                                 const unencodedAddress = ollieResponse.unencodedAddress[index];
