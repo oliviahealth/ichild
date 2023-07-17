@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import useAppState from "./stores/useAppStore";
 
@@ -12,6 +12,7 @@ const App: React.FC = () => {
   );
 
   const isSidePanelOpen = useAppState((state) => state.isSidePanelOpen);
+  const setisSidePanelOpen = useAppState((state) => state.setisSidePanelOpen);
 
   // Save the updated conversations to localStorage on unmount
   window.addEventListener("beforeunload", (ev) => {
@@ -25,10 +26,19 @@ const App: React.FC = () => {
     localStorage.setItem("conversations", JSON.stringify(saveConversations));
   });
 
+  //Set the sidepanel to be closed by default if the user is on a small screen
+  useEffect(() => {
+    const windowWidth = window.innerWidth;
+
+    if(windowWidth < 1024) {
+      setisSidePanelOpen(false);
+    }
+  }, [])
+
   return (
     <div className="flex h-full bg-opacity-80 bg-gray-100">
       <div className="flex h-full w-full">
-        <div className={`h-full w-full max-w-[20%] bg-gray-200 ${isSidePanelOpen ? "block" : "hidden"} `}>
+        <div className={`h-full w-1/4 bg-gray-200 ${isSidePanelOpen ? "block" : "hidden"} `}>
           {/* Content for the side panel */}
           <SidePanel />
         </div>

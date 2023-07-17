@@ -41,7 +41,7 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
                         <p>I've found {ollieResponse.names.length} location{ollieResponse.names.length >= 2 || ollieResponse.names.length === 0 ? "s" : ""} for you</p>
                     </ChatBubble>
 
-                    <div className="lg:flex flex-row-reverse">
+                    <div className="xl:flex flex-row-reverse">
                         {focusedLocation && (
                             <div className="flex flex-col w-full h-96 p-3 pb-1 bg-white rounded-xl">
                                 <iframe
