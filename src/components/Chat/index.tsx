@@ -80,7 +80,7 @@ const ChatComponent: React.FC = () => {
         </button>
       )}
 
-      <div className="h-full p-4 flex flex-col justify-end overflow-hidden">
+      <div className="h-full p-4 flex flex-col justify-end overflow-hidden lg:px-10">
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-15rem)] ">
 
           { /* Initial Ollie greeting */}
@@ -122,10 +122,10 @@ const ChatComponent: React.FC = () => {
       </div>
 
       { /* input field with the submit button */}
-      <form className="form-control" onSubmit={handleSubmit((data) => getResponse(data))}>
+      <form className="form-control shadow-2xl" onSubmit={handleSubmit((data) => getResponse(data))}>
         <div className="input-group">
-          <input placeholder="Ask me a question" className="input w-full bg-white" {...register("query")} style={{ "borderRadius": 0 }} />
-          <button className="btn btn-square bg-white border-none hover:bg-primary active:bg-primary-focus" style={{ "borderRadius": 0 }}>
+          <input placeholder="Ask me a question" className="input w-full py-6 bg-white focus:outline-none" {...register("query")} style={{ "borderRadius": 0 }} />
+          <button className="btn btn-square h-full bg-white border-none hover:bg-primary active:bg-primary-focus" style={{ "borderRadius": 0 }}>
             <p>
               <svg width="32" height="34" viewBox="0 0 32 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path id="Subtract" d="M0.655396 34L31.263 17L0.655396 0L4.89595 13.1308L21.2664 17L4.89595 21.2815L0.655396 34Z" fill="lightGrey" />

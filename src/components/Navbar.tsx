@@ -1,18 +1,13 @@
 import React from "react";
 
-import TamuBoxLogo from "../assets/logos/TAMU-Box-Logo.png";
+import TAMUIChildLogo from "../assets/logos/TAMU-ichild_logo.png";
 
 const Navbar: React.FC = () => {
   return (
-    <div className="navbar xl:w-5/6 mx-auto p-4">
-      <div className="navbar-start w-full flex">
-        <a href="www.tamu.edu" target="_blank" className="flex-1 flex items-center">
-          <img src={TamuBoxLogo} alt="Texas A&M University Logo" className="btn btn-ghost normal-case object-contain transform scale-150 hover:bg-transparent hover:text-current" />
-
-          <div>
-            <p className="font-semibold text-sm">Texas A&M University</p>
-            <p className="text-xl">IntelligentCHILD</p>
-          </div>
+    <div className="navbar container mx-auto px-6">
+      <div className="navbar-start w-full flex justify-between">
+        <a href="https://www.tamu.edu" target="_blank">
+          <img src={TAMUIChildLogo} alt="Texas A&M University Logo" className="btn btn-ghost normal-case object-contain transform scale-150 hover:bg-transparent hover:text-current" />
         </a>
         <div className="dropdown dropdown-end opacity-100 z-10" >
           <label tabIndex={0} className="btn btn-ghost lg:hidden">

@@ -38,7 +38,7 @@ const App: React.FC = () => {
   return (
     <div className="flex h-full bg-opacity-80 bg-gray-100">
       <div className="flex h-full w-full">
-        <div className={`h-full w-1/4 bg-gray-200 ${isSidePanelOpen ? "block" : "hidden"} `}>
+        <div className={`h-full w-1/4  ${isSidePanelOpen ? "block" : "hidden"} `}>
           {/* Content for the side panel */}
           <SidePanel />
         </div>

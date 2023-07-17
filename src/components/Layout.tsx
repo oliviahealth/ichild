@@ -18,15 +18,17 @@ const Layout: React.FC<Props> = ({ children }) => {
 
   return (
     <>
-      {authorized && (<div className="flex flex-col h-screen text-black bg-[url('../assets/background.png')]">
+      {authorized && (
+      <div className="flex flex-col h-screen text-black bg-[url('../assets/background.png')]">
         <div className="shadow-lg bg-white">
           <Navbar />
         </div>
 
-        <div className="container mx-auto px-4 flex-1 mb-2 ">{children}</div>
+        <div className="container mx-auto h-full sm:px-4 sm:mb-6">{children}</div>
 
         <Footer />
-      </div>)}
+      </div>
+      )}
     </>
   );
 };
