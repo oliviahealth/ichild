@@ -14,8 +14,6 @@ interface Props {
 }
 
 const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) => {
-    const [mapLoading, setMapLoading] = useState(true);
-
     const [focusedLocation, setFocusedLocation] = useState(ollieResponse.unencodedAddress[0] ?? null);
 
     const copyText = (evt: React.MouseEvent, text: string) => {
@@ -26,7 +24,6 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
 
     const changeFocusedLocation = (newAddress: string) => {
         setFocusedLocation(newAddress);
-        setMapLoading(true);
     }
 
     return (
@@ -48,7 +45,6 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
                                     className={`w-full h-full`}
                                     loading="lazy"
                                     allowFullScreen={true}
-                                    onLoad={() => setMapLoading(false)}
                                     src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0&q=${focusedLocation}`}>
                                 </iframe>
 

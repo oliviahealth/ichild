@@ -75,7 +75,7 @@ const ChatComponent: React.FC = () => {
   return (
     <div className="flex w-full flex-col h-full">
       {!isSidePanelOpen && (
-        <button className="absolute btn w-12 m-4 btn-primary btn-outline border-primary bg-gray-50 opacity-95 z-10" onClick={() => setisSidePanelOpen(true)}>
+        <button className="absolute btn w-12 m-4 btn-primary btn-outline border-primary bg-white z-10" onClick={() => setisSidePanelOpen(true)}>
           <TfiMenuAlt className="text-lg" />
         </button>
       )}
