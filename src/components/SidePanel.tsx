@@ -7,6 +7,7 @@ import { BsTrash } from "react-icons/bs";
 import { TfiMenuAlt } from "react-icons/tfi";
 
 const SidePanel: React.FC = () => {
+
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
     const conversations = useAppStore((state) => state.conversations);
@@ -23,34 +24,42 @@ const SidePanel: React.FC = () => {
     }
 
     return (
-        <div className="bg-white h-full p-4 z-20 fixed left-0 max-w-[70%] lg:static lg:max-w-none">
-            <div className="flex justify-around">
-                <button className="btn btn-primary w-2/3 btn-outline border-primary" onClick={() => createNewConversaion()}>
-                    New Chat
-                </button>
+        <>
+            <input id="sidepanel" type="checkbox" className="drawer-toggle" />
 
-                <button className="btn btn-primary btn-outline border-primary" onClick={() => setisSidePanelOpen(false)}>
-                    <TfiMenuAlt className="text-lg" />
-                </button>
-            </div>
+            <div className="drawer-side h-full absolute">
+                <label htmlFor="my-drawer" className="drawer-overlay"></label>
 
-            <p className="text-sm text-gray-500 font-medium my-4">Recent Activity</p>
+                <div className="w-80 p-4 h-full bg-white text-base-neutral">
+                    <div className="flex justify-around">
+                        <button className="btn btn-primary w-2/3 btn-outline border-primary" onClick={() => createNewConversaion()}>
+                            New Chat
+                        </button>
 
-            <div className="flex flex-col">
-                {conversations.map((conversation, index) => (
-                    <div onClick={() => switchConversation(conversation.id)} key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversation.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
-                        <div className="flex items-center">
-                            <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
-                            <p className="ml-4">{conversation.title}</p>
-                        </div>
-
-                        <button onClick={(evt) => handleConversationDelete(evt, conversation.id)} className={`btn btn-ghost btn-sm ${!(conversation.id === currentConversationId) ? "hidden" : ""}`}>
-                            <BsTrash className="text-lg" />
+                        <button className="btn btn-primary btn-outline border-primary" onClick={() => setisSidePanelOpen(false)}>
+                            <TfiMenuAlt className="text-lg" />
                         </button>
                     </div>
-                ))}
+
+                    <p className="text-sm text-gray-500 font-medium my-4">Recent Activity</p>
+
+                    <div className="flex flex-col">
+                        {conversations.map((conversation, index) => (
+                            <div onClick={() => switchConversation(conversation.id)} key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversation.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                                <div className="flex items-center">
+                                    <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
+                                    <p className="ml-4">{conversation.title}</p>
+                                </div>
+
+                                <button onClick={(evt) => handleConversationDelete(evt, conversation.id)} className={`btn btn-ghost btn-sm ${!(conversation.id === currentConversationId) ? "hidden" : ""}`}>
+                                    <BsTrash className="text-lg" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 

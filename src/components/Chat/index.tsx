@@ -51,7 +51,7 @@ const ChatComponent: React.FC = () => {
     const formData = new FormData();
     formData.append("data", data.query);
 
-    const response: IOllieResponse = (await axios.post("/api/ollie/results", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
+    const response: IOllieResponse = (await axios.post("http://localhost:5000/api/ollie/results", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
 
     console.log(response);
 
@@ -75,7 +75,7 @@ const ChatComponent: React.FC = () => {
   return (
     <div className="flex w-full flex-col h-full">
       {!isSidePanelOpen && (
-        <button className="absolute btn w-12 m-4 btn-primary btn-outline border-primary bg-white z-10" onClick={() => setisSidePanelOpen(true)}>
+        <button className="drawer-content absolute btn w-12 m-4 btn-primary btn-outline border-primary bg-white z-10" onClick={() => setisSidePanelOpen(!isSidePanelOpen)}>
           <TfiMenuAlt className="text-lg" />
         </button>
       )}
