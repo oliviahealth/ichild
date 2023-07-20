@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { IOllieResponse } from "../../utils/interfaces";
 
@@ -16,6 +16,10 @@ interface Props {
 const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) => {
     const [focusedLocation, setFocusedLocation] = useState(ollieResponse.unencodedAddress[0] ?? null);
 
+    useEffect(() => {
+        setFocusedLocation(ollieResponse.unencodedAddress[0] ?? null);
+    }, [ollieResponse]);
+
     const copyText = (evt: React.MouseEvent, text: string) => {
         evt.stopPropagation();
 
@@ -28,7 +32,7 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
 
     return (
         <div>
-            <div className="sm:flex gap-4 items-center w-full">
+            <div className="xl:flex gap-4 items-center w-full">
                 <div className="self-start">
                     <OllieAvatar />
                 </div>
@@ -38,7 +42,7 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
                         <p>I've found {ollieResponse.names.length} location{ollieResponse.names.length >= 2 || ollieResponse.names.length === 0 ? "s" : ""} for you</p>
                     </ChatBubble>
 
-                    <div className="xl:flex flex-row-reverse">
+                    <div className="lg:flex gap-6 flex-row-reverse w-full">
                         {focusedLocation && (
                             <div className="flex flex-col w-full h-96 p-3 pb-1 bg-white rounded-xl">
                                 <iframe
@@ -55,7 +59,7 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
                             </div>
                         )}
 
-                        <div className="w-full">
+                        <div >
                             {ollieResponse.names.map((response, index) => {
                                 const addressLink = ollieResponse.addressLinks[index];
                                 const unencodedAddress = ollieResponse.unencodedAddress[index];
@@ -63,12 +67,12 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
                                 return (
                                     <div onClick={() => changeFocusedLocation(unencodedAddress)} className="cursor-pointer">
                                         <ChatBubble isResponse={true}>
-                                            <div className="flex justify-between items-center p-1 w-full sm:w-[28rem]">
-                                                <div className="flex items-center gap-6">
+                                            <div className="flex justify-between items-center p-1 sm:w-[25rem]">
+                                                <div className="flex items-center gap-6 w-full">
                                                     {/* Render the letters of the alphabet starting with 'A' */}
                                                     <p className="text-3xl text-primary">{String.fromCharCode(65 + index)}</p>
 
-                                                    <div>
+                                                    <div className="w-full">
                                                         <p className="font-semibold">{response}</p>
 
                                                         <div className="flex gap-2 my-3">

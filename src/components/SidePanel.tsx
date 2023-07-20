@@ -27,11 +27,11 @@ const SidePanel: React.FC = () => {
         <>
             <input id="sidepanel" type="checkbox" className="drawer-toggle" />
 
-            <div className="drawer-side h-full absolute">
+            <div className="drawer-side h-full">
                 <label htmlFor="my-drawer" className="drawer-overlay"></label>
 
-                <div className="w-80 p-4 h-full bg-white text-base-neutral">
-                    <div className="flex justify-around">
+                <div className="w-[275px] p-4 h-full bg-white text-base-neutral">
+                    <div className="flex gap-2 justify-around">
                         <button className="btn btn-primary w-2/3 btn-outline border-primary" onClick={() => createNewConversaion()}>
                             New Chat
                         </button>

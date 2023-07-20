@@ -51,7 +51,7 @@ const ChatComponent: React.FC = () => {
     const formData = new FormData();
     formData.append("data", data.query);
 
-    const response: IOllieResponse = (await axios.post("http://localhost:5000/api/ollie/results", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
+    const response: IOllieResponse = (await axios.post("/api/ollie/results", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
 
     console.log(response);
 
@@ -80,11 +80,11 @@ const ChatComponent: React.FC = () => {
         </button>
       )}
 
-      <div className="h-full p-4 flex flex-col justify-end overflow-hidden lg:px-10">
+      <div className="h-full p-4 flex flex-col justify-end overflow-hidden ">
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-15rem)] ">
 
           { /* Initial Ollie greeting */}
-          <div className="sm:flex gap-4">
+          <div className="xl:flex gap-4">
             <OllieAvatar />
             <ChatBubble isResponse={true}>
               <p>Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?</p>
