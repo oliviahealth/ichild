@@ -59,7 +59,7 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
                             </div>
                         )}
 
-                        <div >
+                        <div className="mr-auto">
                             {ollieResponse.names.map((response, index) => {
                                 const addressLink = ollieResponse.addressLinks[index];
                                 const unencodedAddress = ollieResponse.unencodedAddress[index];
