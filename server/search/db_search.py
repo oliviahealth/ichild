@@ -160,7 +160,7 @@ def create_addresses(winningPDescription, secondPDescription, thirdPDescription,
 def msg():
     return render_template('index.html')
 
-@app.route("/api/ollie/formattedresults", methods=['POST', 'GET'])
+@app.route("/formattedresults", methods=['POST', 'GET'])
 def formatted_db_search():
     query = request.form['data']
 
@@ -181,7 +181,7 @@ def formatted_db_search():
 
     validThreshold = 0.25 #threshold for "valid" results
 
-    testResults = []
+    results = []
 
     for (index, name) in enumerate(namesList):
         description = descList[index]
@@ -193,11 +193,11 @@ def formatted_db_search():
         if(confidence < validThreshold):
             break
 
-        testResults.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink })
+        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink })
 
     results = {
         'userQuery': query,
-        'locations': testResults
+        'locations': results
     }
 
     return jsonify(results)
@@ -207,7 +207,7 @@ def formatted_db_search():
 """
 
 # results page
-@app.route('/api/ollie/results', methods=['POST', 'GET'])
+@app.route('/results', methods=['POST', 'GET'])
 def db_search():
     query = request.form['data']
 
