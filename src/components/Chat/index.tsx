@@ -51,9 +51,7 @@ const ChatComponent: React.FC = () => {
     const formData = new FormData();
     formData.append("data", data.query);
 
-    const response: IOllieResponse = (await axios.post("http://localhost:5000/api/ollie/results", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
-
-    console.log(response);
+    const response: IOllieResponse = (await axios.post("http://localhost:5000/api/ollie/formattedresults", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
 
     setOllieResponses([...ollieResponses, response]);
 

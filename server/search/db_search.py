@@ -160,7 +160,7 @@ def create_addresses(winningPDescription, secondPDescription, thirdPDescription,
 def msg():
     return render_template('index.html')
 
-@app.route("/formattedresults", methods=['POST', 'GET'])
+@app.route("/api/ollie/formattedresults", methods=['POST', 'GET'])
 def formatted_db_search():
     query = request.form['data']
 
