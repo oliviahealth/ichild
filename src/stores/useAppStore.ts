@@ -1,14 +1,14 @@
 import { create } from "zustand";
 import { v4 as uuid } from "uuid";
 
-import { IOllieResponse, IConversation } from "../utils/interfaces";
+import { IConversation, IAPIResponse } from "../utils/interfaces";
 
 interface AppState {
     isSidePanelOpen: boolean
     setisSidePanelOpen: (isSidePanelOpen: boolean) => void
 
-    ollieResponses: IOllieResponse[]
-    setOllieResponses: (ollieResponse: IOllieResponse[]) => void
+    apiResponses: IAPIResponse[]
+    setApiResponses: (apiResponse: IAPIResponse[]) => void
 
     /*
        The conversations array is used to create the side panel of recent chats similar to chat-gpt's side panel.
@@ -17,7 +17,7 @@ interface AppState {
        When the user exists the app, we hold this conversation in local storage memory
    */
     conversations: IConversation[]
-    addQueryToConversation: (id: string, response: IOllieResponse) => void,
+    addQueryToConversation: (id: string, response: IAPIResponse) => void,
     switchConversation: (id: string) => void
     createNewConversation: () => void
     deleteConversation: (id: string) => void,
@@ -32,8 +32,8 @@ const useAppStore = create<AppState>()((set, get) => ({
     isSidePanelOpen: true,
     setisSidePanelOpen: (isSidePanelOpen) => set(() => ({ isSidePanelOpen })),
 
-    ollieResponses: [],
-    setOllieResponses: (ollieResponses) => set(() => ({ ollieResponses: [...ollieResponses] })),
+    apiResponses: [],
+    setApiResponses: (apiResponses) => set(() => ({ apiResponses: [...apiResponses] })),
 
     conversations: JSON.parse(localStorage.getItem("conversations") ?? "[]"),
     addQueryToConversation: (id, response) => set((state) => {
@@ -71,9 +71,9 @@ const useAppStore = create<AppState>()((set, get) => ({
 
         const updatedConversation = state.conversations.map((conversation) => conversation.id === id ? { ...conversation, lastAccessed: new Date() } : conversation)
 
-        return { ollieResponses: conversation.responses, currentConversationId: id, conversations: updatedConversation }
+        return { apiResponses: conversation.responses, currentConversationId: id, conversations: updatedConversation }
     }),
-    createNewConversation: () => set(() => ({ ollieResponses: [], currentConversationId: uuid() })),
+    createNewConversation: () => set(() => ({ apiResponses: [], currentConversationId: uuid() })),
     deleteConversation: (id) => set((state) => {
         const newConversations = state.conversations.filter(conversation => conversation.id !== id);
 
@@ -85,7 +85,7 @@ const useAppStore = create<AppState>()((set, get) => ({
             return { conversations: newConversations }
         }
 
-        return { conversations: newConversations, ollieResponses: newCurrentConversation.responses, currentConversationId: newCurrentConversation.id };
+        return { conversations: newConversations, apiResponses: newCurrentConversation.responses, currentConversationId: newCurrentConversation.id };
     }),
     isConversationOutdated: (id) => {
         const conversation = get().conversations.find(elm => elm.id === id)!;

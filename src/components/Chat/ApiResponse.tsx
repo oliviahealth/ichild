@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { IAPIResponseFormatted, ILocation } from "../../utils/interfaces";
+import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
 import { HiOutlineArrowPath } from "react-icons/hi2";
 import { MdOutlineOpenInNew } from "react-icons/md"
@@ -9,16 +9,16 @@ import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 
 interface Props {
-    ollieResponse: IAPIResponseFormatted
+    apiResponse: IAPIResponse
     regenerateResponse: () => void
 }
 
-const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) => {
-    const [focusedLocation, setFocusedLocation] = useState(ollieResponse.locations[0] ?? null);
+const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
+    const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
 
     useEffect(() => {
-        setFocusedLocation(ollieResponse.locations[0] ?? null);
-    }, [ollieResponse]);
+        setFocusedLocation(apiResponse.locations[0] ?? null);
+    }, [apiResponse]);
 
     const copyText = (evt: React.MouseEvent, text: string) => {
         evt.stopPropagation();
@@ -39,7 +39,7 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
 
                 <div className="w-full h-full">
                     <ChatBubble isResponse={true}>
-                        <p>I've found {ollieResponse.locations.length} location{ollieResponse.locations.length >= 2 || ollieResponse.locations.length === 0 ? "s" : ""} for you</p>
+                        <p>I've found {apiResponse.locations.length} location{apiResponse.locations.length >= 2 || apiResponse.locations.length === 0 ? "s" : ""} for you</p>
                     </ChatBubble>
 
                     <div className="lg:flex gap-6 flex-row-reverse w-full">
@@ -52,7 +52,7 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
                                     src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0&q=${focusedLocation.address}`}>
                                 </iframe>
 
-                                <a href={ollieResponse.locations[ollieResponse.locations.indexOf(focusedLocation)].addressLink} target="_blank" className={`max-w-[200px] my-2 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400`}>
+                                <a href={focusedLocation.addressLink} target="_blank" className={`max-w-[200px] my-2 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400`}>
                                     <MdOutlineOpenInNew className="text-lg" />
                                     <p>Open Google Maps</p>
                                 </a>
@@ -60,9 +60,9 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
                         )}
 
                         <div className="mr-auto">
-                            {ollieResponse.locations.map((location, index) => {
+                            {apiResponse.locations.map((location, index) => {
                                 return (
-                                    <div onClick={() => changeFocusedLocation(location)} className="cursor-pointer">
+                                    <div key={index} onClick={() => changeFocusedLocation(location)} className="cursor-pointer">
                                         <ChatBubble isResponse={true}>
                                             <div className="flex justify-between items-center p-1 sm:w-[25rem]">
                                                 <div className="flex items-center gap-6 w-full">
@@ -89,7 +89,7 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
                                     </div>
                                 )
                             })}
-                            <button onClick={regenerateResponse} className={`my-1 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400 `}>
+                            <button onClick={regenerateResponse} className={`my-1 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400`}>
                                 <HiOutlineArrowPath className="text-lg" />
                                 <p>Regenerate response</p>
                             </button>
@@ -104,4 +104,4 @@ const OllieResponse: React.FC<Props> = ({ ollieResponse, regenerateResponse }) =
     )
 }
 
-export default OllieResponse;
+export default ApiResponse;

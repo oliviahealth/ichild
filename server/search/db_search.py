@@ -160,7 +160,7 @@ def create_addresses(winningPDescription, secondPDescription, thirdPDescription,
 def msg():
     return render_template('index.html')
 
-@app.route("/api/ollie/formattedresults", methods=['POST', 'GET'])
+@app.route("/formattedresults", methods=['POST', 'GET'])
 def formatted_db_search():
     query = request.form['data']
 
@@ -206,6 +206,7 @@ def formatted_db_search():
                             results = results
 """
 
+# Avoid using this route. Use the /formattedresults route instead
 # results page
 @app.route('/results', methods=['POST', 'GET'])
 def db_search():

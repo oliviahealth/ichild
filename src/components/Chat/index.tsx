@@ -5,19 +5,19 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 
 import useAppStore from "../../stores/useAppStore";
-import { IOllieResponse } from "../../utils/interfaces";
+import { IAPIResponse } from "../../utils/interfaces";
 
 import { TfiMenuAlt } from "react-icons/tfi";
 
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
-import OllieResponse from "./OllieResponse";
+import ApiResponse from "./ApiResponse";
 
 const ChatComponent: React.FC = () => {
   // Use Zustand to manage app state such as the questions the user asks and the response from the api
   // https://github.com/pmndrs/zustand
-  const ollieResponses = useAppStore((state) => state.ollieResponses);
-  const setOllieResponses = useAppStore((state) => state.setOllieResponses);
+  const apiResponses = useAppStore((state) => state.apiResponses);
+  const setApiResponses = useAppStore((state) => state.setApiResponses);
 
   // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
   const addQueryToConversation = useAppStore((state) => state.addQueryToConversation);
@@ -30,10 +30,10 @@ const ChatComponent: React.FC = () => {
   // https://www.react-hook-form.com/
   const { register, handleSubmit, reset, getValues, setValue } = useForm();
 
-  // Creates the auto scroll when ollie responds
+  // Creates the auto scroll when the api responds
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to the bottom of the container with smooth animation when a new response is returned from the api
+  // Scroll to the bottom of the container with smooth animation when a new query is made to the api
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo({
@@ -41,7 +41,7 @@ const ChatComponent: React.FC = () => {
         behavior: "smooth",
       })
     }
-  }, [ollieResponses]);
+  }, [getValues("query")]);
 
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
@@ -51,11 +51,11 @@ const ChatComponent: React.FC = () => {
     const formData = new FormData();
     formData.append("data", data.query);
 
-    const response: IOllieResponse = (await axios.post("http://localhost:5000/api/ollie/formattedresults", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
+    const response: IAPIResponse = (await axios.post("http://localhost:5000/formattedresults", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
 
-    setOllieResponses([...ollieResponses, response]);
+    setApiResponses([...apiResponses, response]);
 
-    // Add the query and ollieResponse to the conversations array
+    // Add the query and apiResponse object to the conversations array
     // Use the current conversation id if a question has been asked, or if its a new conversation, generate a UUID
     addQueryToConversation(currentConversationId ?? uuid(), response)
 
@@ -64,7 +64,7 @@ const ChatComponent: React.FC = () => {
   });
 
   const regenerateResponse = () => {
-    const previousQuery = ollieResponses[ollieResponses.length - 1].userQuery;
+    const previousQuery = apiResponses[apiResponses.length - 1].userQuery;
 
     setValue("query", previousQuery);
     getResponse({ query: previousQuery });
@@ -79,9 +79,9 @@ const ChatComponent: React.FC = () => {
       )}
 
       <div className="h-full p-4 flex flex-col justify-end overflow-hidden ">
-        <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-15rem)] ">
+        <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-14rem)] ">
 
-          { /* Initial Ollie greeting */}
+          { /* Initial greeting */}
           <div className="xl:flex gap-4">
             <OllieAvatar />
             <ChatBubble isResponse={true}>
@@ -89,20 +89,20 @@ const ChatComponent: React.FC = () => {
             </ChatBubble>
           </div>
 
-          { /* Ollie response to user query */}
-          {ollieResponses.map((response, index) => {
+          { /* Api response to user query */}
+          {apiResponses.map((response, index) => {
             return (
               <div key={`${index} - question`}>
                 <ChatBubble isResponse={false}>
                   {response.userQuery}
                 </ChatBubble>
 
-                <OllieResponse ollieResponse={response} regenerateResponse={regenerateResponse} />
+                <ApiResponse apiResponse={response} regenerateResponse={regenerateResponse} />
               </div>
             );
           })}
 
-          { /* Render loading dots while fetching ollie response */}
+          { /* Render loading dots while fetching api response */}
           {isLoading ? (<>
             <ChatBubble isResponse={false}>
               <p>{getValues("query")}</p>

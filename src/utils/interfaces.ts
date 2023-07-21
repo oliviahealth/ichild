@@ -1,16 +1,3 @@
-// An OllieResponse object represents the response from the api
-export interface IOllieResponse {
-    address: string[]
-    unencodedAddress: string[]
-    addressLinks: string[]
-    confidences: number[]
-    descriptions: string[]
-    names: string[]
-    notFoundMessage: string
-    phone: string[]
-    userQuery: string
-}
-
 export interface ILocation {
     address: string
     addressLink: string
@@ -20,7 +7,7 @@ export interface ILocation {
     phone: string
 }
 
-export interface IAPIResponseFormatted {
+export interface IAPIResponse {
     locations: ILocation[]
     userQuery: string
 }
@@ -31,5 +18,5 @@ export interface IConversation {
     id: string
     created: Date
     lastAccessed: Date
-    responses: IOllieResponse[]
+    responses: IAPIResponse[]
 }
