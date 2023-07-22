@@ -3,13 +3,19 @@ import React from "react";
 interface Props {
     children: React.ReactNode
     isResponse: boolean
+    isFocused?: boolean
 }
 
-const ChatBubble: React.FC<Props> = ({ children, isResponse }) => {
+const ChatBubble: React.FC<Props> = ({ children, isResponse, isFocused: focused }) => {
     return (
         <div className={`chat ${isResponse ? "chat-start" : "chat-end"}`}>
-            <div className={`rounded-lg  py-2 px-4 whitespace-pre-wrap ${isResponse ? "bg-white text-black" : "bg-primary text-white"}`}>
-                { children }    
+            <div className={`flex rounded-lg whitespace-pre-wrap ${isResponse ? focused ? "bg-[#F8F5F5] text-primary" : "bg-white" : "bg-primary text-white"}`}>
+                <div className="w-2 bg-primary rounded-l-lg" hidden={!focused}>
+                </div>
+
+                <div className="py-2 px-4">
+                    { children }
+                </div>
             </div>
         </div>
     )

@@ -16,6 +16,8 @@ interface Props {
 const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
 
+    console.log(focusedLocation);
+
     useEffect(() => {
         setFocusedLocation(apiResponse.locations[0] ?? null);
     }, [apiResponse]);
@@ -44,18 +46,19 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
 
                     <div className="lg:flex gap-6 flex-row-reverse w-full">
                         {focusedLocation && (
-                            <div className="flex flex-col w-full h-96 p-3 pb-1 bg-white rounded-xl">
-                                <iframe
-                                    className={`w-full h-full`}
-                                    loading="lazy"
-                                    allowFullScreen={true}
-                                    src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0&q=${focusedLocation.address}`}>
-                                </iframe>
+                            <div className="flex w-full h-96 bg-[#F8F5F5] rounded-xl">
+                                <div className="w-2 bg-primary rounded-l-lg" >
+                                </div> 
 
-                                <a href={focusedLocation.addressLink} target="_blank" className={`max-w-[200px] my-2 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400`}>
-                                    <MdOutlineOpenInNew className="text-lg" />
-                                    <p>Open Google Maps</p>
-                                </a>
+                                <div className="w-full h-full p-3">
+                                    <iframe
+                                        className={`w-full h-full`}
+                                        loading="lazy"
+                                        allowFullScreen={true}
+                                        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0&q=${focusedLocation.address}`}>
+                                    </iframe>
+                                </div>
+                                
                             </div>
                         )}
 
@@ -63,7 +66,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                             {apiResponse.locations.map((location, index) => {
                                 return (
                                     <div key={index} onClick={() => changeFocusedLocation(location)} className="cursor-pointer">
-                                        <ChatBubble isResponse={true}>
+                                        <ChatBubble isResponse={true} isFocused={location === focusedLocation}>
                                             <div className="flex justify-between items-center p-1 sm:w-[25rem]">
                                                 <div className="flex items-center gap-6 w-full">
                                                     {/* Render the letters of the alphabet starting with 'A' */}
