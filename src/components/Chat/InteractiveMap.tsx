@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
-
-import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
+import { GoogleMap, MarkerF, useLoadScript, LoadScript } from "@react-google-maps/api";
 
 import { ILocation } from "../../utils/interfaces";
 
@@ -19,7 +18,7 @@ interface Props {
 
 const InteractiveMap: React.FC<Props> = ({ locations }) => {
     const { isLoaded }  = useLoadScript({
-        // googleMapsApiKey: "AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0"
+        googleMapsApiKey: "AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0"
     });
 
     const center = useMemo(() => ({ lat: 30.6280, lng: -96.3344 }), []);

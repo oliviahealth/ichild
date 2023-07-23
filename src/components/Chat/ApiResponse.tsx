@@ -7,6 +7,7 @@ import { BiCopy } from "react-icons/bi";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import InteractiveMap from "./InteractiveMap";
+import PanoramicStreetView from "./PanoramicStreetView";
 
 interface Props {
     apiResponse: IAPIResponse
@@ -51,7 +52,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                                 </div>
 
                                 <div className="w-full h-full p-3 ">
-                                   <img src={`https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${focusedLocation.latLng.lat},${focusedLocation.latLng.lng}&fov=80&heading=70&pitch=0&key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0`} />
+                                   <PanoramicStreetView latitude={focusedLocation.latLng.lat} longitude={focusedLocation.latLng.lng} />
                                 </div>
                             </div>
                         )}
