@@ -1,24 +1,37 @@
-import React from "react";
+import React, { useMemo } from "react";
 
-import GoogleMapReact from "google-map-react";
+import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 
-interface Props {
+import { ILocation } from "../../utils/interfaces";
+
+interface MapMarkerProps {
     latitude: number
     longitude: number
+    text: string
+}
+const MapMarker: React.FC<MapMarkerProps> = ({ latitude, longitude, text }) => {
+    return <MarkerF position={{ lat: latitude, lng: longitude }} label={{ text, color: "#fff" }}  />
 }
 
-const InteractiveMap: React.FC<Props> = ({ latitude, longitude }) => {
+interface Props {
+    locations: ILocation[]
+}
+
+const InteractiveMap: React.FC<Props> = ({ locations }) => {
+    const { isLoaded }  = useLoadScript({
+        // googleMapsApiKey: "AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0"
+    });
+
+    const center = useMemo(() => ({ lat: 30.6280, lng: -96.3344 }), []);
+
     return (
-        <GoogleMapReact
-            bootstrapURLKeys={{ key: "" }}
-            center={{ lat: latitude, lng: longitude }}
-            defaultZoom={15}
-        >
-            { /* @ts-ignore */ }
-            <p lat={latitude} lng={longitude} text="Marker" >
-                Marker
-            </p>
-        </GoogleMapReact>
+       <>
+        { isLoaded ? ( <GoogleMap mapContainerClassName="map-container" center={center} zoom={11}>
+            { locations.map((location, index) => (
+                <MapMarker key={index} latitude={location.latLng.lat} longitude={location.latLng.lng} text={String.fromCharCode(65 + index)} />
+            )) }
+        </GoogleMap> ) : <></> }
+       </>
     )
 }
 

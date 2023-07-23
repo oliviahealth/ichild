@@ -6,3 +6,8 @@
   font-family: "Tungsten";
   src: url("../assets/fonts/Tungsten-Medium.ttf");
 }
+
+.map-container {
+  height: 100%;
+  width: 100%;
+}

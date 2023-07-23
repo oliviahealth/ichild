@@ -50,18 +50,15 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                                 <div className="w-2 bg-primary rounded-l-lg" >
                                 </div>
 
-                                <div className="w-full h-full p-3">
-                                   
+                                <div className="w-full h-full p-3 ">
+                                   <img src={`https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${focusedLocation.latLng.lat},${focusedLocation.latLng.lng}&fov=80&heading=70&pitch=0&key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0`} />
                                 </div>
-
-                                {/* <img src="https://maps.googleapis.com/maps/api/streetview?size=400x400&location=47.5763831,-122.4211769&fov=80&heading=70&pitch=0&key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0" /> */}
-
                             </div>
                         )}
 
                         <div className="mr-auto">
                             <div className="w-full h-96 p-3 bg-white rounded-lg">
-                               <InteractiveMap latitude={focusedLocation.latLng.lat} longitude={focusedLocation.latLng.lng} />
+                               <InteractiveMap locations={apiResponse.locations} />
                             </div>
                             {apiResponse.locations.map((location, index) => {
                                 return (
