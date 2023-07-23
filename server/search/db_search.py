@@ -1,4 +1,5 @@
 import torch
+import requests
 torch.set_num_threads(1)
 import os
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -177,23 +178,26 @@ def formatted_db_search():
     unencAddList = [winningAddressUnencoded, secondAddressUnencoded, thirdAddressUnencoded, fourthAddressUnencoded, fifthAddressUnencoded]
     addLinksList = [winningAddress, secondAddress, thirdAddress, fourthAddress, fifthAddress]
 
-    results_list = [namesList, descList, confList, phoneList, addList, unencAddList] # list of unfiltered results
-
     validThreshold = 0.25 #threshold for "valid" results
 
     results = []
 
     for (index, name) in enumerate(namesList):
-        description = descList[index]
         confidence = confList[index]
-        phone = phoneList[index]
-        address = unencAddList[index]
-        addressLink = addLinksList[index]
 
         if(confidence < validThreshold):
             break
 
-        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink })
+        description = descList[index]
+        phone = phoneList[index]
+        address = unencAddList[index]
+        addressLink = addLinksList[index]
+
+        geocodingResponse = requests.get(f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0').json()
+
+        latLng = (geocodingResponse['results'][0]['geometry']['location'])
+
+        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latLng": latLng })
 
     results = {
         'userQuery': query,

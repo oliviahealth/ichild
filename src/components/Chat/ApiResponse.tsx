@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
 import { HiOutlineArrowPath } from "react-icons/hi2";
-import { MdOutlineOpenInNew } from "react-icons/md"
 import { BiCopy } from "react-icons/bi";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
+import InteractiveMap from "./InteractiveMap";
 
 interface Props {
     apiResponse: IAPIResponse
@@ -15,8 +15,6 @@ interface Props {
 
 const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
-
-    console.log(focusedLocation);
 
     useEffect(() => {
         setFocusedLocation(apiResponse.locations[0] ?? null);
@@ -31,6 +29,8 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
     const changeFocusedLocation = (newLocation: ILocation) => {
         setFocusedLocation(newLocation);
     }
+
+    console.log(apiResponse);
 
     return (
         <div>
@@ -48,21 +48,21 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                         {focusedLocation && (
                             <div className="flex w-full h-96 bg-[#F8F5F5] rounded-xl">
                                 <div className="w-2 bg-primary rounded-l-lg" >
-                                </div> 
+                                </div>
 
                                 <div className="w-full h-full p-3">
-                                    <iframe
-                                        className={`w-full h-full`}
-                                        loading="lazy"
-                                        allowFullScreen={true}
-                                        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0&q=${focusedLocation.address}`}>
-                                    </iframe>
+                                   
                                 </div>
-                                
+
+                                {/* <img src="https://maps.googleapis.com/maps/api/streetview?size=400x400&location=47.5763831,-122.4211769&fov=80&heading=70&pitch=0&key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0" /> */}
+
                             </div>
                         )}
 
                         <div className="mr-auto">
+                            <div className="w-full h-96 p-3 bg-white rounded-lg">
+                               <InteractiveMap latitude={focusedLocation.latLng.lat} longitude={focusedLocation.latLng.lng} />
+                            </div>
                             {apiResponse.locations.map((location, index) => {
                                 return (
                                     <div key={index} onClick={() => changeFocusedLocation(location)} className="cursor-pointer">

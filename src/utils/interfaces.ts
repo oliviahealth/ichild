@@ -5,6 +5,7 @@ export interface ILocation {
     description: string
     name: string
     phone: string
+    latLng: { lat: number, lng: number }
 }
 
 export interface IAPIResponse {
