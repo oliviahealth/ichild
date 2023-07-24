@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
 import { HiOutlineArrowPath } from "react-icons/hi2";
+import { MdOutlineOpenInNew } from "react-icons/md";
 import { BiCopy } from "react-icons/bi";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
@@ -42,30 +43,42 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
 
                 <div className="w-full h-full">
                     <ChatBubble isResponse={true}>
-                        <p>I've found {apiResponse.locations.length} location{apiResponse.locations.length >= 2 || apiResponse.locations.length === 0 ? "s" : ""} for you</p>
+                        <p className="mb-2">I've found {apiResponse.locations.length} location{apiResponse.locations.length >= 2 || apiResponse.locations.length === 0 ? "s" : ""} for you</p>
+
+                        <div className="w-[27rem] h-60">
+                            <InteractiveMap locations={apiResponse.locations} />
+                        </div>
                     </ChatBubble>
 
-                    <div className="lg:flex gap-6 flex-row-reverse w-full">
+                    <div className="xl:flex flex-row-reverse">
                         {focusedLocation && (
-                            <div className="flex w-full h-96 bg-[#F8F5F5] rounded-xl">
+                            <div className="flex w-full h-full bg-[#F8F5F5] rounded-xl">
                                 <div className="w-2 bg-primary rounded-l-lg" >
                                 </div>
 
-                                <div className="w-full h-full p-3 ">
-                                   <PanoramicStreetView latitude={focusedLocation.latLng.lat} longitude={focusedLocation.latLng.lng} />
+                                <div className="w-full h-full p-3 text-primary">
+                                    <PanoramicStreetView latitude={focusedLocation.latLng.lat} longitude={focusedLocation.latLng.lng} />
+
+                                    <div className="my-4 flex flex-col gap-4">
+                                        <p className="font-semibold text-2xl">{focusedLocation.name}</p>
+
+                                        <p className="text-sm">{focusedLocation.description}</p>
+
+                                        <a href={focusedLocation.addressLink} target="_blank" className={`max-w-[200px] btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400`}>
+                                            <MdOutlineOpenInNew className="text-lg" />
+                                            <p>Open Google Maps</p>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         )}
 
-                        <div className="mr-auto">
-                            <div className="w-full h-96 p-3 bg-white rounded-lg">
-                               <InteractiveMap locations={apiResponse.locations} />
-                            </div>
+                        <div>
                             {apiResponse.locations.map((location, index) => {
                                 return (
                                     <div key={index} onClick={() => changeFocusedLocation(location)} className="cursor-pointer">
                                         <ChatBubble isResponse={true} isFocused={location === focusedLocation}>
-                                            <div className="flex justify-between items-center p-1 sm:w-[25rem]">
+                                            <div className="flex justify-between items-center p-1 sm:w-[27rem]">
                                                 <div className="flex items-center gap-6 w-full">
                                                     {/* Render the letters of the alphabet starting with 'A' */}
                                                     <p className="text-3xl text-primary">{String.fromCharCode(65 + index)}</p>
@@ -90,6 +103,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                                     </div>
                                 )
                             })}
+
                             <button onClick={regenerateResponse} className={`my-1 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400`}>
                                 <HiOutlineArrowPath className="text-lg" />
                                 <p>Regenerate response</p>

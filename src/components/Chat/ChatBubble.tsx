@@ -8,12 +8,12 @@ interface Props {
 
 const ChatBubble: React.FC<Props> = ({ children, isResponse, isFocused: focused }) => {
     return (
-        <div className={`chat ${isResponse ? "chat-start" : "chat-end"}`}>
+        <div className={`chat w-full ${isResponse ? "chat-start" : "chat-end"}`}>
             <div className={`flex rounded-lg whitespace-pre-wrap ${isResponse ? focused ? "bg-[#F8F5F5] text-primary" : "bg-white" : "bg-primary text-white"}`}>
                 <div className="w-2 bg-primary rounded-l-lg" hidden={!focused}>
                 </div>
 
-                <div className="py-2 px-4">
+                <div className="w-full py-2 px-4">
                     { children }
                 </div>
             </div>

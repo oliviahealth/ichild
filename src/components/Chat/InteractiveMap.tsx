@@ -18,7 +18,7 @@ interface Props {
 
 const InteractiveMap: React.FC<Props> = ({ locations }) => {
     const { isLoaded: isGoogleApiLoaded } = useJsApiLoader({
-        googleMapsApiKey: "AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0"
+        googleMapsApiKey: import.meta.env.VITE_GOOGLE_API_KEY
     })
 
     const center = useMemo(() => ({ lat: 30.6280, lng: -96.3344 }), []);

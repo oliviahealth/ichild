@@ -9,7 +9,7 @@ interface Props {
 
 const PanoramicStreetView: React.FC<Props> = ({ latitude, longitude }) => {
     const { isLoaded: isGoogleApiLoaded } = useJsApiLoader({
-        googleMapsApiKey: "AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0"
+        googleMapsApiKey: import.meta.env.VITE_GOOGLE_API_KEY
     })
 
     const [streetViewExists, setStreetViewExists] = useState(false);
@@ -18,7 +18,7 @@ const PanoramicStreetView: React.FC<Props> = ({ latitude, longitude }) => {
 
     // Only render the compnent if a streetview can be found from Google  
     const checkIfStreetViewExists = async () => {
-        const { data } = await axios.get(`https://maps.googleapis.com/maps/api/streetview/metadata?key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0&location=${latitude},${longitude}`);
+        const { data } = await axios.get(`https://maps.googleapis.com/maps/api/streetview/metadata?key=${import.meta.env.VITE_GOOGLE_API_KEY}&location=${latitude},${longitude}`);
 
         data.status === "OK" ? setStreetViewExists(true) : setStreetViewExists(false);
     }
@@ -30,18 +30,18 @@ const PanoramicStreetView: React.FC<Props> = ({ latitude, longitude }) => {
     if (!streetViewExists) {
         return (
             <div className="w-full h-full flex justify-center items-center">
-                <p>No street view found</p>
+                
             </div>
         )
     }
 
     return (
-        <>
+        <div className="h-80">
             {isGoogleApiLoaded && (<GoogleMap mapContainerClassName="map-container" center={center} zoom={10}>
                 { /* @ts-ignore */ }
                 <StreetViewPanorama id="street-view" mapContainerClassName="map-container" position={center} visible={true} />
             </GoogleMap>)}
-        </>
+        </div>
     )
 }
 
