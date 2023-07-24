@@ -51,7 +51,7 @@ const ChatComponent: React.FC = () => {
     const formData = new FormData();
     formData.append("data", data.query);
 
-    const response: IAPIResponse = (await axios.post("http://localhost:5000/formattedresults", formData, { headers: { "Content-Type": "multipart/form-data" } })).data
+    const response: IAPIResponse = (await axios.post(import.meta.env.VITE_API_URL, formData, { headers: { "Content-Type": "multipart/form-data" } })).data
 
     setApiResponses([...apiResponses, response]);
 
