@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { GoogleMap, MarkerF, useLoadScript, LoadScript } from "@react-google-maps/api";
+import { GoogleMap, MarkerF, LoadScript } from "@react-google-maps/api";
 
 import { ILocation } from "../../utils/interfaces";
 
@@ -17,20 +17,16 @@ interface Props {
 }
 
 const InteractiveMap: React.FC<Props> = ({ locations }) => {
-    const { isLoaded }  = useLoadScript({
-        googleMapsApiKey: "AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0"
-    });
-
     const center = useMemo(() => ({ lat: 30.6280, lng: -96.3344 }), []);
 
     return (
-       <>
-        { isLoaded ? ( <GoogleMap mapContainerClassName="map-container" center={center} zoom={11}>
+       <LoadScript googleMapsApiKey="AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0">
+            <GoogleMap mapContainerClassName="map-container" center={center} zoom={11}>
             { locations.map((location, index) => (
                 <MapMarker key={index} latitude={location.latLng.lat} longitude={location.latLng.lng} text={String.fromCharCode(65 + index)} />
             )) }
-        </GoogleMap> ) : <></> }
-       </>
+        </GoogleMap>
+       </LoadScript>
     )
 }
 
