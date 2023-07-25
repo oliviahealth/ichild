@@ -16,6 +16,8 @@ interface Props {
 }
 
 const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
+    console.log(apiResponse);
+
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
 
     useEffect(() => {
@@ -31,8 +33,6 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
     const changeFocusedLocation = (newLocation: ILocation) => {
         setFocusedLocation(newLocation);
     }
-
-    console.log(apiResponse);
 
     return (
         <div>
@@ -56,11 +56,12 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                                 <div className="w-2 bg-primary rounded-l-lg" >
                                 </div>
 
-                                <div className="w-full h-full p-3 text-primary">
-                                    <PanoramicStreetView latitude={focusedLocation.latLng.lat} longitude={focusedLocation.latLng.lng} />
+                                <div className="w-full h-full p-3 object-container">
+                                    <img src={`https://maps.googleapis.com/maps/api/place/photo?maxheight=1600&photo_reference=${focusedLocation.photos[0].photo_reference}&key=${import.meta.env.VITE_GOOGLE_API_KEY}`} className="object-contain h-60 rounded-lg m-auto" />
+                                    
 
                                     <div className="my-4 flex flex-col gap-4">
-                                        <p className="font-semibold text-2xl">{focusedLocation.name}</p>
+                                        <p className="font-semibold text-2xl text-primary">{focusedLocation.name}</p>
 
                                         <p className="text-sm">{focusedLocation.description}</p>
 

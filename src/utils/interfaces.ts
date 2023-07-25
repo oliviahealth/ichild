@@ -5,7 +5,9 @@ export interface ILocation {
     description: string
     name: string
     phone: string
-    latLng: { lat: number, lng: number }
+    latitude: number
+    longitude: number
+    photos: { height: number, html_attributions: string[], photo_reference: string, width: number }[]
 }
 
 export interface IAPIResponse {

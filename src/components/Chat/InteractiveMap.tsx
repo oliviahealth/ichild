@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { GoogleMap, MarkerF, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 
 import { ILocation } from "../../utils/interfaces";
 
@@ -17,7 +17,7 @@ interface Props {
 }
 
 const InteractiveMap: React.FC<Props> = ({ locations }) => {
-    const { isLoaded: isGoogleApiLoaded } = useJsApiLoader({
+    const { isLoaded: isGoogleApiLoaded } = useLoadScript({
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_API_KEY
     })
 
@@ -25,9 +25,9 @@ const InteractiveMap: React.FC<Props> = ({ locations }) => {
 
     return (
         <>
-            {isGoogleApiLoaded && (<GoogleMap mapContainerClassName="map-container" center={center} zoom={11}>
+            {isGoogleApiLoaded && (<GoogleMap mapContainerClassName="map-container" center={center} zoom={11} options={{ mapTypeControl: false}}>
                 {locations.map((location, index) => (
-                    <MapMarker key={index} latitude={location.latLng.lat} longitude={location.latLng.lng} text={String.fromCharCode(65 + index)} />
+                    <MapMarker key={index} latitude={location.latitude} longitude={location.longitude} text={String.fromCharCode(65 + index)} />
                 ))}
             </GoogleMap>)}
         </>

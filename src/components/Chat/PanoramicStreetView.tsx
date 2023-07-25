@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { GoogleMap, StreetViewPanorama, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, StreetViewPanorama, useLoadScript } from "@react-google-maps/api";
 
 interface Props {
     latitude: number
@@ -8,7 +8,7 @@ interface Props {
 }
 
 const PanoramicStreetView: React.FC<Props> = ({ latitude, longitude }) => {
-    const { isLoaded: isGoogleApiLoaded } = useJsApiLoader({
+    const { isLoaded: isGoogleApiLoaded } = useLoadScript({
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_API_KEY
     })
 
@@ -39,7 +39,7 @@ const PanoramicStreetView: React.FC<Props> = ({ latitude, longitude }) => {
         <div className="h-80">
             {isGoogleApiLoaded && (<GoogleMap mapContainerClassName="map-container" center={center} zoom={10}>
                 { /* @ts-ignore */ }
-                <StreetViewPanorama id="street-view" mapContainerClassName="map-container" position={center} visible={true} />
+                <StreetViewPanorama id="street-view" mapContainerClassName="map-container" position={center} visible={true} options={{ addressControl: false, enableCloseButton: false }}/>
             </GoogleMap>)}
         </div>
     )
