@@ -7,7 +7,6 @@ export interface ILocation {
     phone: string
     latitude: number
     longitude: number
-    photos: { height: number, html_attributions: string[], photo_reference: string, width: number }[]
 }
 
 export interface IAPIResponse {

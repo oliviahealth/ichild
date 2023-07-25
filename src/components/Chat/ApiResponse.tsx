@@ -57,8 +57,8 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                                 </div>
 
                                 <div className="w-full h-full p-3 object-container">
-                                    <img src={`https://maps.googleapis.com/maps/api/place/photo?maxheight=1600&photo_reference=${focusedLocation.photos[0].photo_reference}&key=${import.meta.env.VITE_GOOGLE_API_KEY}`} className="object-contain h-60 rounded-lg m-auto" />
-                                    
+                                   
+                                    <PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />
 
                                     <div className="my-4 flex flex-col gap-4">
                                         <p className="font-semibold text-2xl text-primary">{focusedLocation.name}</p>

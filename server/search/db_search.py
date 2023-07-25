@@ -193,9 +193,9 @@ def formatted_db_search():
         address = unencAddList[index]
         addressLink = addLinksList[index]
 
-        latitude, longitude, photos = getPlaceDetails(name).values()
+        latitude, longitude = getLatLng(address).values()
 
-        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, "photos": photos })
+        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude })
 
     results = {
         'userQuery': query,
@@ -208,20 +208,12 @@ def formatted_db_search():
                             results = results
 """
 
-def getPlaceDetails(name):
-    placeDetailsResponse = requests.get(f"https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input={name}&inputtype=textquery&locationbias=circle:12000@30.627433,-96.335950&key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0&fields=name%2Cgeometry%2Cphoto").json()
+def getLatLng(address):
+    geocodingResponse = requests.get(f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key=AIzaSyD4tYjfBgNNOLlWBY1eHw9tJeiWKnb5bV0').json()
 
-    if(placeDetailsResponse['status'] != "OK"):
-        return
-    
-    placeDetails = placeDetailsResponse['candidates'][0]
+    latLng = geocodingResponse['results'][0]['geometry']['location']
 
-    return {
-        "latitude": placeDetails['geometry']['location']['lat'],
-        "longitude": placeDetails['geometry']['location']['lng'],
-        "photos": placeDetails.get("photos")
-    }
-
+    return latLng
 
 # Avoid using this route. Use the /formattedresults route instead
 # results page

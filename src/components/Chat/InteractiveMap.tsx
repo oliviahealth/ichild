@@ -25,7 +25,7 @@ const InteractiveMap: React.FC<Props> = ({ locations }) => {
 
     return (
         <>
-            {isGoogleApiLoaded && (<GoogleMap mapContainerClassName="map-container" center={center} zoom={11} options={{ mapTypeControl: false}}>
+            {isGoogleApiLoaded && (<GoogleMap mapContainerClassName="map-container" center={center} zoom={11} options={{ streetViewControl: false, mapTypeControl: false}}>
                 {locations.map((location, index) => (
                     <MapMarker key={index} latitude={location.latitude} longitude={location.longitude} text={String.fromCharCode(65 + index)} />
                 ))}
