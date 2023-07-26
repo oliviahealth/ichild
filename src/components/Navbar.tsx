@@ -4,7 +4,7 @@ import TAMUIChildLogo from "../assets/logos/TAMU-ichild_logo.png";
 
 const Navbar: React.FC = () => {
   return (
-    <div className="navbar xl:container xl:px-2 mx-auto px-5">
+    <div className="navbar xl:container xl:px-2 mx-auto px-5 shadow-2xl">
       <div className="navbar-start w-full flex justify-between ">
         <a href="https://www.tamu.edu" target="_blank">
           <img src={TAMUIChildLogo} alt="Texas A&M University Logo" className="btn btn-ghost normal-case object-contain transform scale-150 hover:bg-transparent hover:text-current" />

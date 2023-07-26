@@ -44,11 +44,11 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                 <div className="w-full h-full">
                     <ChatBubble isResponse={true}>
                         <p className="mb-2">I've found {apiResponse.locations.length} location{apiResponse.locations.length >= 2 || apiResponse.locations.length === 0 ? "s" : ""} for you</p>
-
-                        <div className="w-[27rem] h-60">
-                            <InteractiveMap locations={apiResponse.locations} />
-                        </div>
                     </ChatBubble>
+
+                    <div className="w-full xl:w-[29rem] h-60 p-3 bg-white rounded-xl">
+                        <InteractiveMap locations={apiResponse.locations} />
+                    </div>
 
                     <div className="xl:flex flex-row-reverse">
                         {focusedLocation && (
@@ -57,7 +57,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                                 </div>
 
                                 <div className="w-full h-full p-3 object-container">
-                                   
+
                                     <PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />
 
                                     <div className="my-4 flex flex-col gap-4">

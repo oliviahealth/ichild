@@ -217,7 +217,7 @@ def getLatLng(address):
 
 # Avoid using this route. Use the /formattedresults route instead
 # results page
-@app.route('/results', methods=['POST', 'GET'])
+@app.route('/api/ollie/results', methods=['POST', 'GET'])
 def db_search():
     query = request.form['data']
 
