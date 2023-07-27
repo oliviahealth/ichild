@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import Slider from "react-slick";
 
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
 import { HiOutlineArrowPath } from "react-icons/hi2";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { BiCopy } from "react-icons/bi";
+import { RxDotFilled } from "react-icons/rx";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import InteractiveMap from "./InteractiveMap";
@@ -19,6 +21,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
     console.log(apiResponse);
 
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
+    const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
     useEffect(() => {
         setFocusedLocation(apiResponse.locations[0] ?? null);
@@ -46,11 +49,11 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                         <p className="mb-2">I've found {apiResponse.locations.length} location{apiResponse.locations.length >= 2 || apiResponse.locations.length === 0 ? "s" : ""} for you</p>
                     </ChatBubble>
 
-                    <div className="w-full xl:w-[29rem] h-60 p-3 bg-white rounded-xl">
+                    <div className="w-full h-60 p-3 bg-white rounded-xl">
                         <InteractiveMap locations={apiResponse.locations} />
                     </div>
 
-                    <div className="xl:flex flex-row-reverse">
+                    <div className="hidden xl:flex flex-row-reverse">
                         {focusedLocation && (
                             <div className="flex w-full h-full bg-[#F8F5F5] rounded-xl">
                                 <div className="w-2 bg-primary rounded-l-lg" >
@@ -111,11 +114,48 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                             </button>
                         </div>
                     </div>
+
+                    <div className="mt-2">
+                        <div className="w-full carousel rounded-box">
+                            {apiResponse.locations.map((location, index) => (
+                                <div key={index} className="carousel-item w-full" onFocus={() => alert("Alert")}>
+                                    <div className="bg-white w-full p-3">
+                                        <p className="font-semibold">{location.name}</p>
+
+                                        <div className="flex gap-2 my-3">
+                                            <a className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Website</a>
+                                            <a href={location.addressLink} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Directions</a>
+
+                                            <button className={`btn btn-square btn-xs bg-inherit border-none hover:bg-gray-200`} onClick={(evt) => copyText(evt, location.address)}>
+                                                <BiCopy className="text-xl text-black" />
+                                            </button>
+                                        </div>
+
+                                        <p className="text-sm">{location.address}</p>
+
+                                        <div className="h-40 my-2">
+                                            <PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />
+                                        </div>
+
+                                        <p onClick={() => setDescriptionExpanded(!descriptionExpanded)} className={`text-sm ${!descriptionExpanded ? "line-clamp-3" : ""}`}>{focusedLocation.description}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="flex justify-center items-center w-full py-2">
+                            {apiResponse.locations.map((location, index) => (
+                                <button key={index} className={`text-xl ${focusedLocation === location ? "text-primary" : "text-gray-400" }`}>
+                                    <RxDotFilled />
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
 
 
-        </div>
+        </div >
 
     )
 }

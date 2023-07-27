@@ -44,7 +44,7 @@ const App: React.FC = () => {
           </div>
         </div>
         {/* Content for the main container */}
-        <div className={`w-full h-full ${isSidePanelOpen ? "blur-md sm:blur-none" : ""}`}>
+        <div className={`w-full h-full`}>
           <ChatComponent />
         </div>
       </div>

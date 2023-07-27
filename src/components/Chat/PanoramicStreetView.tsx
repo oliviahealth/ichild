@@ -36,7 +36,7 @@ const PanoramicStreetView: React.FC<Props> = ({ latitude, longitude }) => {
     }
 
     return (
-        <div className="h-80">
+        <div className="h-full">
             {isGoogleApiLoaded && (<GoogleMap mapContainerClassName="map-container" center={center} zoom={10}>
                 { /* @ts-ignore */ }
                 <StreetViewPanorama id="street-view" mapContainerClassName="map-container" position={center} visible={true} options={{ addressControl: false, enableCloseButton: false }}/>
