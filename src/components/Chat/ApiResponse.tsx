@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Slider from "react-slick";
+import useEmblaCarousel from "embla-carousel-react";
 
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
+import { RxDotFilled } from "react-icons/rx";
 import { HiOutlineArrowPath } from "react-icons/hi2";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { BiCopy } from "react-icons/bi";
-import { RxDotFilled } from "react-icons/rx";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import InteractiveMap from "./InteractiveMap";
@@ -18,7 +18,9 @@ interface Props {
 }
 
 const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
-    console.log(apiResponse);
+    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
+    const [currentSlideIndex, setCurrentSlideIndex] = useState(emblaApi?.selectedScrollSnap() ?? 0);
+    emblaApi?.on("select", () => setCurrentSlideIndex(emblaApi?.selectedScrollSnap()));
 
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
@@ -49,7 +51,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                         <p className="mb-2">I've found {apiResponse.locations.length} location{apiResponse.locations.length >= 2 || apiResponse.locations.length === 0 ? "s" : ""} for you</p>
                     </ChatBubble>
 
-                    <div className="w-full h-60 p-3 bg-white rounded-xl">
+                    <div className="max-w-[29rem] h-60 p-3 bg-white rounded-xl">
                         <InteractiveMap locations={apiResponse.locations} />
                     </div>
 
@@ -61,7 +63,9 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
 
                                 <div className="w-full h-full p-3 object-container">
 
-                                    <PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />
+                                    <div className="h-80">
+                                        <PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />
+                                    </div>
 
                                     <div className="my-4 flex flex-col gap-4">
                                         <p className="font-semibold text-2xl text-primary">{focusedLocation.name}</p>
@@ -115,11 +119,13 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                         </div>
                     </div>
 
-                    <div className="mt-2">
-                        <div className="w-full carousel rounded-box">
-                            {apiResponse.locations.map((location, index) => (
-                                <div key={index} className="carousel-item w-full" onFocus={() => alert("Alert")}>
-                                    <div className="bg-white w-full p-3">
+                    <div className="xl:hidden max-w-lg mt-2">
+                        { /* Custom CSS in index.css file for carousel */}
+                        <div className="embla" ref={emblaRef}>
+                            <div className="embla__container">
+
+                                {apiResponse.locations.map((location, index) => (
+                                    <div key={index} className="embla__slide p-3 mr-1 bg-white rounded-lg" >
                                         <p className="font-semibold">{location.name}</p>
 
                                         <div className="flex gap-2 my-3">
@@ -137,15 +143,15 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                                             <PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />
                                         </div>
 
-                                        <p onClick={() => setDescriptionExpanded(!descriptionExpanded)} className={`text-sm ${!descriptionExpanded ? "line-clamp-3" : ""}`}>{focusedLocation.description}</p>
+                                        <p onClick={() => setDescriptionExpanded(!descriptionExpanded)} className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`}>{focusedLocation.description}</p>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
 
                         <div className="flex justify-center items-center w-full py-2">
-                            {apiResponse.locations.map((location, index) => (
-                                <button key={index} className={`text-xl ${focusedLocation === location ? "text-primary" : "text-gray-400" }`}>
+                            {apiResponse.locations.map((_, index) => (
+                                <button key={index} className={`text-xl ${currentSlideIndex === index ? "text-primary" : "text-gray-400" }`}>
                                     <RxDotFilled />
                                 </button>
                             ))}
