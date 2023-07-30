@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import useEmblaCarousel from "embla-carousel-react";
 
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
-import { RxDotFilled } from "react-icons/rx";
 import { HiOutlineArrowPath } from "react-icons/hi2";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { BiCopy } from "react-icons/bi";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
+import LocationCarousel from "./LocationCarousel";
 import InteractiveMap from "./InteractiveMap";
 import PanoramicStreetView from "./PanoramicStreetView";
 
@@ -18,12 +17,7 @@ interface Props {
 }
 
 const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
-    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
-    const [currentSlideIndex, setCurrentSlideIndex] = useState(emblaApi?.selectedScrollSnap() ?? 0);
-    emblaApi?.on("select", () => setCurrentSlideIndex(emblaApi?.selectedScrollSnap()));
-
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
-    const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
     useEffect(() => {
         setFocusedLocation(apiResponse.locations[0] ?? null);
@@ -121,42 +115,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                     </div>
 
                     <div className="xl:hidden max-w-lg mt-2">
-                        { /* Custom CSS in index.css file for carousel */}
-                        <div className="embla" ref={emblaRef}>
-                            <div className="embla__container">
-
-                                {apiResponse.locations.map((location, index) => (
-                                    <div key={index} className="embla__slide p-3 mr-1 bg-white rounded-lg" >
-                                        <p className="font-semibold">{location.name}</p>
-
-                                        <div className="flex gap-2 my-3">
-                                            <a className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Website</a>
-                                            <a href={location.addressLink} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Directions</a>
-
-                                            <button className={`btn btn-square btn-xs bg-inherit border-none hover:bg-gray-200`} onClick={(evt) => copyText(evt, location.address)}>
-                                                <BiCopy className="text-xl text-black" />
-                                            </button>
-                                        </div>
-
-                                        <p className="text-sm">{location.address}</p>
-
-                                        <div className="h-40 my-2">
-                                            <PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />
-                                        </div>
-
-                                        <p onClick={() => setDescriptionExpanded(!descriptionExpanded)} className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`}>{focusedLocation.description}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="flex justify-center items-center w-full py-2">
-                            {apiResponse.locations.map((_, index) => (
-                                <button key={index} className={`text-xl ${currentSlideIndex === index ? "text-primary" : "text-gray-400" }`}>
-                                    <RxDotFilled />
-                                </button>
-                            ))}
-                        </div>
+                        <LocationCarousel locations={apiResponse.locations} />
                     </div>
                 </div>
             </div>

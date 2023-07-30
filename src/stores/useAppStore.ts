@@ -5,6 +5,7 @@ import { Session } from "@supabase/supabase-js";
 import { IConversation, IAPIResponse } from "../utils/interfaces";
 
 interface AppState {
+    // Track weather a supabase auth session exists
     session: Session | null
     setSession: (session: Session | null) => void
 

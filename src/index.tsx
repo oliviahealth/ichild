@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 
-import useAppState from "../stores/useAppStore";
+import useAppState from "./stores/useAppStore";
 
-import ChatComponent from "../components/Chat";
-import SidePanel from "../components/SidePanel";
+import ChatComponent from "./components/Chat";
+import SidePanel from "./components/SidePanel";
 
 const Index: React.FC = () => {
   const conversations = useAppState((state) => state.conversations);

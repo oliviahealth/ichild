@@ -25,7 +25,7 @@ const PanoramicStreetView: React.FC<Props> = ({ latitude, longitude }) => {
 
     useEffect(() => {
         checkIfStreetViewExists()
-    });
+    }, []);
 
     if (!streetViewExists) {
         return (

@@ -12,6 +12,9 @@ const Layout = () => {
         </div>
 
         <div className="w-full xl:container mx-auto h-full">
+          { /* Render all children components with the Outlet 
+                https://reactrouter.com/en/main/components/outlet
+          */ }
           <Outlet />
         </div>
 

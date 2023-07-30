@@ -19,9 +19,6 @@ const ChatComponent: React.FC = () => {
   const apiResponses = useAppStore((state) => state.apiResponses);
   const setApiResponses = useAppStore((state) => state.setApiResponses);
 
-  const session = useAppStore((state) => state.session);
-  console.log(session);
-
   // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
   const addQueryToConversation = useAppStore((state) => state.addQueryToConversation);
   const currentConversationId = useAppStore((state) => state.currentConversationId);
@@ -36,7 +33,7 @@ const ChatComponent: React.FC = () => {
   // Creates the auto scroll when the api responds
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to the bottom of the container with smooth animation when a new query is made to the api
+  // Scroll to the bottom of the container with smooth animation
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo({
@@ -44,7 +41,7 @@ const ChatComponent: React.FC = () => {
         behavior: "smooth",
       })
     }
-  }, [getValues("query")]);
+  });
 
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
@@ -73,8 +70,6 @@ const ChatComponent: React.FC = () => {
     getResponse({ query: previousQuery });
   }
 
-
-
   return (
     <div className="flex w-full flex-col h-full">
       {!isSidePanelOpen && (
@@ -83,7 +78,7 @@ const ChatComponent: React.FC = () => {
         </button>
       )}
 
-      <div className="h-full p-4 flex flex-col justify-end overflow-hidden ">
+      <div className="h-full p-4 flex flex-col justify-end overflow-hidden">
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-14rem)] ">
 
           { /* Initial greeting */}

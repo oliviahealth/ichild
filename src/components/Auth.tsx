@@ -9,6 +9,7 @@ const AuthComponent: React.FC = () => {
     const session = useAppStore((state) => state.session);
     const setSession = useAppStore((state) => state.setSession);
 
+    // Update the store's session object whenever the auth state is changed
     useEffect(() => {
         supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
@@ -18,13 +19,11 @@ const AuthComponent: React.FC = () => {
     if (!session) {
         return (
             <div className="w-full h-full flex justify-center items-center bg-neutral">
-                <div>
                     <Auth
                         supabaseClient={supabase}
                         appearance={{ theme: ThemeSupa }}
                         providers={["google"]}
                     />
-                </div>
             </div>
         );
     }
