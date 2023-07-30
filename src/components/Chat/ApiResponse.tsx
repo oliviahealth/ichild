@@ -51,7 +51,8 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                         <p className="mb-2">I've found {apiResponse.locations.length} location{apiResponse.locations.length >= 2 || apiResponse.locations.length === 0 ? "s" : ""} for you</p>
                     </ChatBubble>
 
-                    <div className="max-w-[29rem] h-60 p-3 bg-white rounded-xl">
+                
+                    <div className="max-w-[29rem] h-48 p-3 bg-white rounded-xl">
                         <InteractiveMap locations={apiResponse.locations} />
                     </div>
 
