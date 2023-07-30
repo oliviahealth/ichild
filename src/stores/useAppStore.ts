@@ -1,9 +1,13 @@
 import { create } from "zustand";
 import { v4 as uuid } from "uuid";
+import { Session } from "@supabase/supabase-js";
 
 import { IConversation, IAPIResponse } from "../utils/interfaces";
 
 interface AppState {
+    session: Session | null
+    setSession: (session: Session | null) => void
+
     isSidePanelOpen: boolean
     setisSidePanelOpen: (isSidePanelOpen: boolean) => void
 
@@ -29,6 +33,9 @@ interface AppState {
 }
 
 const useAppStore = create<AppState>()((set, get) => ({
+    session: null,
+    setSession: (session) => set(() => ({ session })),
+
     isSidePanelOpen: true,
     setisSidePanelOpen: (isSidePanelOpen) => set(() => ({ isSidePanelOpen })),
 

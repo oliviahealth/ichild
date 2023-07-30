@@ -19,6 +19,9 @@ const ChatComponent: React.FC = () => {
   const apiResponses = useAppStore((state) => state.apiResponses);
   const setApiResponses = useAppStore((state) => state.setApiResponses);
 
+  const session = useAppStore((state) => state.session);
+  console.log(session);
+
   // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
   const addQueryToConversation = useAppStore((state) => state.addQueryToConversation);
   const currentConversationId = useAppStore((state) => state.currentConversationId);
@@ -69,6 +72,8 @@ const ChatComponent: React.FC = () => {
     setValue("query", previousQuery);
     getResponse({ query: previousQuery });
   }
+
+
 
   return (
     <div className="flex w-full flex-col h-full">
