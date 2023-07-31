@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import TAMUIChildLogo from "../assets/logos/TAMU-ichild_logo.png";
 
@@ -6,9 +7,12 @@ const Navbar: React.FC = () => {
   return (
     <div className="navbar xl:container xl:px-2 mx-auto px-5">
       <div className="navbar-start w-full flex justify-between ">
-        <a href="https://www.tamu.edu" target="_blank">
+
+      { /* Make sure to use the <Link /> component provided by react-router to handle client side routing, or all app state will be reset */ }
+        <Link to="https://www.tamu.edu" target="_blank">
           <img src={TAMUIChildLogo} alt="Texas A&M University Logo" className="btn btn-ghost normal-case object-contain transform scale-150 hover:bg-transparent hover:text-current" />
-        </a>
+        </Link>
+        
         {/* <div className="dropdown dropdown-end opacity-100 z-10" >
           <label tabIndex={0} className="btn btn-ghost lg:hidden">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
