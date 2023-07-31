@@ -19,6 +19,8 @@ Pymongo (MongoDB integration), version 4.3.3
 Sentence_transformers (NLP engine), version 2.2.2
 PyTorch, version 1.13.1
 NumPy, version 1.24.2
+openai==0.27.6
+dotenv
 Coverage (for testing), version 7.2.5
 flask_unittest (for testing), version 0.1.3
 Functionality
