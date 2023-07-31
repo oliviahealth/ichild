@@ -7,6 +7,7 @@ import { BsTrash } from "react-icons/bs";
 import { TfiMenuAlt } from "react-icons/tfi";
 
 const SidePanel: React.FC = () => {
+
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
     const conversations = useAppStore((state) => state.conversations);

@@ -5,7 +5,7 @@ import useAppState from "./stores/useAppStore";
 import ChatComponent from "./components/Chat";
 import SidePanel from "./components/SidePanel";
 
-const Index: React.FC = () => {
+const App: React.FC = () => {
   const conversations = useAppState((state) => state.conversations);
   const isConversationOutdated = useAppState(
     (state) => state.isConversationOutdated
@@ -33,7 +33,7 @@ const Index: React.FC = () => {
     if(windowWidth < 1024) {
       setisSidePanelOpen(false);
     }
-  }, []);
+  }, [])
 
   return (
     <div className="flex h-full bg-opacity-80 bg-gray-100">
@@ -52,4 +52,4 @@ const Index: React.FC = () => {
   );
 };
 
-export default Index;
+export default App;
