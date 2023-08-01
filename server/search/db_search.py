@@ -1,10 +1,11 @@
 import os
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
 from flask_cors import CORS
 from dotenv import load_dotenv
 import ssl
-
-from routes import routes_bp
 
 load_dotenv()
 
@@ -21,5 +22,20 @@ else:
 app = Flask(__name__)
 cors = CORS(app)
 
-# Use a route controller to handle all incoming requests
-app.register_blueprint(routes_bp)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory' # Temorarily use sqlite
+app.config['SECRET_KEY'] = 'your_secret_key' # Change this
+
+db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+
+from search_routes import search_routes_bp
+from auth.auth_routes import auth_routes_bp
+
+# Use route controllers to handle all incoming requests
+app.register_blueprint(search_routes_bp)
+app.register_blueprint(auth_routes_bp)
+
+# Create tables
+with app.app_context():
+    db.create_all()

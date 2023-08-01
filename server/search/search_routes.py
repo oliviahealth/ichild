@@ -4,12 +4,12 @@ from sentence_transformers import SentenceTransformer
 import certifi
 import os
 
-from controller import core_search, grab_info, create_addresses, getLatLng
+from search_controller import core_search, grab_info, create_addresses, getLatLng
 
-routes_bp = Blueprint('routes', __name__)
+search_routes_bp = Blueprint('search_routes', __name__)
 
 # Executes when first user accesses site
-@routes_bp.before_app_first_request
+@search_routes_bp.before_app_first_request
 def connection_and_setup():
     MONGODB_HOST = os.getenv('MONGO_DB_URL')
     client = MongoClient(MONGODB_HOST, tlsCAFile=certifi.where())
@@ -31,12 +31,12 @@ def connection_and_setup():
     print("*******END PREPROCESS********")
 
 # Render json search page
-@routes_bp.route("/", methods=['POST', 'GET'])
+@search_routes_bp.route("/", methods=['POST', 'GET'])
 def msg():
     return render_template('index.html')
 
 # API route for ICHILD frontend
-@routes_bp.route("/formattedresults", methods=['POST', 'GET'])
+@search_routes_bp.route("/formattedresults", methods=['POST', 'GET'])
 def formatted_db_search():
     query = request.form['data']
 
@@ -84,7 +84,7 @@ def formatted_db_search():
 """
 
 # Avoid using this route. Use the /formattedresults route instead
-@routes_bp.route('/api/ollie/results', methods=['POST', 'GET'])
+@search_routes_bp.route('/api/ollie/results', methods=['POST', 'GET'])
 def db_search():
     query = request.form['data']
 
