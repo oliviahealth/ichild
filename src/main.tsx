@@ -3,8 +3,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import Layout from "./components/Layout";
+import AuthLayout from "./components/Auth/AuthLayout";
 import Index from ".";
-import Auth from "./Auth";
+import Signup from "./components/Auth/Signup";
+import Signin from "./components/Auth/Signin";
 
 import "./css/index.css";
 
@@ -31,7 +33,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <Route element={<Layout />}>
           <Route path="/" Component={Index} />
         </Route>
-        <Route path="/auth" Component={Auth} />
+        <Route element={<AuthLayout />}> 
+          <Route path="/signup" Component={Signup} />
+          <Route path="/signin" Component={Signin} />
+        </Route>
       </Routes>
     </BrowserRouter>
   </QueryClientProvider>

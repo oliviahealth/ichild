@@ -1,9 +1,12 @@
 import { create } from "zustand";
 import { v4 as uuid } from "uuid";
 
-import { IConversation, IAPIResponse } from "../utils/interfaces";
+import { IConversation, IAPIResponse, IUser } from "../utils/interfaces";
 
 interface AppState {
+    user: IUser | null
+    setUser: (user: IUser) => void
+    
     isSidePanelOpen: boolean
     setisSidePanelOpen: (isSidePanelOpen: boolean) => void
 
@@ -29,6 +32,9 @@ interface AppState {
 }
 
 const useAppStore = create<AppState>()((set, get) => ({
+    user: null,
+    setUser: (user) => set(() => ({ user })),
+
     isSidePanelOpen: true,
     setisSidePanelOpen: (isSidePanelOpen) => set(() => ({ isSidePanelOpen })),
 

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 
+import { ConversationSchema } from "./utils/interfaces";
 import useAppState from "./stores/useAppStore";
 
 import ChatComponent from "./components/Chat";
@@ -19,8 +20,9 @@ const Index: React.FC = () => {
     ev.preventDefault();
 
     // Filter out all of the conversations that are outdated (30+ days since the last time it was accessed)
+    // Make sure every conversation we're going to save is complient with the expected conversation schema
     const saveConversations = conversations.filter(
-      (conversation) => isConversationOutdated(conversation.id) === false
+      (conversation) => isConversationOutdated(conversation.id) === false && ConversationSchema.safeParse(conversation).success
     );
 
     localStorage.setItem("conversations", JSON.stringify(saveConversations));

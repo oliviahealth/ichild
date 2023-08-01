@@ -15,7 +15,7 @@ class User(UserMixin, db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-@auth_routes_bp.route("/register", methods=['POST'])
+@auth_routes_bp.route("/signup", methods=['POST'])
 def register():
     data = request.get_json()
     name = data.get('name')
@@ -42,7 +42,7 @@ def register():
 
     return jsonify({ 'id': new_user.id, "name": new_user.name, "email": new_user.email }), 201
 
-@auth_routes_bp.route('/login', methods=['POST'])
+@auth_routes_bp.route('/signin', methods=['POST'])
 def login():
     data = request.get_json()
     email = data.get('email')

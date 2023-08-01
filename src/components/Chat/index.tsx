@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 
 import useAppStore from "../../stores/useAppStore";
-import { IAPIResponse } from "../../utils/interfaces";
+import { APIResponseSchema, IAPIResponse } from "../../utils/interfaces";
 
 import { TfiMenuAlt } from "react-icons/tfi";
 
@@ -51,7 +51,12 @@ const ChatComponent: React.FC = () => {
     const formData = new FormData();
     formData.append("data", data.query);
 
-    const response: IAPIResponse = (await axios.post(import.meta.env.VITE_API_URL, formData, { headers: { "Content-Type": "multipart/form-data" } })).data
+    const response: IAPIResponse = ((await axios.post(`${import.meta.env.VITE_API_URL}/formattedresults`, formData, { headers: { "Content-Type": "multipart/form-data" } })).data)
+
+    // Parse the response and make sure it complies with the expected API Response
+    const isResponseValid = (await APIResponseSchema.safeParseAsync(response)).success;
+
+    if(!isResponseValid) alert('Something went wrong');
 
     setApiResponses([...apiResponses, response]);
 
