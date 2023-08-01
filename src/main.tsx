@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 import Layout from "./components/Layout";
 import Index from ".";
-import Auth from "./components/Auth";
+import Auth from "./Auth";
 
 import "./css/index.css";
 
@@ -30,8 +30,8 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             */ }
         <Route element={<Layout />}>
           <Route path="/" Component={Index} />
-          <Route path="/auth" Component={Auth} />
         </Route>
+        <Route path="/auth" Component={Auth} />
       </Routes>
     </BrowserRouter>
   </QueryClientProvider>
