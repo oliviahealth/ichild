@@ -2,14 +2,9 @@ from flask import Blueprint, request, jsonify
 from flask_login import UserMixin, login_user, login_required, logout_user
 
 from db_search import db, login_manager, bcrypt
+from db_models.UserModel import User
 
 auth_routes_bp = Blueprint('auth_routes', __name__)
-
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), nullable=False)
-    email = db.Column(db.String(), nullable=False, unique=True)
-    password = db.Column(db.String(), nullable=False)
     
 @login_manager.user_loader
 def load_user(user_id):
@@ -34,7 +29,7 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        login_user(new_user)
+        login_user(new_user, remember=True)
     except Exception as error:
         db.session.rollback()
         print(error)
@@ -54,7 +49,7 @@ def signin():
         return jsonify({ 'error': 'Invalid credentials' }), 401
     
     try:
-        login_user(user)
+        login_user(user, remember=True)
     except Exception as error:
         db.session.rollback()
         print(error)

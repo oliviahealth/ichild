@@ -14,6 +14,7 @@ Deployment
 	In order to host this application locally or on a server, the proper environment must first be set up. This can be accomplished by using pip installs (currently using Python v.3.9) after creating a python virtual environment (venv). 
 
 Necessary packages:
+psycopg2-binary
 bcrypt==4.0.1
 blinker==1.6.2
 certifi==2023.5.7

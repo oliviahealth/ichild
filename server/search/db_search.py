@@ -22,15 +22,15 @@ else:
 app = Flask(__name__)
 cors = CORS(app, supports_credentials=True)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory' # Temorarily use sqlite
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRESQL_CONNECTION_STRING')
 app.config['SECRET_KEY'] = 'your_secret_key' # Change this
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 
-from search_routes import search_routes_bp
-from auth.auth_routes import auth_routes_bp
+from routes.search_routes import search_routes_bp
+from routes.auth_routes import auth_routes_bp
 
 # Use route controllers to handle all incoming requests
 app.register_blueprint(search_routes_bp)
