@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_login import UserMixin, login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user
 
 from db_search import db, login_manager, bcrypt
 from db_models.UserModel import User

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import axios from "axios";
 
 import { ConversationSchema } from "./utils/interfaces";
 import useAppState from "./stores/useAppStore";
@@ -24,6 +25,10 @@ const Index: React.FC = () => {
     const saveConversations = conversations.filter(
       (conversation) => isConversationOutdated(conversation.id) === false && ConversationSchema.safeParse(conversation).success
     );
+
+    axios.post('http://localhost:5000/conversations', saveConversations, { withCredentials: true }).then((res) => console.log(res)).catch((error) => console.log(error));
+
+    console.log(saveConversations);
 
     localStorage.setItem("conversations", JSON.stringify(saveConversations));
   });

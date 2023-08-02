@@ -24,12 +24,13 @@ export const ConversationSchema = z.object({
     id: z.string(),
     created: z.date(),
     lastAccessed: z.date(),
-    responses: z.array(APIResponseSchema)
+    responses: z.array(APIResponseSchema),
+    userId: z.string()
 });
 export type IConversation = z.infer<typeof ConversationSchema>;
 
 export const UserSchema = z.object({
-    id: z.number().min(1),
+    id: z.string().uuid(),
     name: z.string(),
     email: z.string()
 });

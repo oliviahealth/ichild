@@ -65,6 +65,7 @@ const useAppStore = create<AppState>()((set, get) => ({
             created: new Date(),
             lastAccessed: new Date(),
             responses: [response],
+            userId: get().user!.id
         };
 
         return {

@@ -31,10 +31,12 @@ login_manager = LoginManager(app)
 
 from routes.search_routes import search_routes_bp
 from routes.auth_routes import auth_routes_bp
+from routes.conversation_routes import conversation_routes_bp
 
 # Use route controllers to handle all incoming requests
 app.register_blueprint(search_routes_bp)
 app.register_blueprint(auth_routes_bp)
+app.register_blueprint(conversation_routes_bp)
 
 # Create tables
 with app.app_context():

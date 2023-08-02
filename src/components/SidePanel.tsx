@@ -25,8 +25,6 @@ const SidePanel: React.FC = () => {
         deleteConversation(id);
     }
 
-    console.log(user);
-
     return (
         <>
             <input id="sidepanel" type="checkbox" className="drawer-toggle" />
