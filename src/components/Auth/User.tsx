@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import axios from "axios";
 
@@ -10,6 +10,7 @@ const User: React.FC = () => {
 
     const [error, setError] = useState<null | string>(null);
 
+    const user = useAppStore((state) => state.user);
     const setUser = useAppStore((state) => state.setUser);
 
     const { mutate: signoutUser, isLoading } = useMutation(async () => {
@@ -29,6 +30,12 @@ const User: React.FC = () => {
         evt.preventDefault();
 
         signoutUser();
+    }
+
+    if(!user) {
+        return <>
+            <Navigate to={"/signin"} replace={true} />
+        </>
     }
 
     return (

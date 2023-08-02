@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import useAppStore from "../stores/useAppStore";
 
@@ -7,6 +8,7 @@ import { BsTrash } from "react-icons/bs";
 import { TfiMenuAlt } from "react-icons/tfi";
 
 const SidePanel: React.FC = () => {
+    const user = useAppStore((state) => state.user);
 
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
@@ -22,6 +24,8 @@ const SidePanel: React.FC = () => {
 
         deleteConversation(id);
     }
+
+    console.log(user);
 
     return (
         <>
@@ -43,20 +47,30 @@ const SidePanel: React.FC = () => {
 
                     <p className="text-sm text-gray-500 font-medium my-4">Recent Activity</p>
 
-                    <div className="flex flex-col">
-                        {conversations.map((conversation, index) => (
-                            <div onClick={() => switchConversation(conversation.id)} key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversation.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
-                                <div className="flex items-center">
-                                    <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
-                                    <p className="ml-4">{conversation.title}</p>
-                                </div>
+                    {user ? (
+                        <div className="flex flex-col">
+                            {conversations.map((conversation, index) => (
+                                <div onClick={() => switchConversation(conversation.id)} key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversation.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                                    <div className="flex items-center">
+                                        <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
+                                        <p className="ml-4">{conversation.title}</p>
+                                    </div>
 
-                                <button onClick={(evt) => handleConversationDelete(evt, conversation.id)} className={`btn btn-ghost btn-sm ${!(conversation.id === currentConversationId) ? "hidden" : ""}`}>
-                                    <BsTrash className="text-lg" />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                                    <button onClick={(evt) => handleConversationDelete(evt, conversation.id)} className={`btn btn-ghost btn-sm ${!(conversation.id === currentConversationId) ? "hidden" : ""}`}>
+                                        <BsTrash className="text-lg" />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div>
+                            <p className="mb-4 text-sm text-gray-500">You must be signed in to see your conversation history</p>
+
+                            <Link to="/signin" className="btn btn-primary w-full btn-outline border-primary">
+                                Sign In
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </div>
         </>
