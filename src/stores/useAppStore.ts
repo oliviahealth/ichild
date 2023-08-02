@@ -5,7 +5,7 @@ import { IConversation, IAPIResponse, IUser } from "../utils/interfaces";
 
 interface AppState {
     user: IUser | null
-    setUser: (user: IUser) => void
+    setUser: (user: IUser | null) => void
     
     isSidePanelOpen: boolean
     setisSidePanelOpen: (isSidePanelOpen: boolean) => void

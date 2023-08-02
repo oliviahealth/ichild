@@ -27,7 +27,7 @@ const Signin: React.FC = () => {
 
     const { mutate: signinUser, isLoading } = useMutation(async (data: SigninFormData) => {
         try {
-            const user: IUser = await (await axios.post(`${import.meta.env.VITE_API_URL}/signin`, data)).data
+            const user: IUser = await (await axios.post(`${import.meta.env.VITE_API_URL}/signin`, data, { withCredentials: true })).data
 
             if(!(await UserSchema.safeParseAsync(user)).success) {
                 return alert("Something went wrong");

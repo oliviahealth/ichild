@@ -7,6 +7,7 @@ import AuthLayout from "./components/Auth/AuthLayout";
 import Index from ".";
 import Signup from "./components/Auth/Signup";
 import Signin from "./components/Auth/Signin";
+import User from "./components/Auth/User";
 
 import "./css/index.css";
 
@@ -36,6 +37,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <Route element={<AuthLayout />}> 
           <Route path="/signup" Component={Signup} />
           <Route path="/signin" Component={Signin} />
+          <Route path="/user" Component={User} />
         </Route>
       </Routes>
     </BrowserRouter>

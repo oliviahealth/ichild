@@ -16,7 +16,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 @auth_routes_bp.route("/signup", methods=['POST'])
-def register():
+def signup():
     data = request.get_json()
     name = data.get('name')
     email = data.get('email')
@@ -43,7 +43,7 @@ def register():
     return jsonify({ 'id': new_user.id, "name": new_user.name, "email": new_user.email }), 201
 
 @auth_routes_bp.route('/signin', methods=['POST'])
-def login():
+def signin():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
@@ -62,9 +62,9 @@ def login():
         
     return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email }), 200
     
-@auth_routes_bp.route('/logout', methods=['POST'])
+@auth_routes_bp.route('/signout', methods=['POST'])
 @login_required
-def logout():
+def signout():
     try:
         logout_user()
     except Exception as error:

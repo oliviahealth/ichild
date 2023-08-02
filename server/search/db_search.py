@@ -20,7 +20,7 @@ else:
 
 #Initialization
 app = Flask(__name__)
-cors = CORS(app)
+cors = CORS(app, supports_credentials=True)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory' # Temorarily use sqlite
 app.config['SECRET_KEY'] = 'your_secret_key' # Change this
