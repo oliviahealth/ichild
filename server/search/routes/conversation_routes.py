@@ -8,8 +8,12 @@ conversation_routes_bp = Blueprint('conversation_routes', __name__)
 
 @login_required
 @conversation_routes_bp.route('/conversations', methods=['POST'])
-def conversations():
+def post_conversations():
+    user_id = None
+
     data = request.get_json()
+
+    print(data)
 
     for conversation in data:
         created = conversation['created']
@@ -24,17 +28,29 @@ def conversations():
         if(existing_conversation):
             existing_conversation.lastAccessed = lastAccessed
             existing_conversation.responses = responses
-            
-            return jsonify({ 'id': id, 'title': title, 'created': created, 'lastAccessed': lastAccessed, 'responses': responses, 'userId': user_id })
-
-        try:
-            new_conversation = Conversation(id=id, title=title, created=created, lastAccessed=lastAccessed, responses=responses, user_id=user_id)
-
-            db.session.add(new_conversation)
             db.session.commit()
-        except Exception as error:
-            db.session.rollback()
-            print(error)
-            return jsonify({ 'error': 'Unexpected error' }), 500
+        else:
+            try:
+                new_conversation = Conversation(id=id, title=title, created=created, lastAccessed=lastAccessed, responses=responses, user_id=user_id)
 
-    return jsonify({ 'message' : 'success' })
+                db.session.add(new_conversation)
+                db.session.commit()
+            except Exception as error:
+                db.session.rollback()
+                print(error)
+                return jsonify({ 'error': 'Unexpected error' }), 500
+            
+    return get_conversations()
+
+@conversation_routes_bp.route('/conversations', methods=['GET'])
+def get_conversations():
+    user_id = request.args.get('userId')
+
+    try:
+        user_conversations = Conversation.query.filter_by(user_id=user_id).all()
+    except Exception as error:
+        db.session.rollback()
+        print(error)
+        return jsonify({ 'error': 'Unexpected error' }), 500
+
+    return jsonify({ 'conversations' : [{ 'id': conversation.id, 'title': conversation.title, 'created': conversation.created, 'lastAccessed': conversation.lastAccessed, 'responses': conversation.responses, 'userId': user_id } for conversation in user_conversations] })

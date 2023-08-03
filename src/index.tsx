@@ -1,14 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import { ConversationSchema } from "./utils/interfaces";
+import { ConversationSchema, IConversation } from "./utils/interfaces";
 import useAppState from "./stores/useAppStore";
 
 import ChatComponent from "./components/Chat";
 import SidePanel from "./components/SidePanel";
 
 const Index: React.FC = () => {
+  const [unloadFired, setUnloadFired] = useState(false);
+
+  const user = useAppState((state) => state.user);
+
   const conversations = useAppState((state) => state.conversations);
+  const setConversations = useAppState((state) => state.setConversations);
   const isConversationOutdated = useAppState(
     (state) => state.isConversationOutdated
   );
@@ -18,6 +23,8 @@ const Index: React.FC = () => {
 
   // Save the updated conversations to localStorage on unmount
   window.addEventListener("beforeunload", (ev) => {
+    console.log("unload")
+
     ev.preventDefault();
 
     // Filter out all of the conversations that are outdated (30+ days since the last time it was accessed)
@@ -26,11 +33,10 @@ const Index: React.FC = () => {
       (conversation) => isConversationOutdated(conversation.id) === false && ConversationSchema.safeParse(conversation).success
     );
 
-    axios.post('http://localhost:5000/conversations', saveConversations, { withCredentials: true }).then((res) => console.log(res)).catch((error) => console.log(error));
-
-    console.log(saveConversations);
-
-    localStorage.setItem("conversations", JSON.stringify(saveConversations));
+    if(user && !unloadFired) {
+      // Save conversation history to database
+      axios.post(`${import.meta.env.VITE_API_URL}/conversations`, saveConversations, { withCredentials: true }).then((res) => setUnloadFired(true)).catch((error) => console.log(error));
+    }
   });
 
   //Set the sidepanel to be closed by default if the user is on a small screen
@@ -40,7 +46,26 @@ const Index: React.FC = () => {
     if(windowWidth < 1024) {
       setisSidePanelOpen(false);
     }
-  }, [])
+  }, []);
+
+  // Fetch past conversations from database
+  useEffect(() => {
+    const getConversations = async() => {
+      try {
+        const { conversations } = (await axios.get(`${import.meta.env.VITE_API_URL}/conversations`, { params: { 'userId': user?.id }, withCredentials: true })).data
+
+        conversations.forEach((conversation: IConversation) => ConversationSchema.parse(conversation))
+
+        setConversations(conversations);
+
+      } catch(err: any) {
+        const error = err ?? "Unexpected error";
+        alert(error)
+      }
+    }
+
+    if(user) getConversations()
+  }, [user])
 
   return (
     <div className="flex h-full bg-opacity-80 bg-gray-100">

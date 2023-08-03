@@ -20,6 +20,7 @@ interface AppState {
        When the user exists the app, we hold this conversation in local storage memory
    */
     conversations: IConversation[]
+    setConversations: (conversations: IConversation[]) => void
     addQueryToConversation: (id: string, response: IAPIResponse) => void,
     switchConversation: (id: string) => void
     createNewConversation: () => void
@@ -42,6 +43,7 @@ const useAppStore = create<AppState>()((set, get) => ({
     setApiResponses: (apiResponses) => set(() => ({ apiResponses: [...apiResponses] })),
 
     conversations: JSON.parse(localStorage.getItem("conversations") ?? "[]"),
+    setConversations: (conversations) => set(() => ({ conversations })),
     addQueryToConversation: (id, response) => set((state) => {
         const conversationIndex = state.conversations.findIndex(conversation => conversation.id === id);
     
@@ -62,8 +64,8 @@ const useAppStore = create<AppState>()((set, get) => ({
         const newConversation = {
             title: response.userQuery,
             id,
-            created: new Date(),
-            lastAccessed: new Date(),
+            created: new Date().toISOString(),
+            lastAccessed: new Date().toISOString(),
             responses: [response],
             userId: get().user!.id
         };
@@ -76,7 +78,7 @@ const useAppStore = create<AppState>()((set, get) => ({
     switchConversation: (id) => set((state) => {
         const conversation = state.conversations.find(elm => elm.id === id)!;
 
-        const updatedConversation = state.conversations.map((conversation) => conversation.id === id ? { ...conversation, lastAccessed: new Date() } : conversation)
+        const updatedConversation = state.conversations.map((conversation) => conversation.id === id ? { ...conversation, lastAccessed: new Date().toISOString() } : conversation)
 
         return { apiResponses: conversation.responses, currentConversationId: id, conversations: updatedConversation }
     }),

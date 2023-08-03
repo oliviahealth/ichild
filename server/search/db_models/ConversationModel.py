@@ -1,32 +1,28 @@
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.types import TypeDecorator, JSON, ARRAY
+from sqlalchemy.types import TypeDecorator, JSON, ARRAY, Text
 import json
 import uuid
 
 from db_search import db
 
 class ApiResponseType(TypeDecorator):
-    impl = JSON
+    impl = Text
 
-    def process_bind_params(self, value, dialect):
+    def process_bind_param(self, value, dialect):
         # Called when Python data is bound to the database
         # Convert the ApiResponse object to JSON string for storage
         if value is not None:
             return json.dumps({
-                'locationIds': value['locations'],
+                'locations': value['locations'],
                 'userQuery': value['userQuery']
             })
         return None
     
     def process_result_value(self, value, dialect):
         # Called when data is fetched from the database
-        # Convert the stored JSON strign back to an ApiResponse object
+        # Convert the stored JSON dict back to an ApiResponse object
         if value is not None:
-            location_data = json.loads(value)
-            return {
-                'locationIds': location_data['locationIds'],
-                'userQuery': location_data['userQuery']
-            }
+            return json.loads(value)
         return None
     
 

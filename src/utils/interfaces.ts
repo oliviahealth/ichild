@@ -7,8 +7,8 @@ export const LocationSchema = z.object({
     description: z.string(),
     name: z.string(),
     phone: z.string(),
-    latitude: z.number().optional(),
-    longitude: z.number().optional(),
+    latitude: z.number(),
+    longitude: z.number(),
 });
 export type ILocation = z.infer<typeof LocationSchema>
 
@@ -22,8 +22,8 @@ export type IAPIResponse = z.infer<typeof APIResponseSchema>;
 export const ConversationSchema = z.object({
     title: z.string(),
     id: z.string(),
-    created: z.date(),
-    lastAccessed: z.date(),
+    created: z.string().datetime(),
+    lastAccessed: z.string().datetime(),
     responses: z.array(APIResponseSchema),
     userId: z.string()
 });

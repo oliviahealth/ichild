@@ -20,7 +20,7 @@ else:
 
 #Initialization
 app = Flask(__name__)
-cors = CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRESQL_CONNECTION_STRING')
 app.config['SECRET_KEY'] = 'your_secret_key' # Change this
