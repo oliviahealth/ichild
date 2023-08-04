@@ -21,7 +21,7 @@ interface AppState {
    */
     conversations: IConversation[]
     setConversations: (conversations: IConversation[]) => void
-    addQueryToConversation: (id: string, response: IAPIResponse) => void,
+    addApiResponseToConversation: (id: string, response: IAPIResponse) => void,
     switchConversation: (id: string) => void
     createNewConversation: () => void
     removeConversation: (id: string) => void,
@@ -40,19 +40,19 @@ const useAppStore = create<AppState>()((set, get) => ({
     apiResponses: [],
     setApiResponses: (apiResponses) => set(() => ({ apiResponses: [...apiResponses] })),
 
-    conversations: JSON.parse(localStorage.getItem("conversations") ?? "[]"),
+    conversations: JSON.parse("[]"),
     setConversations: (conversations) => set(() => ({ conversations })),
-    addQueryToConversation: (id, response) => set((state) => {
-        const conversationIndex = state.conversations.findIndex(conversation => conversation.id === id);
+    addApiResponseToConversation: (id, response) => set((state) => {
+        const conversation = state.conversations.find(conversation => conversation.id === id);
     
-        if (conversationIndex !== -1) {
+        if (conversation) {
             // Conversation exists
             const conversations = [...state.conversations];
-            const updatedConversation = {...conversations[conversationIndex]};
+            const updatedConversation = {...conversation};
             updatedConversation.responses.push(response);
             
             // Move the updated conversation to the top of the conversations array
-            conversations.splice(conversationIndex, 1);
+            conversations.splice(state.conversations.indexOf(conversation), 1);
             conversations.unshift(updatedConversation);
     
             return { conversations };
@@ -63,7 +63,7 @@ const useAppStore = create<AppState>()((set, get) => ({
             title: response.userQuery,
             id,
             responses: [response],
-            userId: get().user!.id
+            userId: get().user?.id
         };
 
         return {
@@ -76,11 +76,7 @@ const useAppStore = create<AppState>()((set, get) => ({
 
         return { apiResponses: conversation.responses, currentConversationId: id }
     }),
-    createNewConversation: () => set(() => {
-        
-        
-        return { apiResponses: [], currentConversationId: uuid() }
-    }),
+    createNewConversation: () => set(() => ({ apiResponses: [], currentConversationId: uuid() })),
     removeConversation: (id) => set((state) => {
         const newConversations = state.conversations.filter(conversation => conversation.id !== id);
 

@@ -22,6 +22,6 @@ def add_response():
     except Exception as error:
         db.session.rollback()
         print(error)
-        return jsonify({ 'erorr': 'Unexpected error' }), 500
+        return jsonify({ 'error': 'Unexpected error' }), 500
     
     return jsonify({ 'response': { "id": new_response.id, "locations": new_response.locations, "userQuery": new_response.user_query, "conversation_id": new_response.conversation_id } }), 201

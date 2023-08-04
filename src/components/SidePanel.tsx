@@ -23,16 +23,14 @@ const SidePanel: React.FC = () => {
 
     const { mutate: deleteConversation , isLoading } = useMutation(async (conversationId: string) => {
         try {
-            const res = await axios.delete(`${import.meta.env.VITE_API_URL}/conversations`, { params: { id: conversationId }, withCredentials: true })
-
-            if(res.status === 200) {
-                removeConversation(conversationId);
-            }    
+            await axios.delete(`${import.meta.env.VITE_API_URL}/conversations`, { params: { id: conversationId }, withCredentials: true })
         } catch (err: any) {
             const { error } = err.response.data || "Something went wrong!"
             alert(error)
         }
-    })
+    }, { onSuccess: (_error, conversationId, _context) => {
+        removeConversation(conversationId);
+    } })
 
     return (
         <>

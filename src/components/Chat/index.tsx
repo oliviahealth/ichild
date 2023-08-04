@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { v4 as uuid } from "uuid";
 import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
@@ -15,36 +15,36 @@ import ChatBubble from "./ChatBubble";
 import ApiResponse from "./ApiResponse";
 
 const ChatComponent: React.FC = () => {
-  // Use Zustand to manage app state such as the questions the user asks and the response from the api
+  // Use Zustand to manage app state such as track API responses, conversation history and if the sidepanel is open
   // https://github.com/pmndrs/zustand
-  const apiResponses = useAppStore((state) => state.apiResponses);
-  const setApiResponses = useAppStore((state) => state.setApiResponses);
-
-  // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
-  const addQueryToConversation = useAppStore((state) => state.addQueryToConversation);
-  const currentConversationId = useAppStore((state) => state.currentConversationId);
-  const setCurrentConversationId = useAppStore((state) => state.setCurrentConversationId);
-
-  const user = useAppStore((state) => state.user);
-
-  const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
-  const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
+  const {
+    apiResponses,
+    setApiResponses,
+    addApiResponseToConversation, // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
+    currentConversationId,
+    setCurrentConversationId,
+    isSidePanelOpen,
+    setisSidePanelOpen,
+    user
+  } = useAppStore();
 
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
   const { register, handleSubmit, reset, getValues, setValue } = useForm();
 
-  // Creates the auto scroll when the api responds
   const containerRef = useRef<HTMLDivElement>(null);
-
+  
   // Scroll to the bottom of the container with smooth animation
-  useEffect(() => {
+  const scrollToBottom = useCallback(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo({
         top: containerRef.current.scrollHeight,
-        behavior: "smooth",
-      })
+        behavior: 'smooth',
+      });
     }
+  }, []);
+  useEffect(() => {
+    scrollToBottom();
   });
 
   // Call the backend with the user entered query to get a response
@@ -65,19 +65,18 @@ const ChatComponent: React.FC = () => {
 
     return response
   }, {
-    onSuccess: async (response: IAPIResponse | undefined) => {
+    onSuccess: async (response: IAPIResponse | undefined) => {    
       if (response) {
-        setApiResponses([...apiResponses, response]);
-
         // If a user is logged in, save their conversation
         if (user) {
           await postConversation(currentConversationId!, response.userQuery, user.id)
           await postResponse(response, currentConversationId!)
         }
 
-        addQueryToConversation(currentConversationId!, response)
+        addApiResponseToConversation(currentConversationId!, response)
+        setApiResponses([...apiResponses, response]);
 
-        reset();
+        reset()
       }
     }
   });

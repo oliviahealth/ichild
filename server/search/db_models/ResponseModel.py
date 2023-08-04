@@ -1,5 +1,5 @@
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.types import TypeDecorator, JSON, ARRAY, Text
+from sqlalchemy.types import TypeDecorator, ARRAY, Text
 import json
 import uuid
 

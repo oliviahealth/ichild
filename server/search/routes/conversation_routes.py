@@ -15,6 +15,10 @@ def add_conversations():
     title = data['title']
     user_id = data['userId']
 
+    existing_conversation = Conversation.query.filter_by(id=id).first()
+    if(existing_conversation):
+        return jsonify({ 'id': existing_conversation.id, 'title': existing_conversation.title, 'userId': existing_conversation.user_id }), 201
+
     try:
         new_conversation = Conversation(id=id, title=title, user_id=user_id)
 

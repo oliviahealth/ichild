@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { IAPIResponse, ILocation } from "../../utils/interfaces";
+import { IAPIResponse } from "../../utils/interfaces";
 
 import { HiOutlineArrowPath } from "react-icons/hi2";
 import { MdOutlineOpenInNew } from "react-icons/md";
@@ -27,10 +27,6 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
         evt.stopPropagation();
 
         navigator.clipboard.writeText(text);
-    }
-
-    const changeFocusedLocation = (newLocation: ILocation) => {
-        setFocusedLocation(newLocation);
     }
 
     return (
@@ -79,7 +75,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                         <div>
                             {apiResponse.locations.map((location, index) => {
                                 return (
-                                    <div key={index} onClick={() => changeFocusedLocation(location)} className="cursor-pointer">
+                                    <div key={index} onClick={() => setFocusedLocation(location)} className="cursor-pointer">
                                         <ChatBubble isResponse={true} isFocused={location === focusedLocation}>
                                             <div className="flex justify-between items-center p-1 sm:w-[27rem]">
                                                 <div className="flex items-center gap-6 w-full">

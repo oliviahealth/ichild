@@ -16,35 +16,40 @@ const Auth: React.FC = () => {
 
     const setUser = useAppStore((state) => state.setUser);
 
+    // Use zod to validate the form before submission
+    // https://zod.dev/
     const signupSchema = z.object({
         name: z.string().min(1, 'Name is required'),
-        email: z.string().email().min(1, 'Email is required'),
+        email: z.string().email().min(1, 'Email is required'), // Example: If the user does not enter email and tries to submit the formm, they'll get an error message of 'Email is required'
         password: z.string().min(1, 'Password is required'),
         confirmPassword: z.string().min(1, 'Confirm password is required')
     }).refine((data) => data.password === data.confirmPassword, {
         path: ['confirmPassword'],
         message: 'Passwords must match'
     });
-    type SignupFormData = z.infer<typeof signupSchema>;
+    type SignupFormData = z.infer<typeof signupSchema>; // Create the type from Zod inference
 
+    // Use React-Hook-Form to handle form state and submission
+    // https://www.react-hook-form.com/
     let { register: registerSignup, handleSubmit: handleSignup, formState: { errors: signupErrors } } = useForm<SignupFormData>({ resolver: zodResolver(signupSchema) });
 
     const { mutate: signupUser, isLoading } = useMutation(async (data: SignupFormData) => {
         try {
             const user: IUser = await (await axios.post(`${import.meta.env.VITE_API_URL}/signup`, data, { withCredentials: true })).data
 
-            if (!(await UserSchema.safeParseAsync(user)).success) {
-                return alert("Something went wrong!");
-            }
+            UserSchema.parseAsync(user)
 
-            setUser(user);
-
-            return navigate('/')
+            return user
         } catch (err: any) {
             const { error } = err.response.data || "Something went wrong!"
             setError(error);
         }
-    })
+    }, { onSuccess: (user) => {
+            if(user) {
+                setUser(user);
+                return navigate("/")
+            }
+    } })
 
     return (
         <>

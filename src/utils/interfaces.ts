@@ -23,7 +23,7 @@ export const ConversationSchema = z.object({
     title: z.string(),
     id: z.string(),
     responses: z.array(APIResponseSchema),
-    userId: z.string()
+    userId: z.string().optional()
 });
 export type IConversation = z.infer<typeof ConversationSchema>;
 
