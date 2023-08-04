@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 
 import { ConversationSchema, IConversation } from "./utils/interfaces";
@@ -8,34 +8,12 @@ import ChatComponent from "./components/Chat";
 import SidePanel from "./components/SidePanel";
 
 const Index: React.FC = () => {
-  const [unloadFired, setUnloadFired] = useState(false);
-
   const user = useAppState((state) => state.user);
 
-  const conversations = useAppState((state) => state.conversations);
   const setConversations = useAppState((state) => state.setConversations);
-  const isConversationOutdated = useAppState(
-    (state) => state.isConversationOutdated
-  );
-
+  
   const isSidePanelOpen = useAppState((state) => state.isSidePanelOpen);
   const setisSidePanelOpen = useAppState((state) => state.setisSidePanelOpen);
-
-  // Save the updated conversations to localStorage on unmount
-  window.addEventListener("beforeunload", (ev) => {
-    ev.preventDefault();
-
-    // Filter out all of the conversations that are outdated (30+ days since the last time it was accessed)
-    // Make sure every conversation we're going to save is complient with the expected conversation schema
-    const saveConversations = conversations.filter(
-      (conversation) => isConversationOutdated(conversation.id) === false && ConversationSchema.safeParse(conversation).success
-    );
-
-    if(user && !unloadFired) {
-      // Save conversation history to database
-      axios.post(`${import.meta.env.VITE_API_URL}/conversations`, saveConversations, { withCredentials: true }).then((res) => setUnloadFired(true)).catch((error) => console.log(error));
-    }
-  });
 
   //Set the sidepanel to be closed by default if the user is on a small screen
   useEffect(() => {
@@ -50,8 +28,8 @@ const Index: React.FC = () => {
   useEffect(() => {
     const getConversations = async() => {
       try {
-        const { conversations } = (await axios.get(`${import.meta.env.VITE_API_URL}/conversations`, { params: { 'userId': user?.id }, withCredentials: true })).data
-
+        const conversations = (await axios.get(`${import.meta.env.VITE_API_URL}/conversations`, { params: { 'userId': user?.id }, withCredentials: true })).data
+        
         conversations.forEach((conversation: IConversation) => ConversationSchema.parse(conversation))
 
         setConversations(conversations);

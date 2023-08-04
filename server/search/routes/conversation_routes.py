@@ -3,7 +3,6 @@ from flask_login import login_required
 
 from db_search import db
 from db_models.ConversationModel import Conversation
-from db_models.ResponseModel import Response
 
 conversation_routes_bp = Blueprint('conversation_routes', __name__)
 
@@ -28,7 +27,7 @@ def add_conversations():
         print(error)
         return jsonify({ 'error': 'Unexpected error' }), 500
             
-    return jsonify({ 'message': "Conversation created successfully" }), 201
+    return jsonify({ 'id': new_conversation.id, 'title': new_conversation.title, 'userId': new_conversation.user_id }), 201
 
 @login_required
 @conversation_routes_bp.route('/conversations', methods=['GET'])
@@ -41,8 +40,26 @@ def get_conversations():
         db.session.rollback()
         print(error)
         return jsonify({ 'error': 'Unexpected error' }), 500
+    
+    data = [
+        {
+            'id': conversation.id,
+            'title': conversation.title,
+            'responses': [
+                {
+                    'id': response.id,
+                    'locations': response.locations,
+                    'conversationId': response.conversation_id,
+                    'userQuery': response.user_query
+                }
+                for response in conversation.responses
+            ],
+            'userId': user_id
+        }
+        for conversation in user_conversations
+    ]
 
-    return jsonify({ 'conversations' : [{ 'id': conversation.id, 'title': conversation.title, 'responses': [{ 'id': response.id, 'locations': response.locations, 'conversationId': response.conversation_id, 'userQuery': response.user_query } for response in conversation.responses], 'userId': user_id } for conversation in user_conversations] })
+    return jsonify(data)
 
 @login_required
 @conversation_routes_bp.route("/conversations", methods=['DELETE'])
@@ -59,26 +76,7 @@ def delete_conversations():
         print(error)
         return jsonify({ 'error': 'Unexpected error' }), 500
     
-    return jsonify({ 'message': 'Conversation deleted successfully' })
-
-@conversation_routes_bp.route('/response', methods=['POST'])
-def add_response():
-    data = request.get_json()
-    locations = data.get('locations')
-    user_query = data.get('userQuery')
-    conversation_id = data.get('conversationId')
-
-    try:
-        new_response = Response(locations=locations, user_query=user_query, conversation_id=conversation_id)
-
-        db.session.add(new_response)
-        db.session.commit()
-    except Exception as error:
-        db.session.rollback()
-        print(error)
-        return jsonify({ 'erorr': 'Unexpected error' }), 500
-    
-    return jsonify({ 'response': { "id": new_response.id, "locations": new_response.locations, "userQuery": new_response.user_query, "conversation_id": new_response.conversation_id } }), 201
+    return jsonify({ 'success': 'Conversation deleted successfully' })
         
 
 

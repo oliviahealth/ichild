@@ -67,4 +67,4 @@ def signout():
         print(error)
         return jsonify({ 'error': 'Unexpected error' }), 500
 
-    return jsonify({ 'message' : 'User logged out successfully' }), 200
+    return jsonify({ 'success' : 'User logged out successfully' }), 200

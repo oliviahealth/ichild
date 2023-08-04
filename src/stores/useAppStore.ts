@@ -26,10 +26,8 @@ interface AppState {
     createNewConversation: () => void
     removeConversation: (id: string) => void,
     
-    // Determine if a conversation is outdated. A conversation is considered outdated if the last time it was accessed is 30+ days ago
-    isConversationOutdated: (id: string) => boolean,
-
     currentConversationId: string | null,
+    setCurrentConversationId: (conversationId: string) => void
 }
 
 const useAppStore = create<AppState>()((set, get) => ({
@@ -64,8 +62,6 @@ const useAppStore = create<AppState>()((set, get) => ({
         const newConversation = {
             title: response.userQuery,
             id,
-            created: new Date().toISOString(),
-            lastAccessed: new Date().toISOString(),
             responses: [response],
             userId: get().user!.id
         };
@@ -78,11 +74,13 @@ const useAppStore = create<AppState>()((set, get) => ({
     switchConversation: (id) => set((state) => {
         const conversation = state.conversations.find(elm => elm.id === id)!;
 
-        const updatedConversation = state.conversations.map((conversation) => conversation.id === id ? { ...conversation, lastAccessed: new Date().toISOString() } : conversation)
-
-        return { apiResponses: conversation.responses, currentConversationId: id, conversations: updatedConversation }
+        return { apiResponses: conversation.responses, currentConversationId: id }
     }),
-    createNewConversation: () => set(() => ({ apiResponses: [], currentConversationId: uuid() })),
+    createNewConversation: () => set(() => {
+        
+        
+        return { apiResponses: [], currentConversationId: uuid() }
+    }),
     removeConversation: (id) => set((state) => {
         const newConversations = state.conversations.filter(conversation => conversation.id !== id);
 
@@ -96,25 +94,9 @@ const useAppStore = create<AppState>()((set, get) => ({
 
         return { conversations: newConversations, apiResponses: newCurrentConversation.responses, currentConversationId: newCurrentConversation.id };
     }),
-    isConversationOutdated: (id) => {
-        const conversation = get().conversations.find(elm => elm.id === id)!;
-
-        const lastAccessedDate = new Date(conversation.lastAccessed);
-        const currentDate = new Date();
-
-        // Calculate the difference in milliseconds between the current date and the last accessed date
-        const timeDifference = currentDate.getTime() - lastAccessedDate.getTime();
-
-        // Calculate the number of days
-        const daysDifference = timeDifference / (1000 * 3600 * 24);
-
-        // Conversation is outdated if it was last accessed over 30 days ago
-        if(daysDifference > 30) return true
-
-        return false
-    },
-
+    
     currentConversationId: null,
+    setCurrentConversationId: (currentConversationId => set({ currentConversationId }))
 }));
 
 export default useAppStore;

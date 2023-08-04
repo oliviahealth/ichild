@@ -22,6 +22,9 @@ const ChatComponent: React.FC = () => {
   // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
   const addQueryToConversation = useAppStore((state) => state.addQueryToConversation);
   const currentConversationId = useAppStore((state) => state.currentConversationId);
+  const setCurrentConversationId = useAppStore((state) => state.setCurrentConversationId);
+
+  const user = useAppStore((state) => state.user);
 
   const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
   const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
@@ -57,12 +60,18 @@ const ChatComponent: React.FC = () => {
     const isResponseValid = (await APIResponseSchema.safeParseAsync(response)).success;
 
     if(!isResponseValid) alert('Something went wrong');
-
+    
     setApiResponses([...apiResponses, response]);
 
+    const conversationId = currentConversationId ?? uuid()
+    setCurrentConversationId(conversationId)
+
+    await axios.post(`${import.meta.env.VITE_API_URL}/conversations`, { id: conversationId, title: response.userQuery, userId: user?.id })
+    await axios.post(`${import.meta.env.VITE_API_URL}/response`, {...response, conversationId: conversationId})
+  
     // Add the query and apiResponse object to the conversations array
     // Use the current conversation id if a question has been asked, or if its a new conversation, generate a UUID
-    addQueryToConversation(currentConversationId ?? uuid(), response)
+    addQueryToConversation(currentConversationId!, response)
 
     // reset the value of the input field
     reset();

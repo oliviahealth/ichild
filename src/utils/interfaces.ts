@@ -22,8 +22,6 @@ export type IAPIResponse = z.infer<typeof APIResponseSchema>;
 export const ConversationSchema = z.object({
     title: z.string(),
     id: z.string(),
-    created: z.string().datetime(),
-    lastAccessed: z.string().datetime(),
     responses: z.array(APIResponseSchema),
     userId: z.string()
 });
