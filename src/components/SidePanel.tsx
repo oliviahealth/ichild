@@ -1,5 +1,7 @@
 import React from "react";
+import { useMutation } from "react-query";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 import useAppStore from "../stores/useAppStore";
 
@@ -17,13 +19,20 @@ const SidePanel: React.FC = () => {
     const currentConversationId = useAppStore((state) => state.currentConversationId);
     const switchConversation = useAppStore((state) => state.switchConversation);
     const createNewConversaion = useAppStore((state) => state.createNewConversation);
-    const deleteConversation = useAppStore((state) => state.deleteConversation);
+    const removeConversation = useAppStore((state) => state.removeConversation);
 
-    const handleConversationDelete = (evt: React.MouseEvent, id: string) => {
-        evt.stopPropagation();
+    const { mutate: deleteConversation , isLoading } = useMutation(async (conversationId: string) => {
+        try {
+            const res = await axios.delete(`${import.meta.env.VITE_API_URL}/conversations`, { params: { id: conversationId }, withCredentials: true })
 
-        deleteConversation(id);
-    }
+            if(res.status === 200) {
+                removeConversation(conversationId);
+            }    
+        } catch (err: any) {
+            const { error } = err.response.data || "Something went wrong!"
+            alert(error)
+        }
+    })
 
     return (
         <>
@@ -54,8 +63,8 @@ const SidePanel: React.FC = () => {
                                         <p className="ml-4">{conversation.title}</p>
                                     </div>
 
-                                    <button onClick={(evt) => handleConversationDelete(evt, conversation.id)} className={`btn btn-ghost btn-sm ${!(conversation.id === currentConversationId) ? "hidden" : ""}`}>
-                                        <BsTrash className="text-lg" />
+                                    <button onClick={() => deleteConversation(conversation.id)} className={`btn btn-ghost btn-sm ${!(conversation.id === currentConversationId) ? "hidden" : ""}`}>
+                                        { isLoading ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-lg" />) } 
                                     </button>
                                 </div>
                             ))}

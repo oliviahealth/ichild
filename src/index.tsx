@@ -23,8 +23,6 @@ const Index: React.FC = () => {
 
   // Save the updated conversations to localStorage on unmount
   window.addEventListener("beforeunload", (ev) => {
-    console.log("unload")
-
     ev.preventDefault();
 
     // Filter out all of the conversations that are outdated (30+ days since the last time it was accessed)
@@ -59,7 +57,7 @@ const Index: React.FC = () => {
         setConversations(conversations);
 
       } catch(err: any) {
-        const error = err ?? "Unexpected error";
+        const error = err || "Unexpected error";
         alert(error)
       }
     }

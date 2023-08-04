@@ -8,7 +8,7 @@ auth_routes_bp = Blueprint('auth_routes', __name__)
     
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get(str(user_id))
 
 @auth_routes_bp.route("/signup", methods=['POST'])
 def signup():

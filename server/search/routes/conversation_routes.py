@@ -9,11 +9,7 @@ conversation_routes_bp = Blueprint('conversation_routes', __name__)
 @login_required
 @conversation_routes_bp.route('/conversations', methods=['POST'])
 def post_conversations():
-    user_id = None
-
     data = request.get_json()
-
-    print(data)
 
     for conversation in data:
         created = conversation['created']
@@ -42,15 +38,33 @@ def post_conversations():
             
     return get_conversations()
 
+@login_required
 @conversation_routes_bp.route('/conversations', methods=['GET'])
 def get_conversations():
     user_id = request.args.get('userId')
 
     try:
-        user_conversations = Conversation.query.filter_by(user_id=user_id).all()
+        user_conversations = Conversation.query.filter_by(user_id=user_id).order_by(Conversation.lastAccessed.desc()).all()
     except Exception as error:
         db.session.rollback()
         print(error)
         return jsonify({ 'error': 'Unexpected error' }), 500
 
     return jsonify({ 'conversations' : [{ 'id': conversation.id, 'title': conversation.title, 'created': conversation.created, 'lastAccessed': conversation.lastAccessed, 'responses': conversation.responses, 'userId': user_id } for conversation in user_conversations] })
+
+@login_required
+@conversation_routes_bp.route("/conversations", methods=['DELETE'])
+def delete_conversations():
+    conversation_id = request.args.get('id')
+
+    try:
+        conversation_to_delete = Conversation.query.get(conversation_id)
+        db.session.delete(conversation_to_delete)
+        
+        db.session.commit()
+    except Exception as error:
+        db.session.rollback()
+        print(error)
+        return jsonify({ 'error': 'Unexpected error' }), 500
+    
+    return jsonify({ 'message': 'Conversation deleted successfully' })

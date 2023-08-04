@@ -24,7 +24,7 @@ interface AppState {
     addQueryToConversation: (id: string, response: IAPIResponse) => void,
     switchConversation: (id: string) => void
     createNewConversation: () => void
-    deleteConversation: (id: string) => void,
+    removeConversation: (id: string) => void,
     
     // Determine if a conversation is outdated. A conversation is considered outdated if the last time it was accessed is 30+ days ago
     isConversationOutdated: (id: string) => boolean,
@@ -83,7 +83,7 @@ const useAppStore = create<AppState>()((set, get) => ({
         return { apiResponses: conversation.responses, currentConversationId: id, conversations: updatedConversation }
     }),
     createNewConversation: () => set(() => ({ apiResponses: [], currentConversationId: uuid() })),
-    deleteConversation: (id) => set((state) => {
+    removeConversation: (id) => set((state) => {
         const newConversations = state.conversations.filter(conversation => conversation.id !== id);
 
         const newCurrentConversation = newConversations[0];

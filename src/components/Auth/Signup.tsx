@@ -41,7 +41,7 @@ const Auth: React.FC = () => {
 
             return navigate('/')
         } catch (err: any) {
-            const { error } = err.response.data ?? "Something went wrong!"
+            const { error } = err.response.data || "Something went wrong!"
             setError(error);
         }
     })

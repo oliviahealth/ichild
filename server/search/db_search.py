@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, request, Response
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
@@ -21,7 +21,11 @@ else:
 #Initialization
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
-
+@app.before_request
+def basic_authentication():
+    if request.method.lower() == 'options':
+        return Response()
+    
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRESQL_CONNECTION_STRING')
 app.config['SECRET_KEY'] = 'your_secret_key' # Change this
 

@@ -24,9 +24,7 @@ class ApiResponseType(TypeDecorator):
         if value is not None:
             return json.loads(value)
         return None
-    
-
-    
+        
 class Conversation(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = db.Column(db.String(), nullable=False)
