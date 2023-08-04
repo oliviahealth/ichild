@@ -1,6 +1,7 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ErrorBoundary } from "react-error-boundary";
 
 import Layout from "./components/Layout";
 import AuthLayout from "./components/Auth/AuthLayout";
@@ -22,7 +23,8 @@ const queryClient = new QueryClient({
 });
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <QueryClientProvider client={queryClient}>
+  <ErrorBoundary fallback={<div>Something went wrong</div>}>
+    <QueryClientProvider client={queryClient}>
     { /* Use React Router to handle client side routing between the auth page and the home page
           https://reactrouter.com/en/main
     */ }
@@ -42,4 +44,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       </Routes>
     </BrowserRouter>
   </QueryClientProvider>
+  </ErrorBoundary>
 );

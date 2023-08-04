@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import axios from "axios";
 
-import { ConversationSchema, IConversation } from "./utils/interfaces";
+import { IConversation, ConversationSchema } from "./utils/interfaces";
+import { getConversations } from "./utils/dbFunctions";
 import useAppState from "./stores/useAppStore";
 
 import ChatComponent from "./components/Chat";
@@ -24,23 +24,20 @@ const Index: React.FC = () => {
     }
   }, []);
 
-  // Fetch past conversations from database
+  // Fetch past conversations from database if a user is logged in
   useEffect(() => {
-    const getConversations = async() => {
-      try {
-        const conversations = (await axios.get(`${import.meta.env.VITE_API_URL}/conversations`, { params: { 'userId': user?.id }, withCredentials: true })).data
-        
+    const getAndStoreConversations = async () => {
+      if(user) {
+        const conversations = await getConversations(user.id)
+
+        // Make sure all of the conversations are compliant with the schema
         conversations.forEach((conversation: IConversation) => ConversationSchema.parse(conversation))
 
-        setConversations(conversations);
-
-      } catch(err: any) {
-        const error = err || "Unexpected error";
-        alert(error)
+        setConversations(conversations)
       }
     }
 
-    if(user) getConversations()
+    getAndStoreConversations()
   }, [user])
 
   return (

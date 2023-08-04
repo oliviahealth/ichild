@@ -18,8 +18,6 @@ def add_conversations():
     try:
         new_conversation = Conversation(id=id, title=title, user_id=user_id)
 
-        print(f"Conversation: {new_conversation}")
-
         db.session.add(new_conversation)
         db.session.commit()
     except Exception as error:

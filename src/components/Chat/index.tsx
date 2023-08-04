@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 
 import useAppStore from "../../stores/useAppStore";
+import { postConversation, postResponse } from "../../utils/dbFunctions";
 import { APIResponseSchema, IAPIResponse } from "../../utils/interfaces";
 
 import { TfiMenuAlt } from "react-icons/tfi";
@@ -51,31 +52,31 @@ const ChatComponent: React.FC = () => {
   const { mutate: getResponse, isLoading } = useMutation(async (data: any) => {
     if (data.query === "") return
 
+    const conversationId = currentConversationId ?? uuid()
+    setCurrentConversationId(conversationId)
+
     const formData = new FormData();
     formData.append("data", data.query);
 
     const response: IAPIResponse = ((await axios.post(`${import.meta.env.VITE_API_URL}/formattedresults`, formData, { headers: { "Content-Type": "multipart/form-data" } })).data)
 
     // Parse the response and make sure it complies with the expected API Response
-    const isResponseValid = (await APIResponseSchema.safeParseAsync(response)).success;
+    APIResponseSchema.parse(response);
 
-    if(!isResponseValid) alert('Something went wrong');
-    
+    return response
+  }, { onSuccess: async (response: IAPIResponse) => {
     setApiResponses([...apiResponses, response]);
 
-    const conversationId = currentConversationId ?? uuid()
-    setCurrentConversationId(conversationId)
+    // If a user is logged in, save their conversation
+    if(user) {
+      await postConversation(currentConversationId!, response.userQuery, user.id)
+      await postResponse(response, currentConversationId!)
+    }
 
-    await axios.post(`${import.meta.env.VITE_API_URL}/conversations`, { id: conversationId, title: response.userQuery, userId: user?.id })
-    await axios.post(`${import.meta.env.VITE_API_URL}/response`, {...response, conversationId: conversationId})
-  
-    // Add the query and apiResponse object to the conversations array
-    // Use the current conversation id if a question has been asked, or if its a new conversation, generate a UUID
     addQueryToConversation(currentConversationId!, response)
 
-    // reset the value of the input field
     reset();
-  });
+  } });
 
   const regenerateResponse = () => {
     const previousQuery = apiResponses[apiResponses.length - 1].userQuery;
