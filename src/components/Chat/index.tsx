@@ -64,19 +64,23 @@ const ChatComponent: React.FC = () => {
     APIResponseSchema.parse(response);
 
     return response
-  }, { onSuccess: async (response: IAPIResponse) => {
-    setApiResponses([...apiResponses, response]);
+  }, {
+    onSuccess: async (response: IAPIResponse | undefined) => {
+      if (response) {
+        setApiResponses([...apiResponses, response]);
 
-    // If a user is logged in, save their conversation
-    if(user) {
-      await postConversation(currentConversationId!, response.userQuery, user.id)
-      await postResponse(response, currentConversationId!)
+        // If a user is logged in, save their conversation
+        if (user) {
+          await postConversation(currentConversationId!, response.userQuery, user.id)
+          await postResponse(response, currentConversationId!)
+        }
+
+        addQueryToConversation(currentConversationId!, response)
+
+        reset();
+      }
     }
-
-    addQueryToConversation(currentConversationId!, response)
-
-    reset();
-  } });
+  });
 
   const regenerateResponse = () => {
     const previousQuery = apiResponses[apiResponses.length - 1].userQuery;

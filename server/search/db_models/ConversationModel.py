@@ -8,4 +8,4 @@ class Conversation(db.Model):
     title = db.Column(db.String(), nullable=False)
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id'))
     author = db.relationship('User', backref='users')
-    responses = db.relationship('Response', backref='conversation', lazy=True)
+    responses = db.relationship('Response', backref='conversation', lazy=True, cascade='all, delete-orphan')

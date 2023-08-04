@@ -34,5 +34,5 @@ class Response(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     locations = db.Column(ARRAY(LocationType), nullable=False)
     user_query = db.Column(db.String(), nullable=False)
-    conversation_id = db.Column(UUID(as_uuid=True), db.ForeignKey('conversation.id'))
+    conversation_id = db.Column(UUID(as_uuid=True), db.ForeignKey('conversation.id', ondelete='CASCADE'))
     author = db.relationship('Conversation', backref='conversations')
