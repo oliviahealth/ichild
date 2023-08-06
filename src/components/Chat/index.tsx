@@ -1,11 +1,9 @@
-import React, { useRef, useEffect, useCallback } from "react";
+import React, { useRef, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 
 import useAppStore from "../../stores/useAppStore";
-import { postConversation, postResponse } from "../../utils/dbFunctions";
 import { APIResponseSchema, IAPIResponse } from "../../utils/interfaces";
 
 import { TfiMenuAlt } from "react-icons/tfi";
@@ -13,40 +11,40 @@ import { TfiMenuAlt } from "react-icons/tfi";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import ApiResponse from "./ApiResponse";
+import fetchWithAxios from "../../utils/fetchWithAxios";
 
 const ChatComponent: React.FC = () => {
-  // Use Zustand to manage app state such as track API responses, conversation history and if the sidepanel is open
+  // Use Zustand to manage app state such as the questions the user asks and the response from the api
   // https://github.com/pmndrs/zustand
-  const {
-    apiResponses,
-    setApiResponses,
-    addApiResponseToConversation, // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
-    currentConversationId,
-    setCurrentConversationId,
-    isSidePanelOpen,
-    setisSidePanelOpen,
-    user
-  } = useAppStore();
+  const apiResponses = useAppStore((state) => state.apiResponses);
+  const setApiResponses = useAppStore((state) => state.setApiResponses);
+
+  // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
+  const addApiResponseToConversation = useAppStore((state) => state.addApiResponseToConversation);
+  const currentConversationId = useAppStore((state) => state.currentConversationId);
+  const setCurrentConversationId = useAppStore((state) => state.setCurrentConversationId);
+
+  const user = useAppStore((state) => state.user);
+
+  const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
+  const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
   const { register, handleSubmit, reset, getValues, setValue } = useForm();
 
+  // Creates the auto scroll when the api responds
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   // Scroll to the bottom of the container with smooth animation
-  const scrollToBottom = useCallback(() => {
+  useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTo({
         top: containerRef.current.scrollHeight,
-        behavior: 'smooth',
-      });
+        behavior: "smooth",
+      })
     }
-  }, []);
-  useEffect(() => {
-    scrollToBottom();
   });
-
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
   const { mutate: getResponse, isLoading } = useMutation(async (data: any) => {
@@ -58,7 +56,13 @@ const ChatComponent: React.FC = () => {
     const formData = new FormData();
     formData.append("data", data.query);
 
-    const response: IAPIResponse = ((await axios.post(`${import.meta.env.VITE_API_URL}/formattedresults`, formData, { headers: { "Content-Type": "multipart/form-data" } })).data)
+    const response: IAPIResponse = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/formattedresults`, 'POST', formData, { "Content-Type": "multipart/form-data" })
+
+    // If a user is logged in, save their conversation
+    if (user) {
+      await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user.id}`, 'POST', { id: conversationId, title: response.userQuery, userId: user.id })
+      await fetchWithAxios(`${import.meta.env.VITE_API_URL}/response`, 'POST', {...response, conversationId})
+    }
 
     // Parse the response and make sure it complies with the expected API Response
     APIResponseSchema.parse(response);
@@ -67,12 +71,7 @@ const ChatComponent: React.FC = () => {
   }, {
     onSuccess: async (response: IAPIResponse | undefined) => {    
       if (response) {
-        // If a user is logged in, save their conversation
-        if (user) {
-          await postConversation(currentConversationId!, response.userQuery, user.id)
-          await postResponse(response, currentConversationId!)
-        }
-
+        
         addApiResponseToConversation(currentConversationId!, response)
         setApiResponses([...apiResponses, response]);
 

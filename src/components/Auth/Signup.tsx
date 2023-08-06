@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useMutation } from "react-query";
 import { z } from "zod";
@@ -7,12 +6,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import useAppStore from "../../stores/useAppStore";
+import fetchWithAxios from "../../utils/fetchWithAxios";
 import { UserSchema, IUser } from "../../utils/interfaces";
 
 const Auth: React.FC = () => {
     const navigate = useNavigate();
-
-    const [error, setError] = useState<null | string>(null);
 
     const setUser = useAppStore((state) => state.setUser);
 
@@ -34,27 +32,23 @@ const Auth: React.FC = () => {
     let { register: registerSignup, handleSubmit: handleSignup, formState: { errors: signupErrors } } = useForm<SignupFormData>({ resolver: zodResolver(signupSchema) });
 
     const { mutate: signupUser, isLoading } = useMutation(async (data: SignupFormData) => {
-        try {
-            const user: IUser = await (await axios.post(`${import.meta.env.VITE_API_URL}/signup`, data, { withCredentials: true })).data
+        const user: IUser = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/signup`, 'POST', data);
 
-            UserSchema.parseAsync(user)
+        UserSchema.parseAsync(user);
 
-            return user
-        } catch (err: any) {
-            const { error } = err.response.data || "Something went wrong!"
-            setError(error);
-        }
-    }, { onSuccess: (user) => {
-            if(user) {
+        return user
+    }, {
+        onSuccess: (user) => {
+            if (user) {
                 setUser(user);
                 return navigate("/")
             }
-    } })
+        }
+    })
 
     return (
         <>
             <div>
-                <p className="text-sm text-red-500 mb-4">{error}</p>
                 <p className="font-semibold text-2xl">Get Started</p>
                 <p className="text-sm">Create your account now</p>
             </div>

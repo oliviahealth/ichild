@@ -28,6 +28,9 @@ interface AppState {
     
     currentConversationId: string | null,
     setCurrentConversationId: (conversationId: string) => void
+
+    error: string | null,
+    setError: (error: string | null) => void
 }
 
 const useAppStore = create<AppState>()((set, get) => ({
@@ -92,7 +95,10 @@ const useAppStore = create<AppState>()((set, get) => ({
     }),
     
     currentConversationId: null,
-    setCurrentConversationId: (currentConversationId => set({ currentConversationId }))
+    setCurrentConversationId: (currentConversationId => set({ currentConversationId })),
+
+    error: null,
+    setError: (error => set({ error }))
 }));
 
 export default useAppStore;

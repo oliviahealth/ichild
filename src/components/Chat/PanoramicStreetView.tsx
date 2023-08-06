@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { GoogleMap, StreetViewPanorama, useLoadScript } from "@react-google-maps/api";
+import axios from "axios";
 
 interface Props {
     latitude: number

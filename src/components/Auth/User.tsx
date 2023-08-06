@@ -1,31 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { useMutation } from "react-query";
-import axios from "axios";
 
 import useAppStore from "../../stores/useAppStore";
+import fetchWithAxios from "../../utils/fetchWithAxios";
 
 const User: React.FC = () => {
     const navigate = useNavigate();
-
-    const [error, setError] = useState<null | string>(null);
 
     const user = useAppStore((state) => state.user);
     const setUser = useAppStore((state) => state.setUser);
 
     const { mutate: signoutUser, isLoading } = useMutation(async () => {
-        try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/signout`, null, { withCredentials: true });
-        } catch(err: any) {
-            const { error } = err.response.data || "Something went wrong!"
-            setError(error);
+        fetchWithAxios(`${import.meta.env.VITE_API_URL}/signout?userId=${user?.id}`, 'POST')
+    }, {
+        onSuccess: () => {
+            setUser(null);
+            return navigate('/signin')
         }
-    }, { onSuccess: () => {
-        setUser(null);
-        return navigate('/signin')
-    }} );
-    
-    if(!user) {
+    });
+
+    if (!user) {
         return <>
             <Navigate to={"/signin"} replace={true} />
         </>
@@ -34,7 +29,6 @@ const User: React.FC = () => {
     return (
         <>
             <div>
-                <p className="text-sm text-red-500 mb-4">{error}</p>
                 <p className="font-semibold text-2xl">Sign Out</p>
                 <p className="text-sm">Sign out of your account</p>
             </div>

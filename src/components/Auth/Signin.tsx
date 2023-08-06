@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { z } from "zod";
@@ -7,13 +6,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import useAppStore from "../../stores/useAppStore";
+import fetchWithAxios from "../../utils/fetchWithAxios";
 import { UserSchema, IUser } from "../../utils/interfaces";
 
 
 const Signin: React.FC = () => {
     const navigate = useNavigate();
-
-    const [error, setError] = useState<null | string>(null);
 
     const setUser = useAppStore((state) => state.setUser);
 
@@ -30,16 +28,11 @@ const Signin: React.FC = () => {
     let { register: registerSignin, handleSubmit: handleSignin, formState: { errors: signinErrors } } = useForm<SigninFormData>({ resolver: zodResolver(signinSchema) });
 
     const { mutate: signinUser, isLoading } = useMutation(async (data: SigninFormData) => {
-        try {
-            const user: IUser = await (await axios.post(`${import.meta.env.VITE_API_URL}/signin`, data, { withCredentials: true })).data
+        const user: IUser = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/signin`, 'POST', data);
 
-            UserSchema.parse(user);
+        UserSchema.parse(user);
 
-            return user
-        } catch (err: any) {
-            const { error } = err.response.data ?? "Something went wrong!"
-            setError(error);
-        }
+        return user
     }, {
         onSuccess: (user) => {
             if (user) {
@@ -52,7 +45,6 @@ const Signin: React.FC = () => {
     return (
         <>
             <div>
-                <p className="text-sm text-red-500 mb-4">{error}</p>
                 <p className="font-semibold text-2xl">Welcome Back!</p>
                 <p className="text-sm">Sign in to your account</p>
             </div>
