@@ -31,7 +31,7 @@ const ChatComponent: React.FC = () => {
 
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
-  const { register, handleSubmit, reset, getValues, setValue } = useForm();
+  const { register, handleSubmit, reset, getValues } = useForm();
 
   // Creates the auto scroll when the api responds
   const containerRef = useRef<HTMLDivElement>(null);
@@ -80,13 +80,6 @@ const ChatComponent: React.FC = () => {
     }
   });
 
-  const regenerateResponse = () => {
-    const previousQuery = apiResponses[apiResponses.length - 1].userQuery;
-
-    setValue("query", previousQuery);
-    getResponse({ query: previousQuery });
-  }
-
   return (
     <div className="flex w-full flex-col h-full">
       {!isSidePanelOpen && (
@@ -114,7 +107,7 @@ const ChatComponent: React.FC = () => {
                   {response.userQuery}
                 </ChatBubble>
 
-                <ApiResponse apiResponse={response} regenerateResponse={regenerateResponse} />
+                <ApiResponse apiResponse={response} />
               </div>
             );
           })}

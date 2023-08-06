@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import { IAPIResponse } from "../../utils/interfaces";
 
-import { HiOutlineArrowPath } from "react-icons/hi2";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { BiCopy } from "react-icons/bi";
 import OllieAvatar from "./OllieAvatar";
@@ -13,11 +12,13 @@ import PanoramicStreetView from "./PanoramicStreetView";
 
 interface Props {
     apiResponse: IAPIResponse
-    regenerateResponse: () => void
 }
 
-const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
+const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
+    const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+
+    console.log(descriptionExpanded);
 
     useEffect(() => {
         setFocusedLocation(apiResponse.locations[0] ?? null);
@@ -61,7 +62,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                                     <div className="my-4 flex flex-col gap-4">
                                         <p className="font-semibold text-2xl text-primary">{focusedLocation.name}</p>
 
-                                        <p className="text-sm">{focusedLocation.description}</p>
+                                        <p className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`} onClick={() => setDescriptionExpanded(!descriptionExpanded)} >{focusedLocation.description}</p>
 
                                         <a href={focusedLocation.addressLink} target="_blank" className={`max-w-[200px] btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400`}>
                                             <MdOutlineOpenInNew className="text-lg" />
@@ -102,11 +103,6 @@ const ApiResponse: React.FC<Props> = ({ apiResponse, regenerateResponse }) => {
                                     </div>
                                 )
                             })}
-
-                            <button onClick={regenerateResponse} className={`my-1 btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400`}>
-                                <HiOutlineArrowPath className="text-lg" />
-                                <p>Regenerate response</p>
-                            </button>
                         </div>
                     </div>
 

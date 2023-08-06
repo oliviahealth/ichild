@@ -14,8 +14,8 @@ const AuthLayout = () => {
             <ErrorComponent />
 
             <div className="w-full mx-auto flex h-full">
-                <div className="w-full flex justify-center items-center">
-                    <div className="w-full p-8 m-auto sm:w-3/5 sm:max-w-2xl">
+                <div className="w-full flex justify-center items-center bg-[url('src/assets/authBackground.png')] lg:bg-none">
+                    <div className="w-full p-8 m-auto sm:w-3/5 sm:max-w-2xl rounded-lg bg-white bg-opacity-90">
                         <Outlet />
                     </div>
 
