@@ -18,8 +18,6 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
-    console.log(descriptionExpanded);
-
     useEffect(() => {
         setFocusedLocation(apiResponse.locations[0] ?? null);
     }, [apiResponse]);

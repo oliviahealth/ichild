@@ -21,7 +21,7 @@ def add_conversations():
 
     try:
         new_conversation = Conversation(id=id, title=title, user_id=user_id)
-
+    
         db.session.add(new_conversation)
         db.session.commit()
     except Exception as error:
@@ -50,9 +50,22 @@ def get_conversations():
             'responses': [
                 {
                     'id': response.id,
-                    'locations': response.locations,
                     'conversationId': response.conversation_id,
-                    'userQuery': response.user_query
+                    'userQuery': response.user_query,
+                    'locations': [
+                        {
+                            'id': location.id,
+                            'address': location.address,
+                            'addressLink': location.addressLink,
+                            'confidence': location.confidence,
+                            'description': location.description,
+                            'latitude': location.latitude,
+                            'longitude': location.longitude,
+                            'name': location.name,
+                            'phone': location.phone,
+                        }
+                        for location in response.locations
+                    ]
                 }
                 for response in conversation.responses
             ],
