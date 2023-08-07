@@ -40,8 +40,7 @@ def add_response():
         return jsonify({ 'error': 'Unexpected error' }), 500
     
     return jsonify({ 'response': { "id": new_response.id, 'locations': [
-                {
-                    'id': location.id,
+                {                    
                     'address': location.address,
                     'addressLink': location.addressLink,
                     'confidence': location.confidence,

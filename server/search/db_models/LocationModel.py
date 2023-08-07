@@ -4,8 +4,7 @@ import uuid
 from db_search import db
 
 class Location(db.Model):
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = db.Column(db.String(), nullable=False)
+    name = db.Column(db.String(), primary_key=True,)
     address = db.Column(db.String(), nullable=False)
     addressLink = db.Column(db.String(), nullable=False)
     confidence = db.Column(db.Float(), nullable=False)
