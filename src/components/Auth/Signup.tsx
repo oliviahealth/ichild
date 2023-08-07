@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import useAppStore from "../../stores/useAppStore";
+import parseWithZod from "../../utils/parseWithZod";
 import fetchWithAxios from "../../utils/fetchWithAxios";
 import { UserSchema, IUser } from "../../utils/interfaces";
 
@@ -34,7 +35,7 @@ const Auth: React.FC = () => {
     const { mutate: signupUser, isLoading } = useMutation(async (data: SignupFormData) => {
         const user: IUser = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/signup`, 'POST', data);
 
-        UserSchema.parseAsync(user);
+        parseWithZod(user, UserSchema);
 
         return user
     }, {

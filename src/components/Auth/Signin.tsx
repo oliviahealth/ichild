@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { z } from "zod";
@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import useAppStore from "../../stores/useAppStore";
 import fetchWithAxios from "../../utils/fetchWithAxios";
+import parseWithZod from "../../utils/parseWithZod";
 import { UserSchema, IUser } from "../../utils/interfaces";
 
 
@@ -30,7 +31,7 @@ const Signin: React.FC = () => {
     const { mutate: signinUser, isLoading } = useMutation(async (data: SigninFormData) => {
         const user: IUser = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/signin`, 'POST', data);
 
-        UserSchema.parse(user);
+        parseWithZod(user, UserSchema);
 
         return user
     }, {

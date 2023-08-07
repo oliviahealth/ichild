@@ -4,6 +4,7 @@ import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
 
 import useAppStore from "../../stores/useAppStore";
+import parseWithZod from "../../utils/parseWithZod";
 import { APIResponseSchema, IAPIResponse } from "../../utils/interfaces";
 
 import { TfiMenuAlt } from "react-icons/tfi";
@@ -65,7 +66,7 @@ const ChatComponent: React.FC = () => {
     }
 
     // Parse the response and make sure it complies with the expected API Response
-    APIResponseSchema.parse(response);
+    parseWithZod(response, APIResponseSchema);
 
     return response
   }, {

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 
 import fetchWithAxios from "./utils/fetchWithAxios";
+import parseWithZod from "./utils/parseWithZod";
 import { IConversation, ConversationSchema } from "./utils/interfaces";
 import useAppState from "./stores/useAppStore";
 
@@ -34,7 +35,7 @@ const Index: React.FC = () => {
         const conversations = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user.id}`, 'GET');
 
         // Make sure all of the conversations are compliant with the schema
-        conversations.forEach((conversation: IConversation) => ConversationSchema.parse(conversation))
+        conversations.forEach((conversation: IConversation) => parseWithZod(conversation, ConversationSchema));
 
         setConversations(conversations)
       }
