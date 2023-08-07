@@ -54,7 +54,6 @@ def get_conversations():
                     'userQuery': response.user_query,
                     'locations': [
                         {
-                            'id': location.id,
                             'address': location.address,
                             'addressLink': location.addressLink,
                             'confidence': location.confidence,
