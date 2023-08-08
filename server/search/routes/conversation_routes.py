@@ -56,7 +56,6 @@ def get_conversations():
                         {
                             'address': location.address,
                             'addressLink': location.addressLink,
-                            'confidence': location.confidence,
                             'description': location.description,
                             'latitude': location.latitude,
                             'longitude': location.longitude,

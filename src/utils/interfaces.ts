@@ -3,7 +3,6 @@ import { z } from 'zod';
 export const LocationSchema = z.object({
     address: z.string(),
     addressLink: z.string(),
-    confidence: z.number().min(0).max(1),
     description: z.string(),
     name: z.string(),
     phone: z.string(),

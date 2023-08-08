@@ -20,14 +20,13 @@ def add_response():
         for location in locations:
             address = location.get('address')
             addressLink = location.get('addressLink')
-            confidence = location.get('confidence')
             description = location.get('description')
             latitude = location.get('latitude')
             longitude = location.get('longitude')
             name = location.get('name')
             phone = location.get('phone')
 
-            location = Location(address=address, addressLink=addressLink, confidence=confidence, description=description, latitude=latitude, longitude=longitude, name=name, phone=phone, response_id=conversation_id)
+            location = Location(address=address, addressLink=addressLink, description=description, latitude=latitude, longitude=longitude, name=name, phone=phone, response_id=conversation_id)
             locationsArr.append(location)
 
         new_response = Response(locations=locationsArr, user_query=user_query, conversation_id=conversation_id)
@@ -43,7 +42,6 @@ def add_response():
                 {                    
                     'address': location.address,
                     'addressLink': location.addressLink,
-                    'confidence': location.confidence,
                     'description': location.description,
                     'latitude': location.latitude,
                     'longitude': location.longitude,
