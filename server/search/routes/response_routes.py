@@ -15,7 +15,7 @@ def add_response():
     user_query = data.get('userQuery')
     conversation_id = data.get('conversationId')
     locationsArr = []
-    
+
     try:
         for location in locations:
             address = location.get('address')
@@ -26,10 +26,17 @@ def add_response():
             name = location.get('name')
             phone = location.get('phone')
 
-            location = Location(address=address, addressLink=addressLink, description=description, latitude=latitude, longitude=longitude, name=name, phone=phone, response_id=conversation_id)
-            locationsArr.append(location)
-
-        new_response = Response(locations=locationsArr, user_query=user_query, conversation_id=conversation_id)
+            existing_location = Location.query.filter_by(name=name).first()
+            if(existing_location == None):
+                location = Location(address=address, addressLink=addressLink, description=description, latitude=latitude, longitude=longitude, name=name, phone=phone)
+                db.session.add(location)
+                db.session.commit()
+                
+                locationsArr.append(location.name)
+            else:
+                locationsArr.append(existing_location.name)
+            
+        new_response = Response(user_query=user_query, conversation_id=conversation_id, locations=locationsArr)
     
         db.session.add(new_response)
         db.session.commit()
@@ -40,13 +47,13 @@ def add_response():
     
     return jsonify({ 'response': { "id": new_response.id, 'locations': [
                 {                    
-                    'address': location.address,
-                    'addressLink': location.addressLink,
-                    'description': location.description,
-                    'latitude': location.latitude,
-                    'longitude': location.longitude,
-                    'name': location.name,
-                    'phone': location.phone,
+                    'address': location.get('address'),
+                    'addressLink': location.get('addressLink'),
+                    'description': location.get('description'),
+                    'latitude': location.get('latitude'),
+                    'longitude': location.get('longitude'),
+                    'name': location.get('name'),
+                    'phone': location.get('phone'),
                 }
-                for location in new_response.locations
+                for location in locations
             ], "userQuery": new_response.user_query, "conversation_id": new_response.conversation_id } }), 201

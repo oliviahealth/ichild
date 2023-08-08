@@ -1,8 +1,10 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
+from sqlalchemy.orm import joinedload
 
 from db_search import db
 from db_models.ConversationModel import Conversation
+from db_models.LocationModel import Location
 
 conversation_routes_bp = Blueprint('conversation_routes', __name__)
 
@@ -37,12 +39,15 @@ def get_conversations():
     user_id = request.args.get('userId')
 
     try:
-        user_conversations = Conversation.query.filter_by(user_id=user_id)
+        user_conversations = Conversation.query.filter_by(user_id=user_id).all()
     except Exception as error:
         db.session.rollback()
-        print(error)
-        return jsonify({ 'error': 'Unexpected error' }), 500
-    
+        print(error)                    
+
+
+    ## Should be optimized
+    location_dict = {location.name: location for location in Location.query.all()}
+
     data = [
         {
             'id': conversation.id,
@@ -62,7 +67,8 @@ def get_conversations():
                             'name': location.name,
                             'phone': location.phone,
                         }
-                        for location in response.locations
+                        for locationName in response.locations
+                        for location in [location_dict.get(locationName)]
                     ]
                 }
                 for response in conversation.responses
@@ -71,7 +77,7 @@ def get_conversations():
         }
         for conversation in user_conversations
     ]
-
+    
     return jsonify(data)
 
 @login_required
