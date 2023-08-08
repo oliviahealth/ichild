@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { v4 as uuid } from "uuid";
 
-import { IConversation, IAPIResponse, IUser } from "../utils/interfaces";
+import { IConversation, IAPIResponse, IUser, ILocation } from "../utils/interfaces";
 
 interface AppState {
     user: IUser | null
@@ -98,7 +98,7 @@ const useAppStore = create<AppState>()((set, get) => ({
     setCurrentConversationId: (currentConversationId => set({ currentConversationId })),
 
     error: null,
-    setError: (error => set({ error }))
+    setError: (error => set({ error })),
 }));
 
 export default useAppStore;

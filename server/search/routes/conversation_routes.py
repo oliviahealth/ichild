@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
-from sqlalchemy.orm import joinedload
 
 from db_search import db
 from db_models.ConversationModel import Conversation

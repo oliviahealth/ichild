@@ -9,6 +9,7 @@ import Index from ".";
 import Signup from "./components/Auth/Signup";
 import Signin from "./components/Auth/Signin";
 import User from "./components/Auth/User";
+import SavedLocations from "./SavedLocations";
 
 import "./css/index.css";
 
@@ -25,24 +26,25 @@ const queryClient = new QueryClient({
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <ErrorBoundary fallback={<div>Something went wrong</div>}>
     <QueryClientProvider client={queryClient}>
-    { /* Use React Router to handle client side routing between the auth page and the home page
+      { /* Use React Router to handle client side routing between the auth page and the home page
           https://reactrouter.com/en/main
     */ }
-    <BrowserRouter>
-      <Routes>
-        { /* Wrap all elements with the Layout component
+      <BrowserRouter>
+        <Routes>
+          { /* Wrap all elements with the Layout component
                 https://reactrouter.com/en/main/start/concepts#layout-routes
             */ }
-        <Route element={<Layout />}>
-          <Route path="/" Component={Index} />
-        </Route>
-        <Route element={<AuthLayout />}> 
-          <Route path="/signup" Component={Signup} />
-          <Route path="/signin" Component={Signin} />
-          <Route path="/user" Component={User} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  </QueryClientProvider>
+          <Route element={<Layout />}>
+            <Route path="/" Component={Index} />
+            <Route path="/savedlocations" Component={SavedLocations} />
+          </Route>
+          <Route element={<AuthLayout />}>
+            <Route path="/signup" Component={Signup} />
+            <Route path="/signin" Component={Signin} />
+            <Route path="/user" Component={User} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   </ErrorBoundary>
 );
