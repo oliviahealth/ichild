@@ -5,7 +5,7 @@ import { ErrorBoundary } from "react-error-boundary";
 
 import Layout from "./components/Layout";
 import AuthLayout from "./components/Auth/AuthLayout";
-import Index from ".";
+import ChatComponent from "./components/Chat";
 import Signup from "./components/Auth/Signup";
 import Signin from "./components/Auth/Signin";
 import User from "./components/Auth/User";
@@ -35,7 +35,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                 https://reactrouter.com/en/main/start/concepts#layout-routes
             */ }
           <Route element={<Layout />}>
-            <Route path="/" Component={Index} />
+            <Route path="/" Component={ChatComponent} />
             <Route path="/savedlocations" Component={SavedLocations} />
           </Route>
           <Route element={<AuthLayout />}>

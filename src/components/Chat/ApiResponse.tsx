@@ -33,7 +33,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     }
 
     const saveLocation = async (location: ILocation) => {
-       await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocation`, 'POST', { locationName: location.name, userId: user?.id });
+       await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'POST', { locationName: location.name, userId: user?.id });
     }
 
     return (

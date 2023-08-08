@@ -46,6 +46,15 @@ const ChatComponent: React.FC = () => {
       })
     }
   });
+
+  // Set the current conversation id to be null when the user navigates off the chat page
+  useEffect(() => {
+    return () => {
+    setCurrentConversationId(null);
+    };
+  }, []);
+
+
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
   const { mutate: getResponse, isLoading } = useMutation(async (data: any) => {

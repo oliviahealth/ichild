@@ -41,7 +41,8 @@ def get_conversations():
         user_conversations = Conversation.query.filter_by(user_id=user_id).all()
     except Exception as error:
         db.session.rollback()
-        print(error)                    
+        print(error)
+        return jsonify({ 'error': 'Unexpected error' }), 500               
 
 
     ## Should be optimized

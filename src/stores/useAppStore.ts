@@ -27,7 +27,7 @@ interface AppState {
     removeConversation: (id: string) => void,
     
     currentConversationId: string | null,
-    setCurrentConversationId: (conversationId: string) => void
+    setCurrentConversationId: (conversationId: string | null) => void
 
     error: string | null,
     setError: (error: string | null) => void

@@ -8,7 +8,7 @@ from db_models.LocationModel import Location
 saved_location_routes_bp = Blueprint('saved_location_routes', __name__)
 
 @login_required
-@saved_location_routes_bp.route('/savedlocation', methods=['POST'])
+@saved_location_routes_bp.route('/savedlocations', methods=['POST'])
 def add_saved_location():
     data = request.get_json()
     location_name = data.get('locationName')
@@ -30,3 +30,33 @@ def add_saved_location():
 
     return jsonify({ 'response': "success" })
 
+@login_required
+@saved_location_routes_bp.route('/savedlocations', methods=['GET'])
+def get_saved_locations():
+    user_id = request.args.get('userId')
+
+    try:
+        # Step 1: Retrieve saved location names for the user
+        saved_location_names = [saved_location.location_name for saved_location in SavedLocation.query.filter_by(user_id=user_id).all()]
+        
+        # Step 2: Use the saved location names to fetch Location objects
+        saved_locations = Location.query.filter(Location.name.in_(saved_location_names)).all()
+    except Exception as error:
+        db.session.rollback()
+        print(error)
+        return jsonify({ 'error': 'Unexpected error' }), 500
+
+    data = [
+        {
+            'address': location.address,
+            'addressLink': location.addressLink,
+            'description': location.description,
+            'latitude': location.latitude,
+            'longitude': location.longitude,
+            'name': location.name,
+            'phone': location.phone
+        }
+        for location in saved_locations
+    ]
+
+    return jsonify(data)
