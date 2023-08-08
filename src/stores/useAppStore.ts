@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { v4 as uuid } from "uuid";
 
-import { IConversation, IAPIResponse, IUser, ILocation } from "../utils/interfaces";
+import { IConversation, IAPIResponse, IUser } from "../utils/interfaces";
 
 interface AppState {
     user: IUser | null

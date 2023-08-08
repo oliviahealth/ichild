@@ -11,3 +11,4 @@ class Location(db.Model):
     latitude = db.Column(db.Float(), nullable=False)
     longitude = db.Column(db.Float(), nullable=False)
     phone = db.Column(db.String(), nullable=False)
+    saved_locations = db.relationship('SavedLocation', backref='location', lazy=True, cascade='all, delete-orphan')

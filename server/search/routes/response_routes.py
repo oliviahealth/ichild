@@ -45,7 +45,7 @@ def add_response():
         print(error)
         return jsonify({ 'error': 'Unexpected error' }), 500
     
-    return jsonify({ 'response': { "id": new_response.id, 'locations': [
+    return jsonify({ "id": new_response.id, 'locations': [
                 {                    
                     'address': location.get('address'),
                     'addressLink': location.get('addressLink'),
@@ -56,4 +56,4 @@ def add_response():
                     'phone': location.get('phone'),
                 }
                 for location in locations
-            ], "userQuery": new_response.user_query, "conversation_id": new_response.conversation_id } }), 201
+            ], "userQuery": new_response.user_query, "conversation_id": new_response.conversation_id }), 201
