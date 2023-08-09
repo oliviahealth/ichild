@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_user, login_required, logout_user
+import time
 
 from db_search import db, login_manager, bcrypt
 from db_models.UserModel import User
@@ -16,15 +17,16 @@ def signup():
     name = data.get('name')
     email = data.get('email')
     password = data.get('password')
-
+    
     existing_user = User.query.filter_by(email=email).first()
     if existing_user:
         return jsonify({ 'error': 'Username already exists' }), 400
 
     try:
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        date_created = int(time.time() * 1000)
 
-        new_user = User(name=name, email=email, password=hashed_password)
+        new_user = User(name=name, email=email, password=hashed_password, date_created=date_created)
 
         db.session.add(new_user)
         db.session.commit()
@@ -35,7 +37,7 @@ def signup():
         print(error)
         return jsonify({ 'error': "Unexpected error" }), 500
 
-    return jsonify({ 'id': new_user.id, "name": new_user.name, "email": new_user.email }), 201
+    return jsonify({ 'id': new_user.id, "name": new_user.name, "email": new_user.email, 'dateCreated': date_created }), 201
 
 @auth_routes_bp.route('/signin', methods=['POST'])
 def signin():
@@ -55,7 +57,7 @@ def signin():
         print(error)
         return jsonify({ 'error': 'Unexpected error' }), 500
         
-    return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email }), 200
+    return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created }), 200
     
 @auth_routes_bp.route('/signout', methods=['POST'])
 @login_required

@@ -4,7 +4,7 @@ import { useMutation } from "react-query";
 import useAppStore from "./stores/useAppStore";
 import fetchWithAxios from "./utils/fetchWithAxios";
 import parseWithZod from "./utils/parseWithZod";
-import { LocationSchema, ILocation } from "./utils/interfaces";
+import { SavedLocationSchema, ISavedLocation } from "./utils/interfaces";
 
 import ChatBubble from "./components/Chat/ChatBubble";
 import OllieAvatar from "./components/Chat/OllieAvatar";
@@ -20,10 +20,10 @@ const SavedLocations: React.FC = () => {
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
     const { data: savedLocations, mutate: getSavedLocations } = useMutation(async () => {
-        const savedLocations: ILocation[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations?userId=${user?.id}`, 'GET');
+        const savedLocations: ISavedLocation[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations?userId=${user?.id}`, 'GET');
 
         // Make sure all of the saved locations are compliant with the location schema
-        savedLocations.forEach((location: ILocation) => parseWithZod(location, LocationSchema));
+        savedLocations.forEach((location: ISavedLocation) => parseWithZod(location, SavedLocationSchema));
 
         return savedLocations
     });
@@ -40,6 +40,28 @@ const SavedLocations: React.FC = () => {
         navigator.clipboard.writeText(text);
     }
 
+    // Convert milliseconds to a formatted date and time
+    function convertMillisecondsToFormattedDateTime(milliseconds: number) {
+        const date = new Date(milliseconds);
+        const year = date.getFullYear();
+        const month = date.getMonth(); // Month is 0-based
+        const day = date.getDate();
+        const hours = date.getUTCHours();
+        const minutes = date.getUTCMinutes();
+        const period = hours < 12 ? 'AM' : 'PM';
+        const formattedHours = (hours % 12 === 0 ? 12 : hours % 12).toString().padStart(2, '0');
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+
+        const formattedDate = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        const formattedTime = `${formattedHours}:${formattedMinutes} ${period}`;
+
+        return {
+            formattedDate,
+            formattedTime
+        };
+    }
+
+
     return (
         <div className="flex w-full flex-col h-full m-4">
             {!isSidePanelOpen && (
@@ -49,8 +71,10 @@ const SavedLocations: React.FC = () => {
             )}
 
             <div className="flex flex-col gap-6">
-                {savedLocations?.map((location, index) => (
-                    <div className="flex items-center gap-4">
+                {savedLocations?.map((location, index) => {
+                    const { formattedDate, formattedTime } = convertMillisecondsToFormattedDateTime(location.dateCreated);
+
+                    return (<div className="flex items-center gap-4">
                         <div>
                             <OllieAvatar />
                         </div>
@@ -90,8 +114,13 @@ const SavedLocations: React.FC = () => {
                         <div className="w-[29rem] h-32 p-3 bg-white rounded-xl">
                             <InteractiveMap center={{ lat: location.latitude, lng: location.longitude }} locations={[location]} />
                         </div>
-                    </div>
-                ))}
+
+                        <div className="text-sm">
+                            <p>{formattedTime}</p>
+                            <p>{formattedDate}</p>
+                        </div>
+                    </div>)
+                })}
             </div>
         </div>
     )

@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
+import time
 
 from db_search import db
 from db_models.ConversationModel import Conversation
@@ -21,7 +22,9 @@ def add_conversations():
         return jsonify({ 'id': existing_conversation.id, 'title': existing_conversation.title, 'userId': existing_conversation.user_id }), 201
 
     try:
-        new_conversation = Conversation(id=id, title=title, user_id=user_id)
+        date_created = int(time.time() * 1000)
+
+        new_conversation = Conversation(id=id, title=title, user_id=user_id, date_created=date_created)
     
         db.session.add(new_conversation)
         db.session.commit()
@@ -52,6 +55,7 @@ def get_conversations():
         {
             'id': conversation.id,
             'title': conversation.title,
+            'dateCreated': conversation.date_created,
             'responses': [
                 {
                     'id': response.id,

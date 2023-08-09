@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
+import time
 
 from db_search import db
 from db_models.ResponseModel import Response
@@ -36,7 +37,7 @@ def add_response():
             else:
                 locationsArr.append(existing_location.name)
             
-        new_response = Response(user_query=user_query, conversation_id=conversation_id, locations=locationsArr)
+        new_response = Response(user_query=user_query, conversation_id=conversation_id, locations=locationsArr, date_created=int(time.time() * 1000))
     
         db.session.add(new_response)
         db.session.commit()

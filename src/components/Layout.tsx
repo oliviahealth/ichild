@@ -11,7 +11,6 @@ import useAppStore from "../stores/useAppStore";
 const Layout = () => {
   const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
   const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
-  const setError = useAppStore((state) => state.setError);
 
   //Set the sidepanel to be closed by default if the user is on a small screen
   useEffect(() => {
@@ -22,9 +21,6 @@ const Layout = () => {
     }
   }, []);
 
-  useEffect(() => {
-    setError(null);
-  }, [])
 
   return (
     <div className="h-screen">

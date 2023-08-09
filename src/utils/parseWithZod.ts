@@ -9,9 +9,10 @@ import useAppStore from "../stores/useAppStore";
 */
 const parseWithZod = (dataToParse: any, zodSchema: ZodSchema) => {
     try {
-        zodSchema.parse(dataToParse)
-    } catch (error) {
-        useAppStore.setState({ error: 'Something went wrong!' })
+        zodSchema.parseAsync(dataToParse)
+    } catch (error: any) {
+        useAppStore.setState({ error: 'Something went wrong!' });
+        throw error
     }
 }
 

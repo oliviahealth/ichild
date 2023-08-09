@@ -7,13 +7,19 @@ export const LocationSchema = z.object({
     name: z.string(),
     phone: z.string(),
     latitude: z.number(),
-    longitude: z.number(),
+    longitude: z.number()
 });
 export type ILocation = z.infer<typeof LocationSchema>
 
+export const SavedLocationSchema = LocationSchema.extend({
+    dateCreated: z.number()
+})
+export type ISavedLocation = z.infer<typeof SavedLocationSchema>
+
 export const APIResponseSchema = z.object({
     locations: z.array(LocationSchema),
-    userQuery: z.string()
+    userQuery: z.string(),
+    dateCreated: z.number()
 });
 export type IAPIResponse = z.infer<typeof APIResponseSchema>;
 
@@ -22,13 +28,15 @@ export const ConversationSchema = z.object({
     title: z.string(),
     id: z.string(),
     responses: z.array(APIResponseSchema),
-    userId: z.string().optional()
+    userId: z.string().optional(),
+    dateCreated: z.number()
 });
 export type IConversation = z.infer<typeof ConversationSchema>;
 
 export const UserSchema = z.object({
     id: z.string().uuid(),
     name: z.string(),
-    email: z.string()
+    email: z.string(),
+    dateCreated: z.number()
 });
 export type IUser = z.infer<typeof UserSchema>;
