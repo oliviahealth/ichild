@@ -7,9 +7,13 @@ import useAppStore from "../stores/useAppStore";
     Takes in the data to parse and the schema to validate against
     If there is an error, set the error state in zustand
 */
-const parseWithZod = (dataToParse: any, zodSchema: ZodSchema) => {
+const parseWithZod = async (dataToParse: any, zodSchema: ZodSchema) => {
     try {
-        zodSchema.parseAsync(dataToParse)
+        const parseResult = await zodSchema.safeParseAsync(dataToParse)
+
+        if(!parseResult.success) {
+            throw new Error('Something went wrong!')
+        }
     } catch (error: any) {
         useAppStore.setState({ error: 'Something went wrong!' });
         throw error
