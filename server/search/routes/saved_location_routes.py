@@ -12,10 +12,11 @@ saved_location_routes_bp = Blueprint('saved_location_routes', __name__)
 @saved_location_routes_bp.route('/savedlocations', methods=['POST'])
 def add_saved_location():
     data = request.get_json()
-    location_name = data.get('locationName')
+    location_name = data.get('locationName') # Remember, the name is the primary key for the LocationModel
     user_id = data.get('userId')
 
     try:
+        # Check if the user provided location exists in the Locations table, and if not, return and error to the user
         existing_location = Location.query.filter_by(name=location_name).first()
         if(not existing_location):
             return jsonify({ 'error': "Location doesn't exist" }), 400
@@ -30,7 +31,7 @@ def add_saved_location():
         print(error)
         return jsonify({ 'error': 'Unexpected error' }), 500
 
-    return jsonify({ 'response': "success" })
+    return jsonify({ 'name': saved_location.location_name, 'userId': saved_location.user_id, 'dateCreated': saved_location.date_created })
 
 @login_required
 @saved_location_routes_bp.route('/savedlocations', methods=['GET'])
@@ -44,6 +45,7 @@ def get_saved_locations():
         # Step 2: Use the saved location names to fetch Location objects
         saved_locations = []
         for info in saved_location_info:
+            # We need to query the database to find the entire location object from the name
             location = Location.query.filter_by(name=info['name']).first()
             if location:
                 location_info = {

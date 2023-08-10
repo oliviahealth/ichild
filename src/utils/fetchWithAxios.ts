@@ -10,7 +10,6 @@ const axiosInstance = axios.create({ withCredentials: true })
     If there is an error, pass the error to the zustand error state
     If there is not error, return the data
 */
-
 const fetchWithAxios = async (url: string, method: HttpMethod = 'GET', payload: any = null, headers: any = null) => {
     try {
         let response;

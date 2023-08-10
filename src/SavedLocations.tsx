@@ -19,7 +19,7 @@ const SavedLocations: React.FC = () => {
     const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
-    const { data: savedLocations, mutate: getSavedLocations } = useMutation(async () => {
+    const { data: savedLocations, mutate: getSavedLocations, isLoading } = useMutation(async () => {
         const savedLocations: ISavedLocation[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations?userId=${user?.id}`, 'GET');
 
         // Make sure all of the saved locations are compliant with the location schema
@@ -69,6 +69,12 @@ const SavedLocations: React.FC = () => {
                     <TfiMenuAlt className="text-lg" />
                 </button>
             )}
+
+            { isLoading && (
+                <div className="flex justify-center">
+                    <span className="loading loading-spinner loading-sm text-primary"></span>
+                </div>
+            ) }
 
             <div className="flex flex-col gap-6">
                 {savedLocations?.map((location, index) => {
