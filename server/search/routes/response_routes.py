@@ -30,6 +30,7 @@ def add_response():
     locations = data.get('locations')
     user_query = data.get('userQuery')
     conversation_id = data.get('conversationId')
+    date_created = data.get('dateCreated')
     locationsArr = [] # This array will hold only the name of the locations that are then stored as a column on the response record. Do not store entire location objects. 
 
     try:
@@ -55,7 +56,7 @@ def add_response():
             else:
                 locationsArr.append(existing_location.name)
             
-        new_response = Response(user_query=user_query, conversation_id=conversation_id, locations=locationsArr, date_created=int(time.time() * 1000))
+        new_response = Response(user_query=user_query, conversation_id=conversation_id, locations=locationsArr, date_created=date_created)
     
         db.session.add(new_response)
         db.session.commit()
@@ -76,5 +77,6 @@ def add_response():
                 }
                 for location in locations
             ],
+            'dateCreated': new_response.date_created,
             "userQuery": new_response.user_query,
             "conversation_id": new_response.conversation_id }), 201

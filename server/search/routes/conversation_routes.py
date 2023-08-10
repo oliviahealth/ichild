@@ -94,6 +94,7 @@ def get_conversations():
                     'id': response.id,
                     'conversationId': response.conversation_id,
                     'userQuery': response.user_query,
+                    'dateCreated': response.date_created,
                     'locations': [
                         {
                             'address': location.address,

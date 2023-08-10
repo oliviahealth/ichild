@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from sentence_transformers import SentenceTransformer
 import certifi
 import os
+import time
 
 from search_controller import core_search, grab_info, create_addresses, getLatLng
 
@@ -70,11 +71,14 @@ def formatted_db_search():
 
         latitude, longitude = getLatLng(address).values()
 
+        date_created = int(time.time() * 1000)
+
         results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude })
 
     results = {
         'userQuery': query,
-        'locations': results
+        'locations': results,
+        'dateCreated': date_created
     }
 
     return jsonify(results)

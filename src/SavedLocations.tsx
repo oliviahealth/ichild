@@ -80,7 +80,7 @@ const SavedLocations: React.FC = () => {
                 {savedLocations?.map((location, index) => {
                     const { formattedDate, formattedTime } = convertMillisecondsToFormattedDateTime(location.dateCreated);
 
-                    return (<div className="flex items-center gap-4">
+                    return (<div key={index} className="flex items-center gap-4">
                         <div>
                             <OllieAvatar />
                         </div>

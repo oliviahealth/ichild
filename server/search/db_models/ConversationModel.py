@@ -64,6 +64,6 @@ class Conversation(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = db.Column(db.String(), nullable=False)
     date_created = db.Column(db.BigInteger(), nullable=False)
-    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id'))
+    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id', ondelete='CASCADE'))
     author = db.relationship('User', backref='conversation_user')
     responses = db.relationship('Response', backref='conversation', lazy=True, cascade='all, delete-orphan')
