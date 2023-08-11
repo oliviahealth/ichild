@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 
 import useAppStore from "./stores/useAppStore";
@@ -16,17 +16,35 @@ import { BsTrash } from "react-icons/bs";
 const SavedLocations: React.FC = () => {
     const user = useAppStore((state) => state.user);
 
+    const [savedLocations, setSavedLocations] = useState<null | ISavedLocation[]>(null);
+
     const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
-    const { data: savedLocations, mutate: getSavedLocations, isLoading } = useMutation(async () => {
+    const { mutate: getSavedLocations, isLoading } = useMutation(async () => {
         const savedLocations: ISavedLocation[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations?userId=${user?.id}`, 'GET');
 
         // Make sure all of the saved locations are compliant with the location schema
         savedLocations.forEach((location: ISavedLocation) => parseWithZod(location, SavedLocationSchema));
 
         return savedLocations
+    }, {
+        onSuccess: (savedLocations) => {
+            setSavedLocations(savedLocations);
+        }
     });
+
+    const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (savedLocationId: string) => {
+        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations?id=${savedLocationId}`, 'DELETE');
+
+        return savedLocationId;
+    }, {
+        onSuccess: (savedLocationId) => {
+            const newSavedLocations = savedLocations?.filter((location) => location.id !== savedLocationId);
+
+            setSavedLocations(newSavedLocations ?? null);
+        }
+    })
 
     useEffect(() => {
         if (user) {
@@ -70,11 +88,11 @@ const SavedLocations: React.FC = () => {
                 </button>
             )}
 
-            { isLoading && (
+            {isLoading && (
                 <div className="flex justify-center">
                     <span className="loading loading-spinner loading-sm text-primary"></span>
                 </div>
-            ) }
+            )}
 
             <div className="flex flex-col gap-6">
                 {savedLocations?.map((location, index) => {
@@ -109,8 +127,8 @@ const SavedLocations: React.FC = () => {
                                             <BiCopy className="text-xl text-black" />
                                         </button>
 
-                                        {user && (<button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
-                                            <BsTrash className="text-xl text-black" />
+                                        {user && (<button onClick={() => deleteSavedLocation(location.id)} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
+                                            {isDeleteLoading ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-xl text-black" />)}
                                         </button>)}
                                     </div>
                                 </div>

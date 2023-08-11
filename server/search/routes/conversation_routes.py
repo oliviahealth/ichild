@@ -49,7 +49,7 @@ def add_conversations():
     except Exception as error:
         db.session.rollback()
         print(error)
-        return jsonify({ 'error': 'Unexpected error' }), 500
+        return jsonify({ 'error': 'Something went wrong!' }), 500
             
     return jsonify({ 'id': new_conversation.id, 'title': new_conversation.title, 'userId': new_conversation.user_id }), 201
 
@@ -76,7 +76,7 @@ def get_conversations():
     except Exception as error:
         db.session.rollback()
         print(error)
-        return jsonify({ 'error': 'Unexpected error' }), 500               
+        return jsonify({ 'error': 'Something went wrong!' }), 500               
 
 
     ## Should be optimized
@@ -138,13 +138,16 @@ def delete_conversations():
 
     try:
         conversation_to_delete = Conversation.query.get(conversation_id)
+
+        if(not conversation_to_delete):
+            return jsonify({ 'error': 'Conversation not found' })
         
         db.session.delete(conversation_to_delete)
         db.session.commit()
     except Exception as error:
         db.session.rollback()
         print(error)
-        return jsonify({ 'error': 'Unexpected error' }), 500
+        return jsonify({ 'error': 'Something went wrong!' }), 500
     
     return jsonify({ 'success': 'Conversation deleted successfully' })
         

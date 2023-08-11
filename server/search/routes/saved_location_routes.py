@@ -8,6 +8,21 @@ from db_models.LocationModel import Location
 
 saved_location_routes_bp = Blueprint('saved_location_routes', __name__)
 
+"""
+    Add Saved Locations Endpoint.
+
+    This endpoint allows authenticated users to add a save a location.
+    It creates a new saved location object and returns it.
+
+    Request JSON Parameters:
+        - locationName (str): The name of the location the user wants to save (This is the primary key of the LocationModel).
+        - userId (UUID): The ID of the user that is wants to save the location.
+
+    Returns:
+        - If successful, returns JSON with saved location details
+        - If no location can be found with the name, return an error with status code 400
+        - If any unexpected error occurs, returns a JSON error message with status code 500.
+"""
 @login_required
 @saved_location_routes_bp.route('/savedlocations', methods=['POST'])
 def add_saved_location():
@@ -29,10 +44,22 @@ def add_saved_location():
     except Exception as error:
         db.session.rollback()
         print(error)
-        return jsonify({ 'error': 'Unexpected error' }), 500
+        return jsonify({ 'error': 'Something went wrong!' }), 500
 
     return jsonify({ 'name': saved_location.location_name, 'userId': saved_location.user_id, 'dateCreated': saved_location.date_created })
 
+"""
+    Get Saved Locations Endpoint.
+
+    This endpoint retrieves all of the saved locations for an authenticated user
+
+    Request JSON Parameters:
+        - userId (UUID): The ID of the user that wants to get their saved locations
+
+    Returns:
+        - If successful, returns JSON with saved location details
+        - If any unexpected error occurs, returns a JSON error message with status code 500.
+"""
 @login_required
 @saved_location_routes_bp.route('/savedlocations', methods=['GET'])
 def get_saved_locations():
@@ -40,7 +67,7 @@ def get_saved_locations():
 
     try:
         # Step 1: Retrieve saved location names for the user
-        saved_location_info = [{ 'name': saved_location.location_name, 'dateCreated': saved_location.date_created } for saved_location in SavedLocation.query.filter_by(user_id=user_id).all()]
+        saved_location_info = [{ 'id': saved_location.id, 'name': saved_location.location_name, 'dateCreated': saved_location.date_created } for saved_location in SavedLocation.query.filter_by(user_id=user_id).all()]
         
         # Step 2: Use the saved location names to fetch Location objects
         saved_locations = []
@@ -49,6 +76,7 @@ def get_saved_locations():
             location = Location.query.filter_by(name=info['name']).first()
             if location:
                 location_info = {
+                    'id': info['id'],
                     'address': location.address,
                     'addressLink': location.addressLink,
                     'description': location.description,
@@ -63,6 +91,38 @@ def get_saved_locations():
     except Exception as error:
         db.session.rollback()
         print(error)
-        return jsonify({ 'error': 'Unexpected error' }), 500
+        return jsonify({ 'error': 'Something went wrong!' }), 500
 
     return jsonify(saved_locations)
+
+"""
+    Delete Saved Locations Endpoint.
+
+    This endpoint retrieves all of the saved locations for an authenticated user
+
+    Request JSON Parameters:
+        - userId (UUID): The ID of the user that wants to get their saved locations
+
+    Returns:
+        - If successful, returns JSON with saved location details
+        - If any unexpected error occurs, returns a JSON error message with status code 500.
+"""
+@login_required
+@saved_location_routes_bp.route('/savedlocations', methods=['DELETE'])
+def delete_saved_location():
+    id = request.args.get('id')
+
+    try:
+        saved_location_to_delete = SavedLocation.query.get(id)
+
+        if(not saved_location_to_delete):
+            return jsonify({ 'error': 'Saved location not found' })
+        
+        db.session.delete(saved_location_to_delete)
+        db.session.commit()
+    except Exception as error:
+        db.session.rollback()
+        print(error)
+        return jsonify({ 'error': 'Something went wrong!' }), 500
+    
+    return jsonify({ 'success': 'Saved location deleted successfully' }), 201

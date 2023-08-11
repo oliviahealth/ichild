@@ -55,7 +55,7 @@ def signup():
     except Exception as error:
         db.session.rollback()
         print(error)
-        return jsonify({ 'error': "Unexpected error" }), 500
+        return jsonify({ 'error': "Something went wrong!" }), 500
 
     return jsonify({ 'id': new_user.id, "name": new_user.name, "email": new_user.email, 'dateCreated': date_created }), 201
 
@@ -92,7 +92,7 @@ def signin():
     except Exception as error:
         db.session.rollback()
         print(error)
-        return jsonify({ 'error': 'Unexpected error' }), 500
+        return jsonify({ 'error': 'Something went wrong!' }), 500
         
     return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created }), 200
 
@@ -115,6 +115,6 @@ def signout():
     except Exception as error:
         db.session.rollback()
         print(error)
-        return jsonify({ 'error': 'Unexpected error' }), 500
+        return jsonify({ 'error': 'Something went wrong!' }), 500
 
     return jsonify({ 'success' : 'User logged out successfully' }), 200

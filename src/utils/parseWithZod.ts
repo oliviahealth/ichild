@@ -1,7 +1,6 @@
 import { ZodSchema } from "zod";
 import useAppStore from "../stores/useAppStore";
 
-
 /*
     Parse with zod acts as a wrapper around zod parse
     Takes in the data to parse and the schema to validate against
@@ -12,7 +11,7 @@ const parseWithZod = async (dataToParse: any, zodSchema: ZodSchema) => {
         const parseResult = await zodSchema.safeParseAsync(dataToParse)
 
         if(!parseResult.success) {
-            throw new Error('Something went wrong!')
+            throw new Error(parseResult.error.toString())
         }
     } catch (error: any) {
         useAppStore.setState({ error: 'Something went wrong!' });

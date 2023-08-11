@@ -33,7 +33,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     }
 
     const saveLocation = async (location: ILocation) => {
-       await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'POST', { locationName: location.name, userId: user?.id });
+        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'POST', { locationName: location.name, userId: user?.id });
     }
 
     return (
@@ -102,13 +102,13 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                                 </div>
 
                                                 <div className="flex flex-col gap-6">
-                                                    <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={(evt) => copyText(evt, location.address)}>
-                                                        <BiCopy className="text-xl text-black" />
-                                                    </button>
-
                                                     {user && (<button onClick={() => saveLocation(location)} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
                                                         <BiBookmark className="text-xl text-black" />
                                                     </button>)}
+
+                                                    <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={(evt) => copyText(evt, location.address)}>
+                                                        <BiCopy className="text-xl text-black" />
+                                                    </button>
                                                 </div>
                                             </div>
                                         </ChatBubble>
