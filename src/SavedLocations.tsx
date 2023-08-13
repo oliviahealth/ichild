@@ -17,6 +17,7 @@ const SavedLocations: React.FC = () => {
     const user = useAppStore((state) => state.user);
 
     const [savedLocations, setSavedLocations] = useState<null | ISavedLocation[]>(null);
+    const [deletingLocationId, setDeletingLocationId] = useState<null | string>(null);
 
     const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
@@ -39,11 +40,13 @@ const SavedLocations: React.FC = () => {
 
         return savedLocationId;
     }, {
+        onMutate: (savedLocationId) => setDeletingLocationId(savedLocationId),
         onSuccess: (savedLocationId) => {
             const newSavedLocations = savedLocations?.filter((location) => location.id !== savedLocationId);
 
             setSavedLocations(newSavedLocations ?? null);
-        }
+        },
+        onSettled: () => setDeletingLocationId(null)
     })
 
     useEffect(() => {
@@ -128,7 +131,7 @@ const SavedLocations: React.FC = () => {
                                         </button>
 
                                         {user && (<button onClick={() => deleteSavedLocation(location.id)} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
-                                            {isDeleteLoading ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-xl text-black" />)}
+                                            {isDeleteLoading && deletingLocationId === location.id ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-xl text-black" />)}
                                         </button>)}
                                     </div>
                                 </div>

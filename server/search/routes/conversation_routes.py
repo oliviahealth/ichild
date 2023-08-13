@@ -37,12 +37,16 @@ def add_conversations():
     # Check if a conversation with the provided id exists, and if so, return that conversation
     existing_conversation = Conversation.query.filter_by(id=id).first()
     if(existing_conversation):
-        return jsonify({ 'id': existing_conversation.id, 'title': existing_conversation.title, 'userId': existing_conversation.user_id }), 201
+        date_updated = int(time.time() * 1000)
+        existing_conversation.date_updated = date_updated
+        db.session.commit()
+
+        return jsonify({ 'id': existing_conversation.id, 'title': existing_conversation.title, 'userId': existing_conversation.user_id, 'dateUpdated': existing_conversation.date_updated }), 201
 
     try:
         date_created = int(time.time() * 1000)
 
-        new_conversation = Conversation(id=id, title=title, user_id=user_id, date_created=date_created)
+        new_conversation = Conversation(id=id, title=title, user_id=user_id, date_created=date_created, date_updated=date_created)
     
         db.session.add(new_conversation)
         db.session.commit()
@@ -72,7 +76,9 @@ def get_conversations():
     user_id = request.args.get('userId')
 
     try:
-        user_conversations = Conversation.query.filter_by(user_id=user_id).all()
+        # Get the conversations that match the userid and filter them from most recently updated to oldest
+        user_conversations = Conversation.query.filter_by(user_id=user_id).order_by(db.func.to_timestamp(Conversation.date_updated / 1000).desc()).all()
+
     except Exception as error:
         db.session.rollback()
         print(error)
@@ -89,6 +95,7 @@ def get_conversations():
             'id': conversation.id,
             'title': conversation.title,
             'dateCreated': conversation.date_created,
+            'dateUpdated': conversation.date_updated,
             'responses': [
                 {
                     'id': response.id,

@@ -35,7 +35,7 @@ const SidePanel: React.FC = () => {
     })
 
     const { mutate: getConversations, isLoading } = useMutation(async () => {
-        const conversations = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user?.id}`, 'GET');
+        const conversations: IConversation[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user?.id}`, 'GET');
 
         // Make sure all of the conversations are compliant with the schema
         conversations.forEach((conversation: IConversation) => parseWithZod(conversation, ConversationSchema));

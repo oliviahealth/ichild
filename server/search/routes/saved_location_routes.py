@@ -66,8 +66,8 @@ def get_saved_locations():
     user_id = request.args.get('userId')
 
     try:
-        # Step 1: Retrieve saved location names for the user
-        saved_location_info = [{ 'id': saved_location.id, 'name': saved_location.location_name, 'dateCreated': saved_location.date_created } for saved_location in SavedLocation.query.filter_by(user_id=user_id).all()]
+        # Step 1: Retrieve saved location names for the user sorted from newest to oldest
+        saved_location_info = [{ 'id': saved_location.id, 'name': saved_location.location_name, 'dateCreated': saved_location.date_created } for saved_location in SavedLocation.query.filter_by(user_id=user_id).order_by(db.func.to_timestamp(SavedLocation.date_created / 1000).desc()).all()]
         
         # Step 2: Use the saved location names to fetch Location objects
         saved_locations = []

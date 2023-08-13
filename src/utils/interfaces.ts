@@ -30,7 +30,8 @@ export const ConversationSchema = z.object({
     id: z.string().uuid(),
     responses: z.array(APIResponseSchema),
     userId: z.string().optional(),
-    dateCreated: z.number()
+    dateCreated: z.number(),
+    dateUpdated: z.number()
 });
 export type IConversation = z.infer<typeof ConversationSchema>;
 
