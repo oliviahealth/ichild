@@ -62,9 +62,12 @@ def add_conversations():
 
     This endpoint allows authenticated users to retrieve their conversations.
     It retrieves user conversations, includes relevant response details, and returns them.
+    It retrieves by default 5 conversations but can get paginate more
 
     Request Query Parameters:
         - userId (UUID): The ID of the user whose conversations are to be retrieved.
+        - page (Integer, optional): The page number of results. Default is 1
+        - perPage (integer, optional): The number of conversations per page. Default is 5
 
     Returns:
         - If successful, returns JSON with user conversations and associated response details.
@@ -74,10 +77,12 @@ def add_conversations():
 @conversation_routes_bp.route('/conversations', methods=['GET'])
 def get_conversations():
     user_id = request.args.get('userId')
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('perPage', default=5, type=int)
 
     try:
         # Get the conversations that match the userid and filter them from most recently updated to oldest
-        user_conversations = Conversation.query.filter_by(user_id=user_id).order_by(db.func.to_timestamp(Conversation.date_updated / 1000).desc()).all()
+        user_conversations = Conversation.query.filter_by(user_id=user_id).order_by(db.func.to_timestamp(Conversation.date_updated / 1000).desc()).paginate(page=page, per_page=per_page)
 
     except Exception as error:
         db.session.rollback()

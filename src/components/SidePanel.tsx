@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { Link, useLocation } from "react-router-dom";
 
@@ -26,6 +26,9 @@ const SidePanel: React.FC = () => {
     const setConversations = useAppStore((state) => state.setConversations);
     const removeConversation = useAppStore((state) => state.removeConversation);
 
+    // Used for pagination
+    const [currentPage, setCurrentPage] = useState(1);
+
     const { mutate: deleteConversation, isLoading: isDeleteLoading } = useMutation(async (conversationId: string) => {
         await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?id=${conversationId}`, 'DELETE')
     }, {
@@ -35,15 +38,16 @@ const SidePanel: React.FC = () => {
     })
 
     const { mutate: getConversations, isLoading } = useMutation(async () => {
-        const conversations: IConversation[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user?.id}`, 'GET');
+        const conversations: IConversation[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user?.id}&page=${currentPage}&per_page=5`, 'GET');
 
         // Make sure all of the conversations are compliant with the schema
         conversations.forEach((conversation: IConversation) => parseWithZod(conversation, ConversationSchema));
 
         return conversations
     }, {
-        onSuccess: (conversations) => {
-            setConversations(conversations);
+        onSuccess: (newConversations) => {
+            setConversations([...conversations, ...newConversations]);
+            setCurrentPage(currentPage + 1)
         }
     })
 
@@ -74,12 +78,6 @@ const SidePanel: React.FC = () => {
 
                         <p className="text-sm text-gray-500 my-4 font-semibold">Recent Activity</p>
 
-                        {isLoading && (
-                            <div className="flex justify-center">
-                                <span className="loading loading-spinner loading-sm text-primary"></span>
-                            </div>
-                        )}
-
                         {user ? (
                             <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-26rem)]">
                                 {conversations.map((conversation, index) => (
@@ -94,6 +92,11 @@ const SidePanel: React.FC = () => {
                                         </button>
                                     </Link>
                                 ))}
+
+                                { /* Only display the load previous chats button if no chats are currently being loaded and if the conversations array length is less than 5 */ }
+                                {!isLoading && !(conversations.length < 5) && (<button className="btn btn-sm border-none text-black hover:bg-gray-400 bg-gray-300 my-4" onClick={() => getConversations()}>
+                                    Previous Chats
+                                </button>)}
                             </div>
                         ) : (
                             <div>
@@ -102,6 +105,12 @@ const SidePanel: React.FC = () => {
                                 <Link to="/signin" className="btn btn-primary w-full btn-outline border-primary">
                                     Sign In
                                 </Link>
+                            </div>
+                        )}
+
+                        {isLoading && (
+                            <div className="flex justify-center">
+                                <span className="loading loading-spinner loading-sm text-primary"></span>
                             </div>
                         )}
                     </div>
