@@ -23,17 +23,17 @@ const Layout = () => {
 
 
   return (
-    <div className="h-screen">
+    <div className="h-screen overflow-hidden">
       <div className="flex flex-col h-screen text-black bg-[url('../assets/background.png')]">
         <div className="shadow-2xl bg-white">
           <Navbar />
         </div>
 
-        <div className="w-full xl:container mx-auto h-full">
+        <div className="w-full xl:container mx-auto h-full m-2">
           { /* Render all children components with the Outlet 
                 https://reactrouter.com/en/main/components/outlet
           */ }
-          <div className="flex h-full bg-opacity-80 bg-gray-100">
+          <div className="flex h-full bg-opacity-80 bg-gray-100 rounded-box">
             <div className="flex h-full w-full">
               <div>
                 <div className={`drawer ${isSidePanelOpen ? "drawer-open" : ""} h-full`}>

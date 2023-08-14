@@ -57,10 +57,10 @@ const SidePanel: React.FC = () => {
         <>
             <input id="sidepanel" type="checkbox" className="drawer-toggle" />
 
-            <div className="drawer-side h-full shadow-xl">
+            <div className="drawer-side h-full shadow-xl rounded-box rounded-br-none bg-white text-base-neutral">
                 <label htmlFor="my-drawer" className="drawer-overlay"></label>
 
-                <div className="w-[275px] p-4 h-full bg-white text-base-neutral flex flex-col justify-between">
+                <div className="w-[275px] p-4 h-full flex flex-col justify-between">
                     <div>
                         <div className="flex gap-2 justify-around">
                             <Link to={'/'} className="btn btn-primary w-2/3 btn-outline border-primary" onClick={() => createNewConversation()}>
@@ -72,7 +72,7 @@ const SidePanel: React.FC = () => {
                             </button>
                         </div>
 
-                        <p className="text-sm text-gray-500 font-medium my-4">Recent Activity</p>
+                        <p className="text-sm text-gray-500 my-4 font-semibold">Recent Activity</p>
 
                         {isLoading && (
                             <div className="flex justify-center">
@@ -81,7 +81,7 @@ const SidePanel: React.FC = () => {
                         )}
 
                         {user ? (
-                            <div className="flex flex-col">
+                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-26rem)]">
                                 {conversations.map((conversation, index) => (
                                     <Link to={"/"} onClick={() => switchConversation(conversation.id)} key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversation.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                         <div className="flex items-center">

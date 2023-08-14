@@ -97,61 +97,57 @@ const SavedLocations: React.FC = () => {
                 </div>
             )}
 
-            <div className="h-full flex flex-col overflow-hidden">
-                <div className="overflow-y-auto">
-                    <div className="flex flex-col gap-6 overflow-y-auto max-h-[calc(100vh-11rem)]">
-                        {savedLocations?.map((location, index) => {
-                            const { formattedDate, formattedTime } = convertMillisecondsToFormattedDateTime(location.dateCreated);
+            <div className="flex flex-col gap-6 overflow-y-auto max-h-[calc(100vh-11rem)]">
+                {savedLocations?.map((location, index) => {
+                    const { formattedDate, formattedTime } = convertMillisecondsToFormattedDateTime(location.dateCreated);
 
-                            return (<div key={index} className="flex items-center gap-4">
-                                <div>
-                                    <OllieAvatar />
-                                </div>
+                    return (<div key={index} className="flex items-center gap-4">
+                        <div>
+                            <OllieAvatar />
+                        </div>
 
-                                <div>
-                                    <ChatBubble isResponse={true} >
-                                        <div className="flex justify-between items-center p-1 sm:w-[27rem]">
-                                            <div className="flex items-center gap-6 w-full">
-                                                {/* Render the letters of the alphabet starting with 'A' */}
-                                                <p className="text-3xl text-primary">{String.fromCharCode(65 + index)}</p>
+                        <div>
+                            <ChatBubble isResponse={true} >
+                                <div className="flex justify-between items-center p-1 sm:w-[27rem]">
+                                    <div className="flex items-center gap-6 w-full">
+                                        {/* Render the letters of the alphabet starting with 'A' */}
+                                        <p className="text-3xl text-primary">{String.fromCharCode(65 + index)}</p>
 
-                                                <div className="w-full">
-                                                    <p className="font-semibold">{location.name}</p>
+                                        <div className="w-full">
+                                            <p className="font-semibold">{location.name}</p>
 
-                                                    <div className="flex gap-2 my-3">
-                                                        <a className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Website</a>
-                                                        <a href={location.addressLink} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Directions</a>
-                                                    </div>
-
-                                                    <p className="text-sm">{location.address}</p>
-                                                </div>
+                                            <div className="flex gap-2 my-3">
+                                                <a className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Website</a>
+                                                <a href={location.addressLink} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Directions</a>
                                             </div>
 
-                                            <div className="flex flex-col gap-6">
-                                                <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={(evt) => copyText(evt, location.address)}>
-                                                    <BiCopy className="text-xl text-black" />
-                                                </button>
-
-                                                {user && (<button onClick={() => deleteSavedLocation(location.id)} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
-                                                    {isDeleteLoading && deletingLocationId === location.id ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-xl text-black" />)}
-                                                </button>)}
-                                            </div>
+                                            <p className="text-sm">{location.address}</p>
                                         </div>
-                                    </ChatBubble>
-                                </div>
+                                    </div>
 
-                                <div className="w-[29rem] h-32 p-3 bg-white rounded-xl">
-                                    <InteractiveMap center={{ lat: location.latitude, lng: location.longitude }} locations={[location]} />
-                                </div>
+                                    <div className="flex flex-col gap-6">
+                                        <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={(evt) => copyText(evt, location.address)}>
+                                            <BiCopy className="text-xl text-black" />
+                                        </button>
 
-                                <div className="text-sm">
-                                    <p>{formattedTime}</p>
-                                    <p>{formattedDate}</p>
+                                        {user && (<button onClick={() => deleteSavedLocation(location.id)} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
+                                            {isDeleteLoading && deletingLocationId === location.id ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-xl text-black" />)}
+                                        </button>)}
+                                    </div>
                                 </div>
-                            </div>)
-                        })}
-                    </div>
-                </div>
+                            </ChatBubble>
+                        </div>
+
+                        <div className="w-[29rem] h-32 p-3 bg-white rounded-xl">
+                            <InteractiveMap center={{ lat: location.latitude, lng: location.longitude }} locations={[location]} />
+                        </div>
+
+                        <div className="text-sm">
+                            <p>{formattedTime}</p>
+                            <p>{formattedDate}</p>
+                        </div>
+                    </div>)
+                })}
             </div>
         </div>
     )
