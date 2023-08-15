@@ -1,11 +1,11 @@
-import React, { useRef, useEffect } from "react";
-import { v4 as uuid } from "uuid";
+import React, { useRef, useEffect, useState } from "react";
+import { v4 as uuid } from 'uuid';
 import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
 
 import useAppStore from "../../stores/useAppStore";
 import parseWithZod from "../../utils/parseWithZod";
-import { APIResponseSchema, IAPIResponse } from "../../utils/interfaces";
+import { APIResponseSchema, ConversationSchema, IAPIResponse, IConversation } from "../../utils/interfaces";
 
 import { TfiMenuAlt } from "react-icons/tfi";
 
@@ -15,20 +15,19 @@ import ApiResponse from "./ApiResponse";
 import fetchWithAxios from "../../utils/fetchWithAxios";
 
 const ChatComponent: React.FC = () => {
-  // Use Zustand to manage app state such as the questions the user asks and the response from the api
-  // https://github.com/pmndrs/zustand
-  const apiResponses = useAppStore((state) => state.apiResponses);
-  const setApiResponses = useAppStore((state) => state.setApiResponses);
-
-  // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
-  const addApiResponseToConversation = useAppStore((state) => state.addApiResponseToConversation);
-  const currentConversationId = useAppStore((state) => state.currentConversationId);
-  const setCurrentConversationId = useAppStore((state) => state.setCurrentConversationId);
-
   const user = useAppStore((state) => state.user);
 
   const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
   const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
+
+  const [apiResponses, setApiResponses] = useState<IAPIResponse[]>([]);
+
+  const conversationDetails = useAppStore((state) => state.conversationDetails);
+  const setConversationDetails = useAppStore((state) => state.setConversationDetails);
+
+  // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
+  const currentConversationId = useAppStore((state) => state.currentConversationId);
+  const setCurrentConversationId = useAppStore((state) => state.setCurrentConversationId);
 
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
@@ -50,18 +49,34 @@ const ChatComponent: React.FC = () => {
   // Set the current conversation id to be null when the user navigates off the chat page
   useEffect(() => {
     return () => {
-    setCurrentConversationId(null);
+      setCurrentConversationId(null);
     };
   }, []);
 
+  const { mutate: getConversationDetails, isLoading } = useMutation(async () => {
+    const conversationDetails: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversation?conversationId=${currentConversationId}`, 'GET');
+
+    parseWithZod(conversationDetails, ConversationSchema)
+
+    return conversationDetails
+  }, {
+    onSuccess: (conversationDetails) => {
+      setApiResponses(conversationDetails.responses);
+    }
+  });
+
+  useEffect(() => {
+    setApiResponses([])
+
+    if (currentConversationId) {
+      getConversationDetails()
+    }
+  }, [currentConversationId]);
 
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
-  const { mutate: getResponse, isLoading } = useMutation(async (data: any) => {
+  const { mutate: getResponse, isLoading: isResponseLoading } = useMutation(async (data: any) => {
     if (data.query === "") return
-
-    const conversationId = currentConversationId ?? uuid()
-    setCurrentConversationId(conversationId)
 
     const formData = new FormData();
     formData.append("data", data.query);
@@ -70,8 +85,14 @@ const ChatComponent: React.FC = () => {
 
     // If a user is logged in, save their conversation
     if (user) {
-      await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user.id}`, 'POST', { id: conversationId, title: response.userQuery, userId: user.id })
-      await fetchWithAxios(`${import.meta.env.VITE_API_URL}/response`, 'POST', {...response, conversationId})
+      const conversation: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user.id}`, 'POST', { id: currentConversationId, title: response.userQuery, userId: user.id })
+      await fetchWithAxios(`${import.meta.env.VITE_API_URL}/response`, 'POST', { ...response, conversationId: conversation.id })
+
+      if (!currentConversationId) {
+        setConversationDetails([...conversationDetails, { id: conversation.id ?? uuid(), title: response.userQuery }])
+      }
+
+      setCurrentConversationId(conversation.id);
     }
 
     // Parse the response and make sure it complies with the expected API Response
@@ -79,14 +100,12 @@ const ChatComponent: React.FC = () => {
 
     return response
   }, {
-    onSuccess: async (response: IAPIResponse | undefined) => {    
+    onSuccess: (response) => {
       if (response) {
-        
-        addApiResponseToConversation(currentConversationId!, response)
-        setApiResponses([...apiResponses, response]);
-
-        reset()
+        setApiResponses([...apiResponses, response])
       }
+
+      reset()
     }
   });
 
@@ -96,6 +115,12 @@ const ChatComponent: React.FC = () => {
         <button className="drawer-content absolute btn w-12 m-3 btn-primary btn-outline border-primary bg-white z-10" onClick={() => setisSidePanelOpen(!isSidePanelOpen)}>
           <TfiMenuAlt className="text-lg" />
         </button>
+      )}
+
+      {isLoading && (
+        <div className="flex justify-center my-4">
+          <span className="loading loading-spinner loading-sm text-primary"></span>
+        </div>
       )}
 
       <div className="h-full p-4 flex flex-col justify-end">
@@ -123,7 +148,7 @@ const ChatComponent: React.FC = () => {
           })}
 
           { /* Render loading dots while fetching api response */}
-          {isLoading ? (<>
+          {isResponseLoading ? (<>
             <ChatBubble isResponse={false}>
               <p>{getValues("query")}</p>
             </ChatBubble>

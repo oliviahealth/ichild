@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useMutation } from "react-query";
 import { Link, useLocation } from "react-router-dom";
 
 import useAppStore from "../stores/useAppStore";
 import fetchWithAxios from "../utils/fetchWithAxios";
 import parseWithZod from "../utils/parseWithZod";
-import { IConversation, ConversationSchema } from "../utils/interfaces";
+import { IConversationDetail, ConversationDetailSchema } from "../utils/interfaces";
 
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { IoLocationOutline } from "react-icons/io5";
@@ -18,44 +18,45 @@ const SidePanel: React.FC = () => {
 
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
-    const conversations = useAppStore((state) => state.conversations);
+    const conversationDetails = useAppStore((state) => state.conversationDetails);
+    const setConversationDetails = useAppStore((state) => state.setConversationDetails);
 
     const currentConversationId = useAppStore((state) => state.currentConversationId);
-    const switchConversation = useAppStore((state) => state.switchConversation);
-    const createNewConversation = useAppStore((state) => state.createNewConversation);
-    const setConversations = useAppStore((state) => state.setConversations);
-    const removeConversation = useAppStore((state) => state.removeConversation);
-
-    // Used for pagination
-    const [currentPage, setCurrentPage] = useState(1);
+    const setCurrentConversationId = useAppStore((state) => state.setCurrentConversationId);
 
     const { mutate: deleteConversation, isLoading: isDeleteLoading } = useMutation(async (conversationId: string) => {
         await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?id=${conversationId}`, 'DELETE')
+
+        return conversationId
     }, {
-        onSuccess: (_error, conversationId, _context) => {
-            removeConversation(conversationId);
+        onSuccess: (conversationId) => {
+            setConversationDetails(conversationDetails.filter((conversationDetail) => conversationDetail.id !== conversationId));
+
+            setCurrentConversationId(null);
         }
     })
 
-    const { mutate: getConversations, isLoading } = useMutation(async () => {
-        const conversations: IConversation[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user?.id}&page=${currentPage}&per_page=5`, 'GET');
+    const { mutate: getConversationDetails, isLoading } = useMutation(async () => {
+        const conversationDetails: IConversationDetail[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversationdetails?userId=${user?.id}`);
 
-        // Make sure all of the conversations are compliant with the schema
-        conversations.forEach((conversation: IConversation) => parseWithZod(conversation, ConversationSchema));
+        conversationDetails.forEach((conversationDetail) => parseWithZod(conversationDetail, ConversationDetailSchema));
 
-        return conversations
+        return conversationDetails
     }, {
-        onSuccess: (newConversations) => {
-            setConversations([...conversations, ...newConversations]);
-            setCurrentPage(currentPage + 1)
+        onSuccess: (conversationDetails) => {
+            setConversationDetails(conversationDetails);
         }
     })
 
     useEffect(() => {
         if (user) {
-            getConversations()
+            getConversationDetails()
         }
     }, [user]);
+
+    const createNewConversation = () => {
+        setCurrentConversationId(null);
+    }
 
     return (
         <>
@@ -67,7 +68,7 @@ const SidePanel: React.FC = () => {
                 <div className="w-[275px] p-4 h-full flex flex-col justify-between">
                     <div>
                         <div className="flex gap-2 justify-around">
-                            <Link to={'/'} className="btn btn-primary w-2/3 btn-outline border-primary" onClick={() => createNewConversation()}>
+                            <Link to={'/'} className="btn btn-primary w-2/3 btn-outline border-primary" onClick={createNewConversation}>
                                 New Chat
                             </Link>
 
@@ -80,21 +81,21 @@ const SidePanel: React.FC = () => {
 
                         {user ? (
                             <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-26rem)]">
-                                {conversations.map((conversation, index) => (
-                                    <Link to={"/"} onClick={() => switchConversation(conversation.id)} key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversation.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                                {conversationDetails.map((conversationDetail, index) => (
+                                    <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversationDetail.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                         <div className="flex items-center">
                                             <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
-                                            <p className="ml-4">{conversation.title}</p>
+                                            <p className="ml-4">{conversationDetail.title}</p>
                                         </div>
 
-                                        <button onClick={() => deleteConversation(conversation.id)} className={`btn btn-ghost btn-sm ${!(conversation.id === currentConversationId) ? "hidden" : ""}`}>
+                                        <button onClick={() => deleteConversation(conversationDetail.id)} className={`btn btn-ghost btn-sm ${!(conversationDetail.id === currentConversationId) ? "hidden" : ""}`}>
                                             {isDeleteLoading ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-lg" />)}
                                         </button>
                                     </Link>
                                 ))}
 
-                                { /* Only display the load previous chats button if no chats are currently being loaded and if the conversations array length is less than 5 */ }
-                                {!isLoading && !(conversations.length < 5) && (<button className="btn btn-sm border-none text-black hover:bg-gray-400 bg-gray-300 my-4" onClick={() => getConversations()}>
+                                { /* Only display the load previous chats button if no chats are currently being loaded and if the conversations array length is less than 5 */}
+                                {!isLoading && conversationDetails && !(conversationDetails.length < 5) && (<button className="btn btn-sm border-none text-black hover:bg-gray-400 bg-gray-300 my-4">
                                     Previous Chats
                                 </button>)}
                             </div>

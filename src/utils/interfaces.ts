@@ -7,7 +7,8 @@ export const LocationSchema = z.object({
     name: z.string(),
     phone: z.string(),
     latitude: z.number(),
-    longitude: z.number()
+    longitude: z.number(),
+    isSaved: z.boolean()
 });
 export type ILocation = z.infer<typeof LocationSchema>
 
@@ -34,6 +35,12 @@ export const ConversationSchema = z.object({
     dateUpdated: z.number()
 });
 export type IConversation = z.infer<typeof ConversationSchema>;
+
+export const ConversationDetailSchema = z.object({
+    id: z.string().uuid(),
+    title: z.string()
+});
+export type IConversationDetail = z.infer<typeof ConversationDetailSchema>
 
 export const UserSchema = z.object({
     id: z.string().uuid(),

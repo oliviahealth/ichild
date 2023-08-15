@@ -73,7 +73,7 @@ def formatted_db_search():
 
         date_created = int(time.time() * 1000)
 
-        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude })
+        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'isSaved': False })
 
     results = {
         'userQuery': query,

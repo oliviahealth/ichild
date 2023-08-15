@@ -23,14 +23,14 @@ const Navbar: React.FC = () => {
           </label>
           <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52">
             { user ? (<li><Link to={'/user'}>Sign Out</Link></li>) : <li><Link to={'/signin'}>Sign In</Link></li> }
-            <li><a>OliviaHealth</a></li>
+            <li><a href="http://www.oliviahealth.org" target="_blank">OliviaHealth</a></li>
           </ul>
         </div>
 
       </div>
       <div className="navbar-end hidden lg:flex">
         <ul className="menu menu-horizontal">
-          <li><a>OliviaHealth</a></li>
+          <li><a href="http://www.oliviahealth.org" target="_blank">OliviaHealth</a></li>
           { user ? (<li><Link to={'/user'}>Sign Out</Link></li>) : <li><Link to={'/signin'}>Sign In</Link></li> }
         </ul>
       </div>

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useMutation } from "react-query";
 
 import useAppStore from "../../stores/useAppStore";
 import fetchWithAxios from "../../utils/fetchWithAxios";
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
 import { MdOutlineOpenInNew } from "react-icons/md";
-import { BiCopy, BiBookmark } from "react-icons/bi";
+import { BiCopy, BiBookmark, BiSolidBookmark } from "react-icons/bi";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import LocationCarousel from "./LocationCarousel";
@@ -32,9 +33,15 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
         navigator.clipboard.writeText(text);
     }
 
-    const saveLocation = async (location: ILocation) => {
-        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'POST', { locationName: location.name, userId: user?.id });
-    }
+    const { mutate: saveLocation, isLoading } = useMutation(async (location: ILocation) => {
+        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'POST', { name: location.name, userId: user?.id });
+
+        return location
+    }, {
+        onSuccess: (location) => {
+            apiResponse.locations.map((elm) => elm == location ? elm.isSaved = true : '')
+        }
+    })
 
     return (
         <div>
@@ -103,7 +110,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                                                 <div className="flex flex-col gap-6">
                                                     {user && (<button onClick={() => saveLocation(location)} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
-                                                        <BiBookmark className="text-xl text-black" />
+                                                        {location.isSaved ? (<BiSolidBookmark className="text-xl text-black" />) : (<BiBookmark className="text-xl text-black" />)}
                                                     </button>)}
 
                                                     <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={(evt) => copyText(evt, location.address)}>

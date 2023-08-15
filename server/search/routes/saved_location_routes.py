@@ -27,7 +27,7 @@ saved_location_routes_bp = Blueprint('saved_location_routes', __name__)
 @saved_location_routes_bp.route('/savedlocations', methods=['POST'])
 def add_saved_location():
     data = request.get_json()
-    location_name = data.get('locationName') # Remember, the name is the primary key for the LocationModel
+    location_name = data.get('name') # Remember, the name is the primary key for the LocationModel
     user_id = data.get('userId')
 
     try:
@@ -37,7 +37,7 @@ def add_saved_location():
             return jsonify({ 'error': "Location doesn't exist" }), 400
         
         date_created = int(time.time() * 1000)
-        saved_location = SavedLocation(location_name=location_name, user_id=user_id, date_created=date_created)
+        saved_location = SavedLocation(name=location_name, user_id=user_id, date_created=date_created)
         
         db.session.add(saved_location)
         db.session.commit()
@@ -46,7 +46,7 @@ def add_saved_location():
         print(error)
         return jsonify({ 'error': 'Something went wrong!' }), 500
 
-    return jsonify({ 'name': saved_location.location_name, 'userId': saved_location.user_id, 'dateCreated': saved_location.date_created })
+    return jsonify({ 'name': saved_location.name, 'userId': saved_location.user_id, 'dateCreated': saved_location.date_created })
 
 """
     Get Saved Locations Endpoint.
@@ -67,7 +67,7 @@ def get_saved_locations():
 
     try:
         # Step 1: Retrieve saved location names for the user sorted from newest to oldest
-        saved_location_info = [{ 'id': saved_location.id, 'name': saved_location.location_name, 'dateCreated': saved_location.date_created } for saved_location in SavedLocation.query.filter_by(user_id=user_id).order_by(db.func.to_timestamp(SavedLocation.date_created / 1000).desc()).all()]
+        saved_location_info = [{ 'id': saved_location.id, 'name': saved_location.name, 'dateCreated': saved_location.date_created } for saved_location in SavedLocation.query.filter_by(user_id=user_id).order_by(db.func.to_timestamp(SavedLocation.date_created / 1000).desc()).all()]
         
         # Step 2: Use the saved location names to fetch Location objects
         saved_locations = []
@@ -85,6 +85,7 @@ def get_saved_locations():
                     'name': location.name,
                     'phone': location.phone,
                     'dateCreated': info['dateCreated'],
+                    'isSaved': True
                 }
                 saved_locations.append(location_info)
 
