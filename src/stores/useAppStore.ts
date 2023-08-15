@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { IUser, IConversationDetail } from "../utils/interfaces";
+import { IUser, IConversationPreview } from "../utils/interfaces";
 
 interface AppState {
     user: IUser | null
@@ -12,8 +12,8 @@ interface AppState {
     currentConversationId: string | null
     setCurrentConversationId: (conversationId: string | null) => void
 
-    conversationDetails: IConversationDetail[]
-    setConversationDetails: (conversationDetail: IConversationDetail[]) => void
+    conversationPreviews: IConversationPreview[]
+    setConversationPreviews: (conversationDetail: IConversationPreview[]) => void
 
     error: string | null,
     setError: (error: string | null) => void
@@ -29,8 +29,8 @@ const useAppStore = create<AppState>()((set) => ({
     currentConversationId: null,
     setCurrentConversationId: (currentConversationId => set({ currentConversationId })),
 
-    conversationDetails: [],
-    setConversationDetails: (conversationDetails) => set({ conversationDetails }),
+    conversationPreviews: [],
+    setConversationPreviews: (conversationDetails) => set({ conversationPreviews: conversationDetails }),
 
     error: null,
     setError: (error => set({ error })),

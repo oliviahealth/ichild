@@ -13,8 +13,7 @@ conversation_routes_bp = Blueprint('conversation_routes', __name__)
     Add Conversation Endpoint.
 
     This endpoint allows authenticated users to add conversations.
-    It checks if a conversation with the provided ID already exists,
-    and if not, it creates a new conversation and returns its details.
+    It checks if a conversation with the provided ID already exists and if not, it creates a new conversation and returns its details.
 
     Request JSON Parameters:
         - id (UUID): The ID of the conversation.
@@ -26,8 +25,6 @@ conversation_routes_bp = Blueprint('conversation_routes', __name__)
         - If the conversation is added successfully, returns JSON with new conversation details and status code 201.
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
-
-
 @login_required
 @conversation_routes_bp.route('/conversations', methods=['POST'])
 def add_conversations():
@@ -51,7 +48,6 @@ def add_conversations():
 
         new_conversation = Conversation(title=title, user_id=user_id, date_created=date_created, date_updated=date_created)
 
-
         db.session.add(new_conversation)
         db.session.commit()
     except Exception as error:
@@ -61,27 +57,37 @@ def add_conversations():
 
     return jsonify({'id': new_conversation.id, 'title': new_conversation.title, 'userId': new_conversation.user_id}), 201
 
+"""
+    Get Conversation Preview Endpoint.
+
+    This endpoint allows authenticated users to retrieve a few details about their previous conversations
+    It retrieves only the id and title for each previous conversation so that they can be displayed on the side panel
+    
+    Request Query Parameters:
+        - conversationId (UUID): The ID of the conversation to be retrieved.
+
+    Returns:
+        - If successful, returns JSON with the id and title for each conversation.
+        - If any unexpected error occurs, returns a JSON error message with status code 500.
+"""
 @login_required
-@conversation_routes_bp.route('/conversationdetails')
-def get_conversation_details():
+@conversation_routes_bp.route('/conversationpreviews')
+def get_conversation_previews():
     user_id = request.args.get('userId')
 
     try:
-        conversations = Conversation.query.filter_by(user_id=user_id).with_entities(Conversation.id, Conversation.title).all()
-
-        conversation_details = [{ 'id': conversation[0], 'title': conversation[1] } for conversation in conversations]
+        conversation_previews = [{ 'id': conversation[0], 'title': conversation[1] } for conversation in Conversation.query.filter_by(user_id=user_id).with_entities(Conversation.id, Conversation.title).all()]
     except Exception as error:
         db.session.rollback()
         print(error)
         return jsonify({ 'error': 'Something went wrong!' }), 500
     
-    return jsonify(conversation_details)
+    return jsonify(conversation_previews)
 
 """
     Get Conversation Endpoint.
 
-    This endpoint allows authenticated users to retrieve a specific conversation based on a provided conversation id.
-    It retrieves the conversations with relevant response details, and returns it.
+    This endpoint allows authenticated users to retrieve a specific conversation and all the fields associated with it based on a provided conversation id.
 
     Request Query Parameters:
         - conversationId (UUID): The ID of the conversation to be retrieved.
@@ -142,30 +148,24 @@ def get_conversation():
 """
     Get Conversations Endpoint.
 
-    This endpoint allows authenticated users to retrieve all of their conversations.
-    It retrieves user conversations, includes relevant response details, and returns them.
-    It retrieves by default 5 conversations but can get paginate more
+    This endpoint allows authenticated users to retrieve all of their conversations with all associated fields.
 
     Request Query Parameters:
         - userId (UUID): The ID of the user whose conversations are to be retrieved.
-        - page (Integer, optional): The page number of results. Default is 1
-        - perPage (integer, optional): The number of conversations per page. Default is 5
 
     Returns:
-        - If successful, returns JSON with user conversations and associated response details.
+        - If successful, returns JSON with user conversations and associated details.
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
 @login_required
 @conversation_routes_bp.route('/conversations', methods=['GET'])
 def get_conversations():
     user_id = request.args.get('userId')
-    page = request.args.get('page', default=1, type=int)
-    per_page = request.args.get('perPage', default=5, type=int)
 
     try:
         # Get the conversations that match the userid and filter them from most recently updated to oldest
         user_conversations = Conversation.query.filter_by(user_id=user_id).order_by(db.func.to_timestamp(
-            Conversation.date_updated / 1000).desc()).paginate(page=page, per_page=per_page)
+            Conversation.date_updated / 1000).desc())
 
     except Exception as error:
         db.session.rollback()
@@ -223,7 +223,6 @@ def get_conversations():
     Delete Conversations Endpoint.
 
     This endpoint allows authenticated users to delete conversations.
-    It deletes the specified conversation and returns a success message.
 
     Request Query Parameters:
         - id (UUID): The ID of the conversation to be deleted.

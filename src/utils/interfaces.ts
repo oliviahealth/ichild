@@ -36,11 +36,11 @@ export const ConversationSchema = z.object({
 });
 export type IConversation = z.infer<typeof ConversationSchema>;
 
-export const ConversationDetailSchema = z.object({
+export const ConversationPreviewSchema = z.object({
     id: z.string().uuid(),
     title: z.string()
 });
-export type IConversationDetail = z.infer<typeof ConversationDetailSchema>
+export type IConversationPreview = z.infer<typeof ConversationPreviewSchema>
 
 export const UserSchema = z.object({
     id: z.string().uuid(),

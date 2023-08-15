@@ -5,7 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import useAppStore from "../stores/useAppStore";
 import fetchWithAxios from "../utils/fetchWithAxios";
 import parseWithZod from "../utils/parseWithZod";
-import { IConversationDetail, ConversationDetailSchema } from "../utils/interfaces";
+import { IConversationPreview, ConversationPreviewSchema } from "../utils/interfaces";
 
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { IoLocationOutline } from "react-icons/io5";
@@ -18,42 +18,45 @@ const SidePanel: React.FC = () => {
 
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
-    const conversationDetails = useAppStore((state) => state.conversationDetails);
-    const setConversationDetails = useAppStore((state) => state.setConversationDetails);
+    const conversationPreviews = useAppStore((state) => state.conversationPreviews);
+    const setConversationPreviews = useAppStore((state) => state.setConversationPreviews);
 
     const currentConversationId = useAppStore((state) => state.currentConversationId);
     const setCurrentConversationId = useAppStore((state) => state.setCurrentConversationId);
 
+    { /* Delete conversation based on a specific id and if successful, remove the conversation from the sidepanel and set the current conversation to be null  */ }
     const { mutate: deleteConversation, isLoading: isDeleteLoading } = useMutation(async (conversationId: string) => {
         await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?id=${conversationId}`, 'DELETE')
 
         return conversationId
     }, {
         onSuccess: (conversationId) => {
-            setConversationDetails(conversationDetails.filter((conversationDetail) => conversationDetail.id !== conversationId));
+            setConversationPreviews(conversationPreviews.filter((conversationDetail) => conversationDetail.id !== conversationId));
 
             setCurrentConversationId(null);
         }
     })
 
-    const { mutate: getConversationDetails, isLoading } = useMutation(async () => {
-        const conversationDetails: IConversationDetail[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversationdetails?userId=${user?.id}`);
+    { /* Fetch only the id and title of each previous conversation the user has had to populate the recent activity on the sidepanel */ }
+    const { mutate: getConversationPreviews, isLoading } = useMutation(async () => {
+        const conversationPreviews: IConversationPreview[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversationpreviews?userId=${user?.id}`);
 
-        conversationDetails.forEach((conversationDetail) => parseWithZod(conversationDetail, ConversationDetailSchema));
+        conversationPreviews.forEach((conversationDetail) => parseWithZod(conversationDetail, ConversationPreviewSchema));
 
-        return conversationDetails
+        return conversationPreviews
     }, {
         onSuccess: (conversationDetails) => {
-            setConversationDetails(conversationDetails);
+            setConversationPreviews(conversationDetails);
         }
     })
 
     useEffect(() => {
         if (user) {
-            getConversationDetails()
+            getConversationPreviews()
         }
     }, [user]);
 
+    { /* Set the current conversation to be null whenever the 'New Chat' button is clicked */ }
     const createNewConversation = () => {
         setCurrentConversationId(null);
     }
@@ -81,7 +84,7 @@ const SidePanel: React.FC = () => {
 
                         {user ? (
                             <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-26rem)]">
-                                {conversationDetails.map((conversationDetail, index) => (
+                                {conversationPreviews.map((conversationDetail, index) => (
                                     <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversationDetail.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                         <div className="flex items-center">
                                             <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
@@ -95,7 +98,7 @@ const SidePanel: React.FC = () => {
                                 ))}
 
                                 { /* Only display the load previous chats button if no chats are currently being loaded and if the conversations array length is less than 5 */}
-                                {!isLoading && conversationDetails && !(conversationDetails.length < 5) && (<button className="btn btn-sm border-none text-black hover:bg-gray-400 bg-gray-300 my-4">
+                                {!isLoading && conversationPreviews && !(conversationPreviews.length < 5) && (<button className="btn btn-sm border-none text-black hover:bg-gray-400 bg-gray-300 my-4">
                                     Previous Chats
                                 </button>)}
                             </div>

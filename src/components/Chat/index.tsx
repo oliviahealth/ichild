@@ -15,15 +15,22 @@ import ApiResponse from "./ApiResponse";
 import fetchWithAxios from "../../utils/fetchWithAxios";
 
 const ChatComponent: React.FC = () => {
+  /*
+    Use Zustand to manage global state for the application
+    https://github.com/pmndrs/zustand
+  */
   const user = useAppStore((state) => state.user);
 
   const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
   const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
+  // The actual response from the api including the locations the api suggests
   const [apiResponses, setApiResponses] = useState<IAPIResponse[]>([]);
 
-  const conversationDetails = useAppStore((state) => state.conversationDetails);
-  const setConversationDetails = useAppStore((state) => state.setConversationDetails);
+  // Conversation previews are an array of past conversations that the user has had, but only with the id and the title for each past conversation
+  // We use the id to fetch the complete past conversation object when the user focuses on one of them
+  const ConversationPreviews = useAppStore((state) => state.conversationPreviews);
+  const setConversationPreviews = useAppStore((state) => state.setConversationPreviews);
 
   // Update the currentConversation object inside the app store whenever the user asks a question and gets a response
   const currentConversationId = useAppStore((state) => state.currentConversationId);
@@ -53,6 +60,7 @@ const ChatComponent: React.FC = () => {
     };
   }, []);
 
+  { /* When the user foucses on a previous conversation from the sidepanel, we fetch the complete conversation object and populate the api response array to display the suggested locations */ }
   const { mutate: getConversationDetails, isLoading } = useMutation(async () => {
     const conversationDetails: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversation?conversationId=${currentConversationId}`, 'GET');
 
@@ -88,8 +96,9 @@ const ChatComponent: React.FC = () => {
       const conversation: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user.id}`, 'POST', { id: currentConversationId, title: response.userQuery, userId: user.id })
       await fetchWithAxios(`${import.meta.env.VITE_API_URL}/response`, 'POST', { ...response, conversationId: conversation.id })
 
+      // If this is a new conversation, add it to the recent activity on the sidepanel
       if (!currentConversationId) {
-        setConversationDetails([...conversationDetails, { id: conversation.id ?? uuid(), title: response.userQuery }])
+        setConversationPreviews([...ConversationPreviews, { id: conversation.id ?? uuid(), title: response.userQuery }])
       }
 
       setCurrentConversationId(conversation.id);
