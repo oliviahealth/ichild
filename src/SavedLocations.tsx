@@ -11,13 +11,13 @@ import OllieAvatar from "./components/Chat/OllieAvatar";
 import InteractiveMap from "./components/Chat/InteractiveMap";
 import { TfiMenuAlt } from "react-icons/tfi";
 import { BiCopy } from "react-icons/bi";
-import { BsTrash } from "react-icons/bs";
+import { BiSolidBookmark } from "react-icons/bi";
 
 const SavedLocations: React.FC = () => {
     const user = useAppStore((state) => state.user);
 
     const [savedLocations, setSavedLocations] = useState<null | ISavedLocation[]>(null);
-    const [deletingLocationId, setDeletingLocationId] = useState<null | string>(null);
+    const [deletingLocationName, setDeletingLocationName] = useState<null | string>(null);
 
     const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
@@ -35,18 +35,18 @@ const SavedLocations: React.FC = () => {
         }
     });
 
-    const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (savedLocationId: string) => {
-        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations?id=${savedLocationId}`, 'DELETE');
+    const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (savedLocationName: string) => {
+        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations?name=${savedLocationName}`, 'DELETE');
 
-        return savedLocationId;
+        return savedLocationName;
     }, {
-        onMutate: (savedLocationId) => setDeletingLocationId(savedLocationId),
-        onSuccess: (savedLocationId) => {
-            const newSavedLocations = savedLocations?.filter((location) => location.id !== savedLocationId);
+        onMutate: (savedLocationName) => setDeletingLocationName(savedLocationName),
+        onSuccess: (savedLocationName) => {
+            const newSavedLocations = savedLocations?.filter((location) => location.name !== savedLocationName);
 
             setSavedLocations(newSavedLocations ?? null);
         },
-        onSettled: () => setDeletingLocationId(null)
+        onSettled: () => setDeletingLocationName(null)
     })
 
     useEffect(() => {
@@ -126,13 +126,13 @@ const SavedLocations: React.FC = () => {
                                     </div>
 
                                     <div className="flex flex-col gap-6">
+                                        {user && (<button onClick={() => deleteSavedLocation(location.name)} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
+                                            {isDeleteLoading && deletingLocationName === location.name ? (<span className="loading loading-spinner loading-sm"></span>) : (<BiSolidBookmark className="text-xl text-black" />)}
+                                        </button>)}
+
                                         <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={(evt) => copyText(evt, location.address)}>
                                             <BiCopy className="text-xl text-black" />
                                         </button>
-
-                                        {user && (<button onClick={() => deleteSavedLocation(location.id)} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
-                                            {isDeleteLoading && deletingLocationId === location.id ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-xl text-black" />)}
-                                        </button>)}
                                     </div>
                                 </div>
                             </ChatBubble>

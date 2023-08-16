@@ -112,13 +112,13 @@ def get_saved_locations():
 @login_required
 @saved_location_routes_bp.route('/savedlocations', methods=['DELETE'])
 def delete_saved_location():
-    id = request.args.get('id')
+    name = request.args.get('name')
 
     try:
-        saved_location_to_delete = SavedLocation.query.get(id)
+        saved_location_to_delete = SavedLocation.query.filter_by(name=name).first()
 
         if(not saved_location_to_delete):
-            return jsonify({ 'error': 'Saved location not found' })
+            return jsonify({ 'error': 'Saved location not found' }), 500
         
         db.session.delete(saved_location_to_delete)
         db.session.commit()

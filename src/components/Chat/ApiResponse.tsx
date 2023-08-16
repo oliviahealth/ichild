@@ -22,6 +22,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+    const [locationToSave, setLocationToSave] = useState<null | ILocation>(null);
 
     useEffect(() => {
         setFocusedLocation(apiResponse.locations[0] ?? null);
@@ -33,15 +34,28 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
         navigator.clipboard.writeText(text);
     }
 
-    const { mutate: saveLocation, isLoading } = useMutation(async (location: ILocation) => {
+    const { mutate: saveLocation, isLoading: isSaveLoading } = useMutation(async (location: ILocation) => {
         await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'POST', { name: location.name, userId: user?.id });
 
         return location
     }, {
+        onMutate: (location) => setLocationToSave(location),
         onSuccess: (location) => {
             apiResponse.locations.map((elm) => elm == location ? elm.isSaved = true : '')
-        }
+        },
+        onSettled: () => setLocationToSave(null)
     });
+
+    const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (location: ILocation) => {
+        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations?name=${location.name}`, 'DELETE');
+
+        return location;
+    }, {
+        onMutate: (location) => setLocationToSave(location),
+        onSuccess: (deletedLocation) => {
+            apiResponse.locations.map((location) => location.name === deletedLocation.name ? location.isSaved = false : location)
+        }
+    })
 
     return (
         <div>
@@ -69,7 +83,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                 <div className="w-full h-full p-3 object-container">
 
                                     <div className="h-80">
-                                        { focusedLocation.streetViewExists && (<PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />) }
+                                        {focusedLocation.streetViewExists && (<PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />)}
                                     </div>
 
                                     <div className="my-4 flex flex-col gap-4">
@@ -109,9 +123,24 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                                 </div>
 
                                                 <div className="flex flex-col gap-6">
-                                                    {user && (<button onClick={() => saveLocation(location)} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
-                                                        {location.isSaved ? (<BiSolidBookmark className="text-xl text-black" />) : (<BiBookmark className="text-xl text-black" />)}
-                                                    </button>)}
+                                                    {user && (
+                                                        <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`}>
+                                                            {location.isSaved ? (
+                                                                isDeleteLoading && locationToSave === location ? (
+                                                                    <span className="loading loading-spinner loading-sm"></span>
+                                                                ) : (
+                                                                    <BiSolidBookmark onClick={() => deleteSavedLocation(location)} className="text-xl text-black" />
+                                                                )
+                                                            ) : (
+                                                                isSaveLoading && locationToSave === location ? (
+                                                                    <span className="loading loading-spinner loading-sm"></span>
+                                                                ) : (
+                                                                    <BiBookmark onClick={() => saveLocation(location)} className="text-xl text-black" />
+                                                                )
+                                                            )}
+                                                        </button>
+                                                    )}
+
 
                                                     <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={(evt) => copyText(evt, location.address)}>
                                                         <BiCopy className="text-xl text-black" />
