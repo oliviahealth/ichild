@@ -135,6 +135,7 @@ def get_conversation():
                         'longitude': location.longitude,
                         'name': location.name,
                         'phone': location.phone,
+                        'streetViewExists': location.streetViewExists,
                         'isSaved': location.name in saved_location_names
                     }
                     for name in response.locations
@@ -203,6 +204,7 @@ def get_conversations():
                             'longitude': location.longitude,
                             'name': location.name,
                             'phone': location.phone,
+                            'streetViewExists': location.streetViewExists,
                             'isSaved': location.name in saved_location_names
                         }
                         for name in response.locations
@@ -218,7 +220,6 @@ def get_conversations():
 
     return jsonify(data)
 
-
 """
     Delete Conversations Endpoint.
 
@@ -231,8 +232,6 @@ def get_conversations():
         - If successful, returns JSON with a success message.
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
-
-
 @login_required
 @conversation_routes_bp.route("/conversations", methods=['DELETE'])
 def delete_conversations():

@@ -5,7 +5,7 @@ import certifi
 import os
 import time
 
-from search_controller import core_search, grab_info, create_addresses, getLatLng
+from search_controller import core_search, grab_info, create_addresses, getLatLng, checkIfStreetViewExists
 
 search_routes_bp = Blueprint('search_routes', __name__)
 
@@ -70,10 +70,13 @@ def formatted_db_search():
         addressLink = addLinksList[index]
 
         latitude, longitude = getLatLng(address).values()
+        streetViewExists = checkIfStreetViewExists(latitude, longitude)
 
         date_created = int(time.time() * 1000)
 
-        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'isSaved': False })
+        print(streetViewExists)
+
+        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'streetViewExists': streetViewExists, 'isSaved': False })
 
     results = {
         'userQuery': query,

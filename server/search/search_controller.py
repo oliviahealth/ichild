@@ -117,3 +117,13 @@ def getLatLng(address):
     latLng = geocodingResponse['results'][0]['geometry']['location']
 
     return latLng
+
+def checkIfStreetViewExists(latitude, longitude):
+    response = requests.get(f'https://maps.googleapis.com/maps/api/streetview/metadata?key={os.getenv("GOOGLE_API_KEY")}&location={latitude},{longitude}').json()
+
+    status = response['status']
+
+    if(status == 'OK'):
+        return True
+    
+    return False

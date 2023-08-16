@@ -41,7 +41,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
         onSuccess: (location) => {
             apiResponse.locations.map((elm) => elm == location ? elm.isSaved = true : '')
         }
-    })
+    });
 
     return (
         <div>
@@ -69,7 +69,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                 <div className="w-full h-full p-3 object-container">
 
                                     <div className="h-80">
-                                        <PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />
+                                        { focusedLocation.streetViewExists && (<PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />) }
                                     </div>
 
                                     <div className="my-4 flex flex-col gap-4">

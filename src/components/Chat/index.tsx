@@ -11,6 +11,7 @@ import { TfiMenuAlt } from "react-icons/tfi";
 
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
+import ChatLoadingSkeleton from "./ChatLoadingSkeleton";
 import ApiResponse from "./ApiResponse";
 import fetchWithAxios from "../../utils/fetchWithAxios";
 
@@ -60,7 +61,7 @@ const ChatComponent: React.FC = () => {
     };
   }, []);
 
-  { /* When the user foucses on a previous conversation from the sidepanel, we fetch the complete conversation object and populate the api response array to display the suggested locations */ }
+  { /* When the user focuses on a previous conversation from the sidepanel, we fetch the complete conversation object and populate the api response array to display the suggested locations */ }
   const { mutate: getConversationDetails, isLoading } = useMutation(async () => {
     const conversationDetails: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversation?conversationId=${currentConversationId}`, 'GET');
 
@@ -126,50 +127,47 @@ const ChatComponent: React.FC = () => {
         </button>
       )}
 
-      {isLoading && (
-        <div className="flex justify-center my-4">
-          <span className="loading loading-spinner loading-sm text-primary"></span>
-        </div>
-      )}
-
-      <div className="h-full p-4 flex flex-col justify-end">
+      <div className={ `h-full p-4 flex flex-col ${ !isLoading ? 'justify-end' : 'justify-start'}` }>
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-14rem)] ">
 
-          { /* Initial greeting */}
-          <div className="xl:flex gap-4">
-            <OllieAvatar />
-            <ChatBubble isResponse={true}>
-              <p>Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?</p>
-            </ChatBubble>
-          </div>
+          {isLoading ? (<ChatLoadingSkeleton />) : (
+            <>
+              { /* Initial greeting */}
+              <div className="xl:flex gap-4">
+                <OllieAvatar />
+                <ChatBubble isResponse={true}>
+                  <p>Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?</p>
+                </ChatBubble>
+              </div>
 
-          { /* Api response to user query */}
-          {apiResponses.map((response, index) => {
-            return (
-              <div key={`${index} - question`}>
+              { /* Api response to user query */}
+              {apiResponses.map((response, index) => {
+                return (
+                  <div key={`${index} - question`}>
+                    <ChatBubble isResponse={false}>
+                      {response.userQuery}
+                    </ChatBubble>
+
+                    <ApiResponse apiResponse={response} />
+                  </div>
+                );
+              })}
+
+              { /* Render loading dots while fetching api response */}
+              {isResponseLoading ? (<>
                 <ChatBubble isResponse={false}>
-                  {response.userQuery}
+                  <p>{getValues("query")}</p>
                 </ChatBubble>
 
-                <ApiResponse apiResponse={response} />
-              </div>
-            );
-          })}
-
-          { /* Render loading dots while fetching api response */}
-          {isResponseLoading ? (<>
-            <ChatBubble isResponse={false}>
-              <p>{getValues("query")}</p>
-            </ChatBubble>
-
-            <div className="flex gap-4">
-              <OllieAvatar />
-              <ChatBubble isResponse={true}>
-                <span className="loading loading-dots loading-md"></span>
-              </ChatBubble>
-            </div>
-          </>) : ""}
-
+                <div className="flex gap-4">
+                  <OllieAvatar />
+                  <ChatBubble isResponse={true}>
+                    <span className="loading loading-dots loading-md"></span>
+                  </ChatBubble>
+                </div>
+              </>) : ""}
+            </>
+          )}
         </div>
       </div>
 
@@ -186,7 +184,7 @@ const ChatComponent: React.FC = () => {
           </button>
         </div>
       </form>
-    </div>
+    </div >
   );
 };
 

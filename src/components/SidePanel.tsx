@@ -111,12 +111,6 @@ const SidePanel: React.FC = () => {
                                 </Link>
                             </div>
                         )}
-
-                        {isLoading && (
-                            <div className="flex justify-center">
-                                <span className="loading loading-spinner loading-sm text-primary"></span>
-                            </div>
-                        )}
                     </div>
 
                     {user && (<div>

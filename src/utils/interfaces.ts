@@ -8,6 +8,7 @@ export const LocationSchema = z.object({
     phone: z.string(),
     latitude: z.number(),
     longitude: z.number(),
+    streetViewExists: z.boolean(),
     isSaved: z.boolean()
 });
 export type ILocation = z.infer<typeof LocationSchema>

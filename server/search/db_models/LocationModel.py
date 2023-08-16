@@ -32,5 +32,6 @@ class Location(db.Model):
     description = db.Column(db.String(), nullable=False)
     latitude = db.Column(db.Float(), nullable=False)
     longitude = db.Column(db.Float(), nullable=False)
+    streetViewExists = db.Column(db.Boolean(), default=False)
     phone = db.Column(db.String(), nullable=False)
     saved_locations = db.relationship('SavedLocation', backref='location', lazy=True, cascade='all, delete-orphan')
