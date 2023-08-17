@@ -78,3 +78,5 @@ def formatted_db_search():
         'locations': results,
         'dateCreated': date_created
     }
+
+    return jsonify(results)

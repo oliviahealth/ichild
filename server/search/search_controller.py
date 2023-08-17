@@ -25,44 +25,44 @@ def grab_info(crossEncoderItems, crossEncoderScoresDict, collection_name):
     
     for i in range(item_count):
         resource = crossEncoderItems[i][1]
-        p_description = collection_name.find_one({"PDescription": resource})
-        
-        name = p_description["Organization"]
-        description = p_description["Description"]
-        work_phone = p_description["Work Phone"]
+        location = collection_name.find_one({"PDescription": resource})
+    
+        name = location["Organization"]
+        description = location["Description"]
+        work_phone = location["Work Phone"]
         confidence = crossEncoderScoresDict[resource]
         
-        info_list.append((p_description, name, description, work_phone, confidence))
+        info_list.append((location, name, description, work_phone, confidence))
     
     return info_list
 
 # algorithm to create addresses separated out for testing
-def create_addresses(p_descriptions):
+def create_addresses(locations):
     addresses = []
 
-    for p_description in p_descriptions:
+    for location in locations:
         address = 'No location provided'
 
-        if p_description["ZIP"] != "":
-            address = p_description["Street Address"] + ", " + p_description["City"] + ", " + p_description["State"] + " " + str(int(p_description["ZIP"]))
+        if location["ZIP"] != "":
+            address = location["Street Address"] + ", " + location["City"] + ", " + location["State"] + " " + str(int(location["ZIP"]))
             if address[0] == ',' and address[2] == ',':
                 address = "No location provided"
             elif address[0] == ',':
-                address = p_description["City"] + ", " + p_description["State"] + " " + str(int(p_description["ZIP"]))
+                address = location["City"] + ", " + location["State"] + " " + str(int(location["ZIP"]))
 
         addresses.append(address)
 
     return tuple(addresses)
 
 # algorithm to create address links
-def create_address_links(p_descriptions):
+def create_address_links(locations):
     addresses = []
 
-    for p_description in p_descriptions:
-        if p_description["ZIP"] != "":
+    for location in locations:
+        if location["ZIP"] != "":
             address = "https://www.google.com/maps/search/?api=1&query=" + urllib.parse.quote(
-                p_description["Street Address"] + ", " + p_description["City"] + ", " +
-                p_description["State"] + " " + str(int(p_description["ZIP"])))
+                location["Street Address"] + ", " + location["City"] + ", " +
+                location["State"] + " " + str(int(location["ZIP"])))
             addresses.append(address)
         else:
             addresses.append("")
