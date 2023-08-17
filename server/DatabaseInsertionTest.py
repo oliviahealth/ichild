@@ -1,8 +1,9 @@
 from pymongo import *
 import pandas as pd
+import os
 import json
 
-MONGODB_HOST = 'mongodb+srv://Capstone:ProfWade2023@cluster0.9c4phbt.mongodb.net/?retryWrites=true&w=majority'
+MONGODB_HOST = os.getenv('MONGO_DB_URL')
 MONGODB_ClIENT = 27017
 csvName = 'data/CHILD_Working_DB_v2 - Sheet1.csv'
 

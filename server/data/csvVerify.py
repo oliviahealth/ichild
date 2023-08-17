@@ -1,10 +1,14 @@
 import pandas as pd
 import requests
+import os
 
-googleAPIKey = "AIzaSyBQmndv6caGHFZzm2SaupLvT4Faxj2FK2s"
-dataPath = "tcat-ollie/server/data/CHILD_Working_DB_v2 - Sheet1.csv"
+current_path = os.path.dirname(os.path.abspath(__file__))
+parent_directory = os.path.dirname(current_path)
+data_path = os.path.join(current_path, 'CHILD_Working_DB_v2 - Sheet1.csv')
 
-data = pd.read_csv(dataPath)
+googleAPIKey = os.getenv("GOOGLE_API_KEY")
+
+data = pd.read_csv(data_path)
 
 #print(data)
 #print(data.columns)
@@ -86,7 +90,7 @@ locationList = []
 for i in range(len(dataDictList)):
     #print(f"Resource {i+1}: {dataDictList[i]['First Name']}")
     
-    placeName = dataDictList[i]['First Name']
+    placeName = dataDictList[i]['Name']
     
     text_search_url = f"https://maps.googleapis.com/maps/api/place/textsearch/json?key={googleAPIKey}&location=30.627808,-96.334863&radius=15000&query={placeName}"
     response = requests.get(text_search_url)
@@ -454,6 +458,6 @@ newDataFrame = newDataFrame.drop(columns=headerDict.values())
 newDataFrame.rename(columns=headerDict, inplace=True)
 
 #print(newDataFrame)
-newDataFrame.to_csv('tcat-ollie/server/search/dataNewCSV.csv')
+newDataFrame.to_csv(data_path, mode='w', index=False)
 
-
+print("New DataFrame saved to:", data_path)
