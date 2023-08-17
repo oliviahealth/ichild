@@ -17,6 +17,8 @@ interface AppState {
 
     error: string | null,
     setError: (error: string | null) => void
+
+    copyText: (text: string) => void
 }
 
 const useAppStore = create<AppState>()((set) => ({
@@ -34,6 +36,10 @@ const useAppStore = create<AppState>()((set) => ({
 
     error: null,
     setError: (error => set({ error })),
+
+    copyText: (text) => {
+        navigator.clipboard.writeText(text);
+    }
 }));
 
 export default useAppStore;

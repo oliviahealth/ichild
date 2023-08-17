@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 
+import useAppStore from "../../stores/useAppStore";
 import { ILocation } from "../../utils/interfaces";
 
 import { BiCopy } from "react-icons/bi";
@@ -22,11 +23,7 @@ const LocationCarousel: React.FC<Props> = ({ locations }) => {
 
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
-    const copyText = (evt: React.MouseEvent, text: string) => {
-        evt.stopPropagation();
-
-        navigator.clipboard.writeText(text);
-    }
+    const copyText = useAppStore(state => state.copyText);
 
     return (
         <div>
@@ -41,7 +38,7 @@ const LocationCarousel: React.FC<Props> = ({ locations }) => {
                                 <a className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Website</a>
                                 <a href={location.addressLink} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Directions</a>
 
-                                <button className={`btn btn-square btn-xs bg-inherit border-none hover:bg-gray-200`} onClick={(evt) => copyText(evt, location.address)}>
+                                <button className={`btn btn-square btn-xs bg-inherit border-none hover:bg-gray-200`} onClick={() => copyText(location.address)}>
                                     <BiCopy className="text-xl text-black" />
                                 </button>
                             </div>

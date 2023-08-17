@@ -5,7 +5,7 @@ import certifi
 import os
 import time
 
-from search_controller import core_search, grab_info, create_addresses, getLatLng, checkIfStreetViewExists
+from search_controller import core_search, grab_info, create_addresses, create_address_links, getLatLng, checkIfStreetViewExists
 
 search_routes_bp = Blueprint('search_routes', __name__)
 
@@ -42,39 +42,35 @@ def formatted_db_search():
     query = request.form['data']
 
     crossEncoderItems, crossEncoderScoresDict = core_search(query, embedder, corpus, encoding_dict)
-    winningPDescription, secondPDescription, thirdPDescription, fourthPDescription, fifthPDescription, winningName, secondName, thirdName, fourthName, fifthName, winningDescription, secondDescription, thirdDescription, fourthDescription, fifthDescription, winningWorkPhone, secondWorkPhone, thirdWorkPhone, fourthWorkPhone, fifthWorkPhone, winningConfidence, secondConfidence, thirdConfidence, fourthConfidence, fifthConfidence = grab_info(crossEncoderItems, crossEncoderScoresDict, collection_name)
 
-    winningAddress, winningAddressUnencoded, secondAddress, secondAddressUnencoded, thirdAddress, thirdAddressUnencoded, fourthAddress, fourthAddressUnencoded, fifthAddress, fifthAddressUnencoded = create_addresses(winningPDescription, secondPDescription, thirdPDescription, fourthPDescription, fifthPDescription)
+    info_list = grab_info(crossEncoderItems, crossEncoderScoresDict, collection_name)
 
-    namesList = [winningName, secondName, thirdName, fourthName, fifthName]
-    descList = [winningDescription, secondDescription, thirdDescription, fourthDescription, fifthDescription]
-    confList = [winningConfidence.item(), secondConfidence.item(), thirdConfidence.item(), fourthConfidence.item(), fifthConfidence.item()]
-    phoneList = [winningWorkPhone, secondWorkPhone, thirdWorkPhone, fourthWorkPhone, fifthWorkPhone]
-    addList = [winningAddress, winningAddressUnencoded, secondAddress, secondAddressUnencoded, thirdAddress, thirdAddressUnencoded, fourthAddress, fourthAddressUnencoded, fifthAddress, fifthAddressUnencoded]
-    unencAddList = [winningAddressUnencoded, secondAddressUnencoded, thirdAddressUnencoded, fourthAddressUnencoded, fifthAddressUnencoded]
-    addLinksList = [winningAddress, secondAddress, thirdAddress, fourthAddress, fifthAddress]
+    names_list = [info[1] for info in info_list]
+    desc_list = [info[2] for info in info_list]
+    conf_list = [info[4].item() for info in info_list]
+    phone_list = [info[3] for info in info_list]
+    address_list = [address for address in create_addresses([info[0] for info in info_list])]
+    address_links_list = [address_link for address_link in create_address_links([info[0] for info in info_list])]
 
     validThreshold = 0.25 #threshold for "valid" results
 
     results = []
 
-    for (index, name) in enumerate(namesList):
-        confidence = confList[index]
+    for (index, name) in enumerate(names_list):
+        confidence = conf_list[index]
 
         if(confidence < validThreshold):
             break
 
-        description = descList[index]
-        phone = phoneList[index]
-        address = unencAddList[index]
-        addressLink = addLinksList[index]
+        description = desc_list[index]
+        phone = phone_list[index]
+        address = address_list[index]
+        addressLink = address_links_list[index]
 
         latitude, longitude = getLatLng(address).values()
         streetViewExists = checkIfStreetViewExists(latitude, longitude)
 
         date_created = int(time.time() * 1000)
-
-        print(streetViewExists)
 
         results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'streetViewExists': streetViewExists, 'isSaved': False })
 
@@ -88,83 +84,4 @@ def formatted_db_search():
     """return render_template('results.html',
                             userQuery = query,
                             results = results
-"""
-
-# Avoid using this route. Use the /formattedresults route instead
-@search_routes_bp.route('/api/ollie/results', methods=['POST', 'GET'])
-def db_search():
-    query = request.form['data']
-
-    crossEncoderItems, crossEncoderScoresDict = core_search(query, embedder, corpus, encoding_dict)
-    winningPDescription, secondPDescription, thirdPDescription, fourthPDescription, fifthPDescription, winningName, secondName, thirdName, fourthName, fifthName, winningDescription, secondDescription, thirdDescription, fourthDescription, fifthDescription, winningWorkPhone, secondWorkPhone, thirdWorkPhone, fourthWorkPhone, fifthWorkPhone, winningConfidence, secondConfidence, thirdConfidence, fourthConfidence, fifthConfidence = grab_info(crossEncoderItems, crossEncoderScoresDict, collection_name)
-
-    
-    winningAddress, winningAddressUnencoded, secondAddress, secondAddressUnencoded, thirdAddress, thirdAddressUnencoded, fourthAddress, fourthAddressUnencoded, fifthAddress, fifthAddressUnencoded = create_addresses(winningPDescription, secondPDescription, thirdPDescription, fourthPDescription, fifthPDescription)
-
-    namesList = [winningName, secondName, thirdName, fourthName, fifthName]
-    descList = [winningDescription, secondDescription, thirdDescription, fourthDescription, fifthDescription]
-    confList = [winningConfidence.item(), secondConfidence.item(), thirdConfidence.item(), fourthConfidence.item(), fifthConfidence.item()]
-    phoneList = [winningWorkPhone, secondWorkPhone, thirdWorkPhone, fourthWorkPhone, fifthWorkPhone]
-    addList = [winningAddress, winningAddressUnencoded, secondAddress, secondAddressUnencoded, thirdAddress, thirdAddressUnencoded, fourthAddress, fourthAddressUnencoded, fifthAddress, fifthAddressUnencoded]
-    unencAddList = [winningAddressUnencoded, secondAddressUnencoded, thirdAddressUnencoded, fourthAddressUnencoded, fifthAddressUnencoded]
-    addLinksList = [winningAddress, secondAddress, thirdAddress, fourthAddress, fifthAddress]
-
-    results_list = [namesList, descList, confList, phoneList, addList, unencAddList] # list of unfiltered results
-    validThreshold = 0.25 #threshold for "valid" results
-
-    for val in reversed(confList):
-        if float(val) < validThreshold:
-            namesList.pop(confList.index(val))
-            descList.pop(confList.index(val))
-            phoneList.pop(confList.index(val))
-            addList.pop(confList.index(val))
-            unencAddList.pop(confList.index(val))
-            confList.pop(confList.index(val))
-
-    results_dict = {
-        'userQuery': query,
-        'names': namesList,
-        'descriptions': descList,
-        'confidences': confList,
-        'phone': phoneList,
-        'address': addList,
-        'unencodedAddress': unencAddList,
-        "addressLinks": addLinksList,
-        'notFoundMessage': "Unfortunately we did not find any results for your question. Maybe try asking in a different way?",
-    }
-
-    return jsonify(results_dict)
-    """return render_template('results.html',
-                            userQuery = query,
-                            winnername = winningName,
-                            secondname = secondName,
-                            thirdname = thirdName,
-                            fourthname = fourthName,
-                            fifthname = fifthName,
-                            notFoundMessage = "Unfortunately we did not find any results for your question. Maybe try asking in a different way?",
-                            winningDescription = winningDescription,
-                            secondDescription = secondDescription,
-                            thirdDescription = thirdDescription,
-                            fourthDescription = fourthDescription,
-                            fifthDescription = fifthDescription,
-                            winningConfidence = winningConfidence,
-                            secondConfidence = secondConfidence,
-                            thirdConfidence = thirdConfidence,
-                            fourthConfidence = fourthConfidence,
-                            fifthConfidence = fifthConfidence,
-                            winningWorkPhone =  winningWorkPhone,
-                            secondWorkPhone = secondWorkPhone,
-                            thirdWorkPhone = thirdWorkPhone,
-                            fourthWorkPhone = fourthWorkPhone,
-                            fifthWorkPhone = fifthWorkPhone,
-                            winningAddress = winningAddress,
-                            winningAddressUnencoded = winningAddressUnencoded,
-                            secondAddress = secondAddress,
-                            secondAddressUnencoded = secondAddressUnencoded,
-                            thirdAddress = thirdAddress,
-                            thirdAddressUnencoded = thirdAddressUnencoded,
-                            fourthAddress = fourthAddress,
-                            fourthAddressUnencoded = fourthAddressUnencoded,
-                            fifthAddress = fifthAddress,
-                            fifthAddressUnencoded = fifthAddressUnencoded)
 """

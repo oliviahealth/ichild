@@ -28,11 +28,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
         setFocusedLocation(apiResponse.locations[0] ?? null);
     }, [apiResponse]);
 
-    const copyText = (evt: React.MouseEvent, text: string) => {
-        evt.stopPropagation();
-
-        navigator.clipboard.writeText(text);
-    }
+    const copyText = useAppStore((state) => state.copyText);
 
     const { mutate: saveLocation, isLoading: isSaveLoading } = useMutation(async (location: ILocation) => {
         await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'POST', { name: location.name, userId: user?.id });
@@ -142,7 +138,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                                     )}
 
 
-                                                    <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={(evt) => copyText(evt, location.address)}>
+                                                    <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={() => copyText(location.address)}>
                                                         <BiCopy className="text-xl text-black" />
                                                     </button>
                                                 </div>

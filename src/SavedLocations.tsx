@@ -22,6 +22,8 @@ const SavedLocations: React.FC = () => {
     const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
+    const copyText = useAppStore((state) => state.copyText);
+
     const { mutate: getSavedLocations, isLoading } = useMutation(async () => {
         const savedLocations: ISavedLocation[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations?userId=${user?.id}`, 'GET');
 
@@ -54,12 +56,6 @@ const SavedLocations: React.FC = () => {
             getSavedLocations();
         }
     }, [user])
-
-    const copyText = (evt: React.MouseEvent, text: string) => {
-        evt.stopPropagation();
-
-        navigator.clipboard.writeText(text);
-    }
 
     // Convert milliseconds to a formatted date and time
     function convertMillisecondsToFormattedDateTime(milliseconds: number) {
@@ -130,7 +126,7 @@ const SavedLocations: React.FC = () => {
                                             {isDeleteLoading && deletingLocationName === location.name ? (<span className="loading loading-spinner loading-sm"></span>) : (<BiSolidBookmark className="text-xl text-black" />)}
                                         </button>)}
 
-                                        <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={(evt) => copyText(evt, location.address)}>
+                                        <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={() => copyText(location.address)}>
                                             <BiCopy className="text-xl text-black" />
                                         </button>
                                     </div>

@@ -16,100 +16,58 @@ def core_search(query, embedder, corpus, encoding_dict):
     for score, idx in zip(top_results[0], top_results[1]):
         crossEncoderItems.append(tuple([query, corpus[idx]]))
         crossEncoderScoresDict[corpus[idx]] = score
-    
+
     return crossEncoderItems, crossEncoderScoresDict
 
 def grab_info(crossEncoderItems, crossEncoderScoresDict, collection_name):
-    winningResource = crossEncoderItems[0][1]
-    secondResource = crossEncoderItems[1][1]
-    thirdResource = crossEncoderItems[2][1]
-    fourthResource = crossEncoderItems[3][1]
-    fifthResource = crossEncoderItems[4][1]
+    item_count = 5  # Number of items to retrieve
+    info_list = []
+    
+    for i in range(item_count):
+        resource = crossEncoderItems[i][1]
+        p_description = collection_name.find_one({"PDescription": resource})
+        
+        name = p_description["Organization"]
+        description = p_description["Description"]
+        work_phone = p_description["Work Phone"]
+        confidence = crossEncoderScoresDict[resource]
+        
+        info_list.append((p_description, name, description, work_phone, confidence))
+    
+    return info_list
 
-    winningPDescription = collection_name.find_one({"PDescription": winningResource})
-    secondPDescription = collection_name.find_one({"PDescription": secondResource})
-    thirdPDescription = collection_name.find_one({"PDescription": thirdResource})
-    fourthPDescription = collection_name.find_one({"PDescription": fourthResource})
-    fifthPDescription = collection_name.find_one({"PDescription": fifthResource})
+# algorithm to create addresses separated out for testing
+def create_addresses(p_descriptions):
+    addresses = []
 
-    winningName = winningPDescription["Organization"]
-    secondName = secondPDescription["Organization"]
-    thirdName = thirdPDescription["Organization"]
-    fourthName = fourthPDescription["Organization"]
-    fifthName = fifthPDescription["Organization"]
+    for p_description in p_descriptions:
+        address = 'No location provided'
 
-    winningDescription = winningPDescription["Description"]
-    secondDescription = secondPDescription["Description"]
-    thirdDescription = thirdPDescription["Description"]
-    fourthDescription = fourthPDescription["Description"]
-    fifthDescription = fifthPDescription["Description"]
+        if p_description["ZIP"] != "":
+            address = p_description["Street Address"] + ", " + p_description["City"] + ", " + p_description["State"] + " " + str(int(p_description["ZIP"]))
+            if address[0] == ',' and address[2] == ',':
+                address = "No location provided"
+            elif address[0] == ',':
+                address = p_description["City"] + ", " + p_description["State"] + " " + str(int(p_description["ZIP"]))
 
-    winningWorkPhone = winningPDescription["Work Phone"]
-    secondWorkPhone = secondPDescription["Work Phone"]
-    thirdWorkPhone = thirdPDescription["Work Phone"]
-    fourthWorkPhone = fourthPDescription["Work Phone"]
-    fifthWorkPhone = fifthPDescription["Work Phone"]
+        addresses.append(address)
 
-    winningConfidence = crossEncoderScoresDict[winningResource]
-    secondConfidence = crossEncoderScoresDict[secondResource]
-    thirdConfidence = crossEncoderScoresDict[thirdResource]
-    fourthConfidence = crossEncoderScoresDict[fourthResource]
-    fifthConfidence = crossEncoderScoresDict[fifthResource]
-    return winningPDescription, secondPDescription, thirdPDescription, fourthPDescription, fifthPDescription, winningName, secondName, thirdName, fourthName, fifthName, winningDescription, secondDescription, thirdDescription, fourthDescription, fifthDescription, winningWorkPhone, secondWorkPhone, thirdWorkPhone, fourthWorkPhone, fifthWorkPhone, winningConfidence, secondConfidence, thirdConfidence, fourthConfidence, fifthConfidence
+    return tuple(addresses)
 
-# algorithm to create address links separated out for testing
-def create_addresses(winningPDescription, secondPDescription, thirdPDescription, fourthPDescription, fifthPDescription):
-    winningAddress = ""
-    winningAddressUnencoded = "No location provided"
-    if winningPDescription["ZIP"] != "":
-        winningAddress = "https://www.google.com/maps/search/?api=1&query=" + urllib.parse.quote(winningPDescription["Street Address"] + ", " + winningPDescription["City"] + ", " + winningPDescription["State"] + " " + str(int(winningPDescription["ZIP"])))
-        winningAddressUnencoded = winningPDescription["Street Address"] + ", " + winningPDescription["City"] + ", " + winningPDescription["State"] + " " + str(int(winningPDescription["ZIP"]))
-        if winningAddressUnencoded[0] == ',' and winningAddressUnencoded[2] == ',':
-            winningAddress = ""
-            winningAddressUnencoded = "No location provided"
-        elif winningAddressUnencoded[0] == ',':
-            winningAddressUnencoded = winningPDescription["City"] + ", " + winningPDescription["State"] + " " + str(int(winningPDescription["ZIP"]))
-    secondAddress = ""
-    secondAddressUnencoded = "No location provided"
-    if secondPDescription["ZIP"] != "":
-        secondAddress = "https://www.google.com/maps/search/?api=1&query=" + urllib.parse.quote(secondPDescription["Street Address"] + ", " + secondPDescription["City"] + ", " + secondPDescription["State"] + " " + str(int(secondPDescription["ZIP"])))
-        secondAddressUnencoded = secondPDescription["Street Address"] + ", " + secondPDescription["City"] + ", " + secondPDescription["State"] + " " + str(int(secondPDescription["ZIP"]))
-        if secondAddressUnencoded[0] == ',' and secondAddressUnencoded[2] == ',':
-            secondAddress = ""
-            secondAddressUnencoded = "No location provided"
-        elif secondAddressUnencoded[0] == ',':
-            secondAddressUnencoded = secondPDescription["City"] + ", " + secondPDescription["State"] + " " + str(int(secondPDescription["ZIP"]))
-    thirdAddress = ""
-    thirdAddressUnencoded = "No location provided"
-    if thirdPDescription["ZIP"] != "":
-        thirdAddress = "https://www.google.com/maps/search/?api=1&query=" + urllib.parse.quote(thirdPDescription["Street Address"] + ", " + thirdPDescription["City"] + ", " + thirdPDescription["State"] + " " + str(int(thirdPDescription["ZIP"])))
-        thirdAddressUnencoded = thirdPDescription["Street Address"] + ", " + thirdPDescription["City"] + ", " + thirdPDescription["State"] + " " + str(int(thirdPDescription["ZIP"]))
-        if thirdAddressUnencoded[0] == ',' and thirdAddressUnencoded[2] == ',':
-            thirdAddress = ""
-            thirdAddressUnencoded = "No location provided"
-        elif thirdAddressUnencoded[0] == ',':
-            thirdAddressUnencoded = thirdPDescription["City"] + ", " + thirdPDescription["State"] + " " + str(int(thirdPDescription["ZIP"]))
-    fourthAddress = ""
-    fourthAddressUnencoded = "No location provided"
-    if fourthPDescription["ZIP"] != "":
-        fourthAddress = "https://www.google.com/maps/search/?api=1&query=" + urllib.parse.quote(fourthPDescription["Street Address"] + ", " + fourthPDescription["City"] + ", " + fourthPDescription["State"] + " " + str(int(fourthPDescription["ZIP"])))
-        fourthAddressUnencoded = fourthPDescription["Street Address"] + ", " + fourthPDescription["City"] + ", " + fourthPDescription["State"] + " " + str(int(fourthPDescription["ZIP"]))
-        if fourthAddressUnencoded[0] == ',' and fourthAddressUnencoded[2] == ',':
-            fourthAddress = ""
-            fourthAddressUnencoded = "No location provided"
-        elif fourthAddressUnencoded[0] == ',':
-            fourthAddressUnencoded = fourthPDescription["City"] + ", " + fourthPDescription["State"] + " " + str(int(fourthPDescription["ZIP"]))
-    fifthAddress = ""
-    fifthAddressUnencoded = "No location provided"
-    if fifthPDescription["ZIP"] != "":
-        fifthAddress = "https://www.google.com/maps/search/?api=1&query=" + urllib.parse.quote(fifthPDescription["Street Address"] + ", " + fifthPDescription["City"] + ", " + fifthPDescription["State"] + " " + str(int(fifthPDescription["ZIP"])))
-        fifthAddressUnencoded = fifthPDescription["Street Address"] + ", " + fifthPDescription["City"] + ", " + fifthPDescription["State"] + " " + str(int(fifthPDescription["ZIP"]))
-        if fifthAddressUnencoded[0] == ',' and fifthAddressUnencoded[2] == ',':
-            fifthAddress = ""
-            fifthAddressUnencoded = "No location provided"
-        elif fifthAddressUnencoded[0] == ',':
-            fifthAddressUnencoded = fifthPDescription["City"] + ", " + fifthPDescription["State"] + " " + str(int(fifthPDescription["ZIP"]))
-    return winningAddress, winningAddressUnencoded, secondAddress, secondAddressUnencoded, thirdAddress, thirdAddressUnencoded, fourthAddress, fourthAddressUnencoded, fifthAddress, fifthAddressUnencoded
+# algorithm to create address links
+def create_address_links(p_descriptions):
+    addresses = []
+
+    for p_description in p_descriptions:
+        if p_description["ZIP"] != "":
+            address = "https://www.google.com/maps/search/?api=1&query=" + urllib.parse.quote(
+                p_description["Street Address"] + ", " + p_description["City"] + ", " +
+                p_description["State"] + " " + str(int(p_description["ZIP"])))
+            addresses.append(address)
+        else:
+            addresses.append("")
+
+    return tuple(addresses)
 
 def getLatLng(address):
     geocodingResponse = requests.get(f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={os.getenv("GOOGLE_API_KEY")}').json()
