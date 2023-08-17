@@ -6,7 +6,7 @@ import fetchWithAxios from "../../utils/fetchWithAxios";
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
 import { MdOutlineOpenInNew } from "react-icons/md";
-import { BiCopy, BiBookmark, BiSolidBookmark } from "react-icons/bi";
+import { BiCopy, BiBookmark, BiSolidBookmark, BiSolidPhone } from "react-icons/bi";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import LocationCarousel from "./LocationCarousel";
@@ -84,6 +84,11 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                                     <div className="my-4 flex flex-col gap-4">
                                         <p className="font-semibold text-2xl text-primary">{focusedLocation.name}</p>
+
+                                        <div className="flex gap-x-1 items-center">
+                                            <BiSolidPhone className='text-xl' />
+                                            <p>{ focusedLocation.phone }</p>
+                                        </div>
 
                                         <p className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`} onClick={() => setDescriptionExpanded(!descriptionExpanded)} >{focusedLocation.description}</p>
 

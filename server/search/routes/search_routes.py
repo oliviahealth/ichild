@@ -19,7 +19,6 @@ def connection_and_setup():
     collection_name = db["Preprocess"]
     global embedder
     embedder = SentenceTransformer('../models/model1')
-
     resources = collection_name.find({}, {"Organization": 1, "Description": 1, "Email": 1, "Work Phone": 1, "PDescription": 1})
     global corpus
     corpus = [resource["PDescription"] for resource in resources]
@@ -79,9 +78,3 @@ def formatted_db_search():
         'locations': results,
         'dateCreated': date_created
     }
-
-    return jsonify(results)
-    """return render_template('results.html',
-                            userQuery = query,
-                            results = results
-"""
