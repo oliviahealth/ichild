@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
+import useEmblaCarousel from "embla-carousel-react";
 
 import useAppStore from "../../stores/useAppStore";
 import fetchWithAxios from "../../utils/fetchWithAxios";
@@ -7,9 +8,9 @@ import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { BiCopy, BiBookmark, BiSolidBookmark, BiSolidPhone } from "react-icons/bi";
+import { RxDotFilled } from "react-icons/rx";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
-import LocationCarousel from "./LocationCarousel";
 import InteractiveMap from "./InteractiveMap";
 import PanoramicStreetView from "./PanoramicStreetView";
 
@@ -29,6 +30,14 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     }, [apiResponse]);
 
     const copyText = useAppStore((state) => state.copyText);
+
+    // Gain access to the embla carousel api
+    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
+
+    const [currentSlideIndex, setCurrentSlideIndex] = useState(emblaApi?.selectedScrollSnap() ?? 0);
+
+    // Whenever a new slide is in view, update the currentSlideIndex
+    emblaApi?.on("select", () => setCurrentSlideIndex(emblaApi?.selectedScrollSnap()));
 
     const { mutate: saveLocation, isLoading: isSaveLoading } = useMutation(async (location: ILocation) => {
         await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'POST', { name: location.name, userId: user?.id });
@@ -79,15 +88,15 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                 <div className="w-full h-full p-3 object-container">
 
                                     <div className="h-80">
-                                        {focusedLocation.streetViewExists && focusedLocation.latitude && focusedLocation.longitude && (<PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />)}
+                                        {focusedLocation.streetViewExists && focusedLocation.latitude && focusedLocation.longitude ? <PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} /> : <InteractiveMap locations={[focusedLocation]} />}
                                     </div>
 
                                     <div className="my-4 flex flex-col gap-4">
                                         <p className="font-semibold text-2xl text-primary">{focusedLocation.name}</p>
 
                                         <div className="flex gap-x-1 items-center">
-                                            <BiSolidPhone className='text-xl' />
-                                            <p>{ focusedLocation.phone }</p>
+                                            <BiSolidPhone />
+                                            <p>{focusedLocation.phone}</p>
                                         </div>
 
                                         <p className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`} onClick={() => setDescriptionExpanded(!descriptionExpanded)} >{focusedLocation.description}</p>
@@ -155,8 +164,68 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                         </div>
                     </div>
 
-                    <div className="xl:hidden max-w-lg mt-2">
-                        <LocationCarousel locations={apiResponse.locations} />
+                    { /* Render the following only on smaller devices */}
+                    <div className="xl:hidden max-w-2xl mt-2">
+                        <div>
+                            <div className="embla" ref={emblaRef}>
+                                <div className="embla__container">
+
+                                    {apiResponse.locations.map((location, index) => (
+                                        <div key={index} className="embla__slide p-3 mr-1 bg-white rounded-box space-y-3" >
+                                            <p className="font-semibold">{location.name}</p>
+
+                                            <div className="flex gap-2">
+                                                <a className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Website</a>
+                                                <a href={location.addressLink} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Directions</a>
+
+                                                <button className={`btn btn-square btn-xs bg-inherit border-none hover:bg-gray-200`} onClick={() => copyText(location.address)}>
+                                                    <BiCopy className="text-xl text-black" />
+                                                </button>
+
+                                                {user && (
+                                                    <button className={`btn btn-square btn-xs bg-inherit border-none hover:bg-gray-200`}>
+                                                        {location.isSaved ? (
+                                                            isDeleteLoading && locationToSave === location ? (
+                                                                <span className="loading loading-spinner loading-sm"></span>
+                                                            ) : (
+                                                                <BiSolidBookmark onClick={() => deleteSavedLocation(location)} className="text-xl text-black" />
+                                                            )
+                                                        ) : (
+                                                            isSaveLoading && locationToSave === location ? (
+                                                                <span className="loading loading-spinner loading-sm"></span>
+                                                            ) : (
+                                                                <BiBookmark onClick={() => saveLocation(location)} className="text-xl text-black" />
+                                                            )
+                                                        )}
+                                                    </button>
+                                                )}
+                                            </div>
+
+                                            <p className="text-sm">{location.address}</p>
+
+                                            <div className="h-40">
+                                                {location.streetViewExists && location.latitude && location.longitude ? <PanoramicStreetView latitude={location.latitude} longitude={location.longitude} /> : <InteractiveMap locations={[location]} />}
+                                            </div>
+
+                                            <p onClick={() => setDescriptionExpanded(!descriptionExpanded)} className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`}>{location.description}</p>
+
+                                            <div className="flex gap-x-1 items-center text-sm">
+                                                <BiSolidPhone />
+                                                <p>{location.phone}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="flex justify-center items-center w-full py-2">
+                                {apiResponse.locations.map((_, index) => (
+                                    <button key={index} className={`text-xl ${currentSlideIndex === index ? "text-primary" : "text-gray-400"}`}>
+                                        <RxDotFilled />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

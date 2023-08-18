@@ -9,6 +9,7 @@ import { SavedLocationSchema, ISavedLocation } from "./utils/interfaces";
 import ChatBubble from "./components/Chat/ChatBubble";
 import OllieAvatar from "./components/Chat/OllieAvatar";
 import InteractiveMap from "./components/Chat/InteractiveMap";
+import LoadingSkeleton from "./components/LoadingSkeleton";
 import { TfiMenuAlt } from "react-icons/tfi";
 import { BiCopy } from "react-icons/bi";
 import { BiSolidBookmark } from "react-icons/bi";
@@ -88,16 +89,15 @@ const SavedLocations: React.FC = () => {
             )}
 
             {isLoading && (
-                <div className="flex justify-center">
-                    <span className="loading loading-spinner loading-sm text-primary"></span>
-                </div>
+                <LoadingSkeleton />
             )}
 
             <div className="flex flex-col gap-6 overflow-y-auto max-h-[calc(100vh-11rem)]">
                 {savedLocations?.map((location, index) => {
                     const { formattedDate, formattedTime } = convertMillisecondsToFormattedDateTime(location.dateCreated);
 
-                    return (<div key={index} className="flex items-center gap-4">
+                    return (
+                    <div key={index} className="xl:flex xl:items-center gap-4">
                         <div>
                             <OllieAvatar />
                         </div>
@@ -134,11 +134,11 @@ const SavedLocations: React.FC = () => {
                             </ChatBubble>
                         </div>
 
-                        <div className="w-[29rem] h-32 p-3 bg-white rounded-xl">
-                            <InteractiveMap center={{ lat: location.latitude, lng: location.longitude }} locations={[location]} />
+                        <div className="max-w-[29rem] w-full h-32 p-3 bg-white rounded-xl flex justify-center items-center">
+                            { location.latitude && location.longitude ? (<InteractiveMap center={{ lat: location.latitude, lng: location.longitude }} locations={[location]} />) : <InteractiveMap /> }
                         </div>
 
-                        <div className="text-sm">
+                        <div className="text-sm hidden xl:block">
                             <p>{formattedTime}</p>
                             <p>{formattedDate}</p>
                         </div>

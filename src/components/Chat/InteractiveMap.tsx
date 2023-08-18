@@ -13,7 +13,7 @@ const MapMarker: React.FC<MapMarkerProps> = ({ latitude, longitude, text }) => {
 }
 
 interface Props {
-    locations: ILocation[]
+    locations?: ILocation[]
     center?: { lat: number, lng: number }
 }
 
@@ -25,7 +25,7 @@ const InteractiveMap: React.FC<Props> = ({ locations, center }) => {
     return (
         <>
             {isGoogleApiLoaded && (<GoogleMap mapContainerClassName="map-container" center={center || { lat: 30.6280, lng: -96.3344 }} zoom={11} options={{ streetViewControl: false, mapTypeControl: false}}>
-                {locations.map((location, index) => {
+                {locations?.map((location, index) => {
                     if(location.latitude && location.longitude) {
                         return (
                             <MapMarker key={index} latitude={location.latitude} longitude={location.longitude} text={String.fromCharCode(65 + index)} />

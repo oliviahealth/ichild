@@ -2,7 +2,7 @@ import React from "react";
 
 import ChatBubble from "./ChatBubble";
 
-const ChatSkeleton: React.FC = () => {
+const ChatLoadingSkeleton: React.FC = () => {
     return (
         <div className="border border-none animate-pulse gap-4 flex justify-center">
             <div className="bg-gray-100 h-12 w-12 rounded-full"></div>
@@ -31,4 +31,4 @@ const ChatSkeleton: React.FC = () => {
     )
 }
 
-export default ChatSkeleton;
+export default ChatLoadingSkeleton;
