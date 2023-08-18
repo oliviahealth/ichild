@@ -2,12 +2,13 @@ import { z } from 'zod';
 
 export const LocationSchema = z.object({
     address: z.string(),
-    addressLink: z.string(),
+    addressLink: z.string().optional(),
     description: z.string(),
     name: z.string(),
     phone: z.string(),
-    latitude: z.number(),
-    longitude: z.number(),
+    website: z.string().optional(),
+    latitude: z.number().optional(),
+    longitude: z.number().optional(),
     streetViewExists: z.boolean(),
     isSaved: z.boolean()
 });

@@ -79,7 +79,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                 <div className="w-full h-full p-3 object-container">
 
                                     <div className="h-80">
-                                        {focusedLocation.streetViewExists && (<PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />)}
+                                        {focusedLocation.streetViewExists && focusedLocation.latitude && focusedLocation.longitude && (<PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} />)}
                                     </div>
 
                                     <div className="my-4 flex flex-col gap-4">
@@ -115,7 +115,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                                         <p className="font-semibold">{location.name}</p>
 
                                                         <div className="flex gap-2 my-3">
-                                                            <a className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Website</a>
+                                                            <a href={location.website} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Website</a>
                                                             <a href={location.addressLink} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Directions</a>
                                                         </div>
 

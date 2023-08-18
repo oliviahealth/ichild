@@ -32,9 +32,11 @@ def grab_info(crossEncoderItems, crossEncoderScoresDict, collection_name):
         phone = location["Phone Number"]
         latitude = location['Latitude']
         longitude = location['Longitude']
+        website = location['Website']
+        address_link = location['URL']
         confidence = crossEncoderScoresDict[resource]
         
-        info_list.append((location, name, description, phone, confidence, latitude, longitude))
+        info_list.append((location, name, description, phone, confidence, latitude, longitude, website, address_link))
     
     return info_list
 
@@ -53,21 +55,6 @@ def create_addresses(locations):
                 address = location["City"] + ", " + location["State"] + " " + str(int(location["Zip Code"]))
 
         addresses.append(address)
-
-    return tuple(addresses)
-
-# algorithm to create address links
-def create_address_links(locations):
-    addresses = []
-
-    for location in locations:
-        if location["Zip Code"] != "":
-            address = "https://www.google.com/maps/search/?api=1&query=" + urllib.parse.quote(
-                location['Street Number'] + ' ' + location["Route"] + ", " + location["City"] + ", " +
-                location["State"] + " " + str(int(location["Zip Code"])))
-            addresses.append(address)
-        else:
-            addresses.append("")
 
     return tuple(addresses)
 

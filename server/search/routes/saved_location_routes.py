@@ -82,6 +82,7 @@ def get_saved_locations():
                     'description': location.description,
                     'latitude': location.latitude,
                     'longitude': location.longitude,
+                    'website': location.website,
                     'name': location.name,
                     'phone': location.phone,
                     'dateCreated': info['dateCreated'],

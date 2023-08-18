@@ -5,7 +5,7 @@ import certifi
 import os
 import time
 
-from search_controller import core_search, grab_info, create_addresses, create_address_links, checkIfStreetViewExists
+from search_controller import core_search, grab_info, create_addresses, checkIfStreetViewExists
 
 search_routes_bp = Blueprint('search_routes', __name__)
 
@@ -50,8 +50,9 @@ def formatted_db_search():
     phone_list = [info[3] for info in info_list]
     latitude_list = [info[5] for info in info_list]
     longitude_list = [info[6] for info in info_list]
+    website_list = [info[7] for info in info_list]
+    address_links_list = [info[8] for info in info_list]
     address_list = [address for address in create_addresses([info[0] for info in info_list])]
-    address_links_list = [address_link for address_link in create_address_links([info[0] for info in info_list])]
 
     validThreshold = 0.25 #threshold for "valid" results
 
@@ -69,12 +70,13 @@ def formatted_db_search():
         addressLink = address_links_list[index]
         latitude = float(latitude_list[index])
         longitude = float(longitude_list[index])
+        website = website_list[index]
 
         streetViewExists = checkIfStreetViewExists(latitude, longitude)
 
         date_created = int(time.time() * 1000)
 
-        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'streetViewExists': streetViewExists, 'isSaved': False })
+        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'website': website, 'streetViewExists': streetViewExists, 'isSaved': False })
 
     results = {
         'userQuery': query,

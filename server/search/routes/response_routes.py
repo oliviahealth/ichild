@@ -41,6 +41,7 @@ def add_response():
             description = location.get('description')
             latitude = location.get('latitude')
             longitude = location.get('longitude')
+            website = location.get('website')
             name = location.get('name')
             phone = location.get('phone')
             streetViewExists = location.get('streetViewExists')
@@ -49,7 +50,7 @@ def add_response():
             # Store the name of the location in the locationsArr so we can attach it to the new_response record in the database
             existing_location = Location.query.filter_by(name=name).first()
             if(existing_location == None):
-                location = Location(address=address, addressLink=addressLink, description=description, latitude=latitude, longitude=longitude, name=name, phone=phone, streetViewExists=streetViewExists)
+                location = Location(address=address, addressLink=addressLink, description=description, latitude=latitude, longitude=longitude, website=website, name=name, phone=phone, streetViewExists=streetViewExists)
                 db.session.add(location)
                 db.session.commit()
                 
@@ -73,6 +74,7 @@ def add_response():
                     'description': location.get('description'),
                     'latitude': location.get('latitude'),
                     'longitude': location.get('longitude'),
+                    'website': location.get('website'),
                     'name': location.get('name'),
                     'streetViewExists': location.get('streetViewExists'),
                     'phone': location.get('phone'),
