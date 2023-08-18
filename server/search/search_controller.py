@@ -25,14 +25,16 @@ def grab_info(crossEncoderItems, crossEncoderScoresDict, collection_name):
     
     for i in range(item_count):
         resource = crossEncoderItems[i][1]
-        location = collection_name.find_one({"PDescription": resource})
+        location = collection_name.find_one({"Description": resource})
     
-        name = location["Organization"]
+        name = location["Name"]
         description = location["Description"]
-        work_phone = location["Work Phone"]
+        phone = location["Phone Number"]
+        latitude = location['Latitude']
+        longitude = location['Longitude']
         confidence = crossEncoderScoresDict[resource]
         
-        info_list.append((location, name, description, work_phone, confidence))
+        info_list.append((location, name, description, phone, confidence, latitude, longitude))
     
     return info_list
 
@@ -43,12 +45,12 @@ def create_addresses(locations):
     for location in locations:
         address = 'No location provided'
 
-        if location["ZIP"] != "":
-            address = location["Street Address"] + ", " + location["City"] + ", " + location["State"] + " " + str(int(location["ZIP"]))
+        if location["Zip Code"] != "":
+            address = location['Street Number'] + ' ' + location["Route"] + ", " + location["City"] + ", " + location["State"] + " " + str(int(location["Zip Code"]))
             if address[0] == ',' and address[2] == ',':
                 address = "No location provided"
             elif address[0] == ',':
-                address = location["City"] + ", " + location["State"] + " " + str(int(location["ZIP"]))
+                address = location["City"] + ", " + location["State"] + " " + str(int(location["Zip Code"]))
 
         addresses.append(address)
 
@@ -59,22 +61,15 @@ def create_address_links(locations):
     addresses = []
 
     for location in locations:
-        if location["ZIP"] != "":
+        if location["Zip Code"] != "":
             address = "https://www.google.com/maps/search/?api=1&query=" + urllib.parse.quote(
-                location["Street Address"] + ", " + location["City"] + ", " +
-                location["State"] + " " + str(int(location["ZIP"])))
+                location['Street Number'] + ' ' + location["Route"] + ", " + location["City"] + ", " +
+                location["State"] + " " + str(int(location["Zip Code"])))
             addresses.append(address)
         else:
             addresses.append("")
 
     return tuple(addresses)
-
-def getLatLng(address):
-    geocodingResponse = requests.get(f'https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={os.getenv("GOOGLE_API_KEY")}').json()
-
-    latLng = geocodingResponse['results'][0]['geometry']['location']
-
-    return latLng
 
 def checkIfStreetViewExists(latitude, longitude):
     response = requests.get(f'https://maps.googleapis.com/maps/api/streetview/metadata?key={os.getenv("GOOGLE_API_KEY")}&location={latitude},{longitude}').json()

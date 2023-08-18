@@ -4,9 +4,9 @@ import os
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(current_path)
-data_path = os.path.join(current_path, 'CHILD_Working_DB_v2 - Sheet1.csv')
+data_path = os.path.join(current_path, 'IntelligentChild.locations.csv')
 
-googleAPIKey = os.getenv("GOOGLE_API_KEY")
+googleAPIKey = 'AIzaSyBQmndv6caGHFZzm2SaupLvT4Faxj2FK2s'
 
 data = pd.read_csv(data_path)
 
@@ -91,6 +91,7 @@ for i in range(len(dataDictList)):
     #print(f"Resource {i+1}: {dataDictList[i]['First Name']}")
     
     placeName = dataDictList[i]['Name']
+    placeDescription = dataDictList[i]['Description']
     
     text_search_url = f"https://maps.googleapis.com/maps/api/place/textsearch/json?key={googleAPIKey}&location=30.627808,-96.334863&radius=15000&query={placeName}"
     response = requests.get(text_search_url)
@@ -107,13 +108,6 @@ for i in range(len(dataDictList)):
 
         if details_data["status"] == "OK":
             place_details = details_data["result"]
-
-            #print(place_details)
-            
-            try:    
-                locName = place_details['name']
-            except:
-                locName = "Error: Not Found"
             
             '''
             try:
@@ -172,10 +166,6 @@ for i in range(len(dataDictList)):
                 locLongitude = place_details['geometry']['location']['lng']
             except:
                 locLongitude = "Error: Not Found"
-            try:
-                locDescription = dataDictList[i]['Description']
-            except:
-                locDescription = "Error: Not Found"
             try:    
                 locPhoneNumber = place_details['formatted_phone_number']
             except:
@@ -233,10 +223,10 @@ for i in range(len(dataDictList)):
             except:
                 locResourceType = "Error: Not Found"
 
-            newLoc = location(locName, 
+            newLoc = location(placeName, 
                               locStreetNumber, locRoute, locCity, locState, locCountry, locZipCode, 
                               locLatitude, locLongitude, 
-                              locDescription, 
+                              placeDescription, 
                               locPhoneNumber,
                               locOpenTimeSun, locOpenTimeMon, locOpenTimeTue, locOpenTimeWed, locOpenTimeThu, locOpenTimeFri, locOpenTimeSat,
                               locPhotoArray,

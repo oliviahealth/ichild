@@ -5,7 +5,7 @@ import certifi
 import os
 import time
 
-from search_controller import core_search, grab_info, create_addresses, create_address_links, getLatLng, checkIfStreetViewExists
+from search_controller import core_search, grab_info, create_addresses, create_address_links, checkIfStreetViewExists
 
 search_routes_bp = Blueprint('search_routes', __name__)
 
@@ -16,12 +16,12 @@ def connection_and_setup():
     client = MongoClient(MONGODB_HOST, tlsCAFile=certifi.where())
     db = client["IntelligentChild"]
     global collection_name
-    collection_name = db["Preprocess"]
+    collection_name = db["Locations"]
     global embedder
     embedder = SentenceTransformer('../models/model1')
-    resources = collection_name.find({}, {"Organization": 1, "Description": 1, "Email": 1, "Work Phone": 1, "PDescription": 1})
+    resources = collection_name.find({}, {"Name": 1, "Description": 1, "Email": 1, "Phone Number": 1})
     global corpus
-    corpus = [resource["PDescription"] for resource in resources]
+    corpus = [resource["Description"] for resource in resources]
 
     print("******BEGINNING PREPROCESS*******")
     embeddings = embedder.encode(corpus, convert_to_tensor=True)
@@ -48,6 +48,8 @@ def formatted_db_search():
     desc_list = [info[2] for info in info_list]
     conf_list = [info[4].item() for info in info_list]
     phone_list = [info[3] for info in info_list]
+    latitude_list = [info[5] for info in info_list]
+    longitude_list = [info[6] for info in info_list]
     address_list = [address for address in create_addresses([info[0] for info in info_list])]
     address_links_list = [address_link for address_link in create_address_links([info[0] for info in info_list])]
 
@@ -65,8 +67,9 @@ def formatted_db_search():
         phone = phone_list[index]
         address = address_list[index]
         addressLink = address_links_list[index]
+        latitude = float(latitude_list[index])
+        longitude = float(longitude_list[index])
 
-        latitude, longitude = getLatLng(address).values()
         streetViewExists = checkIfStreetViewExists(latitude, longitude)
 
         date_created = int(time.time() * 1000)
