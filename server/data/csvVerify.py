@@ -1,12 +1,15 @@
 import pandas as pd
 import requests
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(current_path)
 data_path = os.path.join(current_path, 'IntelligentChild.locations.csv')
 
-googleAPIKey = 'AIzaSyBQmndv6caGHFZzm2SaupLvT4Faxj2FK2s'
+googleAPIKey = os.getenv('GOOGLE_API_KEY')
 
 data = pd.read_csv(data_path)
 
