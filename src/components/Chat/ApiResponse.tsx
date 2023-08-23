@@ -7,7 +7,7 @@ import fetchWithAxios from "../../utils/fetchWithAxios";
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
 import { MdOutlineOpenInNew } from "react-icons/md";
-import { BiCopy, BiBookmark, BiSolidBookmark, BiSolidPhone } from "react-icons/bi";
+import { BiCopy, BiBookmark, BiSolidBookmark, BiSolidPhone, BiLaptop } from "react-icons/bi";
 import { RxDotFilled } from "react-icons/rx";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
@@ -95,8 +95,13 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                         <p className="font-semibold text-2xl text-primary">{focusedLocation.name}</p>
 
                                         <div className="flex gap-x-1 items-center">
+                                            <BiLaptop />
+                                            <a className="text-primary" href={focusedLocation.website} target="_blank">{focusedLocation.website}</a>
+                                        </div>
+
+                                        <div className="flex gap-x-1 items-center">
                                             <BiSolidPhone />
-                                            <p>{focusedLocation.phone}</p>
+                                            <a className="text-primary" href={`tel:${focusedLocation.phone}`} target="_blank">{focusedLocation.phone}</a>
                                         </div>
 
                                         <p className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`} onClick={() => setDescriptionExpanded(!descriptionExpanded)} >{focusedLocation.description}</p>
