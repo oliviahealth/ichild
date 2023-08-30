@@ -52,6 +52,7 @@ def formatted_db_search():
     longitude_list = [info[6] for info in info_list]
     website_list = [info[7] for info in info_list]
     address_links_list = [info[8] for info in info_list]
+    rating_list = [info[9] for info in info_list]
     address_list = [address for address in create_addresses([info[0] for info in info_list])]
 
     validThreshold = 0.25 #threshold for "valid" results
@@ -71,12 +72,16 @@ def formatted_db_search():
         latitude = float(latitude_list[index])
         longitude = float(longitude_list[index])
         website = website_list[index]
-
+        try:
+            rating = float(rating_list[index])
+        except:
+            rating = None
+            
         streetViewExists = checkIfStreetViewExists(latitude, longitude)
 
         date_created = int(time.time() * 1000)
 
-        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'website': website, 'streetViewExists': streetViewExists, 'isSaved': False })
+        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'website': website, 'streetViewExists': streetViewExists, 'rating': rating, 'isSaved': False })
 
     results = {
         'userQuery': query,

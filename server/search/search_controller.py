@@ -34,9 +34,10 @@ def grab_info(crossEncoderItems, crossEncoderScoresDict, collection_name):
         longitude = location['Longitude']
         website = location['Website']
         address_link = location['URL']
+        rating = location['Rating']
         confidence = crossEncoderScoresDict[resource]
         
-        info_list.append((location, name, description, phone, confidence, latitude, longitude, website, address_link))
+        info_list.append((location, name, description, phone, confidence, latitude, longitude, website, address_link, rating))
     
     return info_list
 

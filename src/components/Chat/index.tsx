@@ -28,6 +28,8 @@ const ChatComponent: React.FC = () => {
   // The actual response from the api including the locations the api suggests
   const [apiResponses, setApiResponses] = useState<IAPIResponse[]>([]);
 
+  console.log(apiResponses);
+
   // Conversation previews are an array of past conversations that the user has had, but only with the id and the title for each past conversation
   // We use the id to fetch the complete past conversation object when the user focuses on one of them
   const ConversationPreviews = useAppStore((state) => state.conversationPreviews);

@@ -7,7 +7,7 @@ import fetchWithAxios from "../../utils/fetchWithAxios";
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
 import { MdOutlineOpenInNew } from "react-icons/md";
-import { BiCopy, BiBookmark, BiSolidBookmark, BiSolidPhone, BiLaptop } from "react-icons/bi";
+import { BiCopy, BiBookmark, BiSolidBookmark, BiSolidPhone, BiLaptop, BiSolidStar } from "react-icons/bi";
 import { RxDotFilled } from "react-icons/rx";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
@@ -19,6 +19,7 @@ interface Props {
 }
 
 const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
+    console.log(apiResponse);
     const user = useAppStore((state) => state.user);
 
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
@@ -93,6 +94,14 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                                     <div className="my-4 flex flex-col gap-4">
                                         <p className="font-semibold text-2xl text-primary">{focusedLocation.name}</p>
+
+                                        <div className="flex gap-x-1 items-center">
+                                            <div className="rating rating-md rating-half">
+                                                {focusedLocation.rating && <>{Array.from({ length: Math.round(focusedLocation.rating * 2) }).map((_, elm) => (
+                                                    <>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</>
+                                                ))}</>}
+                                            </div>
+                                        </div>
 
                                         <div className="flex gap-x-1 items-center">
                                             <BiLaptop />
@@ -214,10 +223,22 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                                             <p onClick={() => setDescriptionExpanded(!descriptionExpanded)} className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`}>{location.description}</p>
 
-                                            <div className="flex gap-x-1 items-center text-sm">
-                                                <BiSolidPhone />
-                                                <p>{location.phone}</p>
+                                            <div className="flex gap-x-1 items-center">
+                                                {Array.from({ length: 5 }, (_, index) => (
+                                                    <BiSolidStar key={index} />
+                                                ))}
                                             </div>
+
+                                            <div className="flex gap-x-1 items-center">
+                                                <BiLaptop />
+                                                <a className="text-primary" href={focusedLocation.website} target="_blank">{focusedLocation.website}</a>
+                                            </div>
+
+                                            <div className="flex gap-x-1 items-center">
+                                                <BiSolidPhone />
+                                                <a className="text-primary" href={`tel:${focusedLocation.phone}`} target="_blank">{focusedLocation.phone}</a>
+                                            </div>
+
                                         </div>
                                     ))}
                                 </div>

@@ -35,4 +35,5 @@ class Location(db.Model):
     website = db.Column(db.String())
     streetViewExists = db.Column(db.Boolean(), default=False)
     phone = db.Column(db.String(), nullable=False)
+    rating = db.Column(db.Float())
     saved_locations = db.relationship('SavedLocation', backref='location', lazy=True, cascade='all, delete-orphan')

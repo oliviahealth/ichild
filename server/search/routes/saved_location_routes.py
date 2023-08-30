@@ -87,6 +87,7 @@ def get_saved_locations():
                     'phone': location.phone,
                     'dateCreated': info['dateCreated'],
                     'streetViewExists': location.streetViewExists,
+                    'rating': location.rating,
                     'isSaved': True
                 }
                 saved_locations.append(location_info)

@@ -137,6 +137,7 @@ def get_conversation():
                         'name': location.name,
                         'phone': location.phone,
                         'streetViewExists': location.streetViewExists,
+                        'rating': location.rating,
                         'isSaved': location.name in saved_location_names
                     }
                     for name in response.locations
@@ -207,6 +208,7 @@ def get_conversations():
                             'name': location.name,
                             'phone': location.phone,
                             'streetViewExists': location.streetViewExists,
+                            'rating': location.rating,
                             'isSaved': location.name in saved_location_names
                         }
                         for name in response.locations
