@@ -9,7 +9,7 @@ current_path = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(current_path)
 data_path = os.path.join(current_path, 'IntelligentChild.Locations.csv')
 
-client = MongoClient(os.getenv('mongodb+srv://Capstone:ProfWade2023@cluster0.9c4phbt.mongodb.net/?retryWrites=true&w=majority'))
+client = MongoClient(os.getenv('')) # Mongo DB Connection String
 db = client['IntelligentChild']
 collection = db['Locations']
 

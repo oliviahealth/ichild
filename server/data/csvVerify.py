@@ -9,7 +9,7 @@ current_path = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(current_path)
 data_path = os.path.join(current_path, 'IntelligentChild.locations.csv')
 
-googleAPIKey = os.getenv('GOOGLE_API_KEY')
+googleAPIKey = os.getenv('GOOGLE_API_KEY') # Google API Key
 
 data = pd.read_csv(data_path)
 
