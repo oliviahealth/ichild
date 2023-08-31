@@ -27,6 +27,7 @@ def basic_authentication():
         return Response()
     
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRESQL_CONNECTION_STRING')
+app.config['SECRET_KEY'] = 'your_secret_key' # Change this
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)

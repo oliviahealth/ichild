@@ -4,6 +4,8 @@ import torch
 from sentence_transformers import util
 import urllib.parse
 
+from db_models.RecordModel import Record
+
 # core search algorithm separated out for testing
 def core_search(query, embedder, corpus, encoding_dict):
     crossEncoderItems = []
@@ -19,22 +21,23 @@ def core_search(query, embedder, corpus, encoding_dict):
 
     return crossEncoderItems, crossEncoderScoresDict
 
-def grab_info(crossEncoderItems, crossEncoderScoresDict, collection_name):
+def grab_info(crossEncoderItems, crossEncoderScoresDict):
     item_count = 5  # Number of items to retrieve
     info_list = []
     
     for i in range(item_count):
         resource = crossEncoderItems[i][1]
-        location = collection_name.find_one({"Description": resource})
     
-        name = location["Name"]
-        description = location["Description"]
-        phone = location["Phone Number"]
-        latitude = location['Latitude']
-        longitude = location['Longitude']
-        website = location['Website']
-        address_link = location['URL']
-        rating = location['Rating']
+        location = Record.query.filter_by(description=resource).first()
+
+        name = location.name
+        description = location.description
+        phone = location.phone_number
+        latitude = location.latitude
+        longitude = location.longitude
+        website = location.website
+        address_link = location.url
+        rating = location.rating
         confidence = crossEncoderScoresDict[resource]
         
         info_list.append((location, name, description, phone, confidence, latitude, longitude, website, address_link, rating))
@@ -48,12 +51,12 @@ def create_addresses(locations):
     for location in locations:
         address = 'No location provided'
 
-        if location["Zip Code"] != "":
-            address = location['Street Number'] + ' ' + location["Route"] + ", " + location["City"] + ", " + location["State"] + " " + str(int(location["Zip Code"]))
+        if location.zip_code != "":
+            address = location.street_number + ' ' + location.route + ", " + location.city + ", " + location.state + " " + str(int(location.zip_code))
             if address[0] == ',' and address[2] == ',':
                 address = "No location provided"
             elif address[0] == ',':
-                address = location["City"] + ", " + location["State"] + " " + str(int(location["Zip Code"]))
+                address = location.city + ", " + location.state + " " + str(int(location.zip_code))
 
         addresses.append(address)
 

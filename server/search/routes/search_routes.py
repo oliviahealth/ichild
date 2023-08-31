@@ -1,27 +1,22 @@
 from flask import Blueprint, render_template, request, jsonify
-from pymongo import MongoClient
 from sentence_transformers import SentenceTransformer
 import certifi
 import os
 import time
 
 from search_controller import core_search, grab_info, create_addresses, checkIfStreetViewExists
+from db_models.RecordModel import Record
 
 search_routes_bp = Blueprint('search_routes', __name__)
 
 # Executes when first user accesses site
 @search_routes_bp.before_app_first_request
 def connection_and_setup():
-    MONGODB_HOST = os.getenv('MONGO_DB_URL')
-    client = MongoClient(MONGODB_HOST, tlsCAFile=certifi.where())
-    db = client["IntelligentChild"]
-    global collection_name
-    collection_name = db["Locations"]
     global embedder
     embedder = SentenceTransformer('../models/model1')
-    resources = collection_name.find({}, {"Name": 1, "Description": 1, "Email": 1, "Phone Number": 1})
     global corpus
-    corpus = [resource["Description"] for resource in resources]
+    
+    corpus = [location.description for location in Record.query.all()] # Get all the location records from PSQL
 
     print("******BEGINNING PREPROCESS*******")
     embeddings = embedder.encode(corpus, convert_to_tensor=True)
@@ -30,6 +25,12 @@ def connection_and_setup():
     encoding_dict["Encodings"] = embeddings
     print("*******END PREPROCESS********")
 
+    # print('******* Fetching locations from PostgreSQL **********')
+    # locations = Location.query.all()
+    # corpus = [location.description for location in locations]
+    # print('******* Finished fetching locations from PostgreSQL **********')
+
+    
 # Render json search page
 @search_routes_bp.route("/", methods=['POST', 'GET'])
 def msg():
@@ -42,7 +43,7 @@ def formatted_db_search():
 
     crossEncoderItems, crossEncoderScoresDict = core_search(query, embedder, corpus, encoding_dict)
 
-    info_list = grab_info(crossEncoderItems, crossEncoderScoresDict, collection_name)
+    info_list = grab_info(crossEncoderItems, crossEncoderScoresDict)
 
     names_list = [info[1] for info in info_list]
     desc_list = [info[2] for info in info_list]
