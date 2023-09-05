@@ -8,7 +8,6 @@ Terminology
 Language Model: a deep learning model that models the probabilistic distribution of a language. Examples include BERT, GPT, LLaMA
 Client: web browser
 Server: Flask application (will run on server instance hosted by TEES/TCAT)
-NoSQL MongoDB: database that stores all documents in the corpus
 Github Repository
 Deployment
 	In order to host this application locally or on a server, the proper environment must first be set up. This can be accomplished by using pip installs (currently using Python v.3.9) after creating a python virtual environment (venv). 
@@ -44,7 +43,6 @@ nltk==3.8.1
 numpy==1.24.2
 packaging==23.1
 Pillow==9.5.0
-pymongo==4.3.3
 python-dotenv==1.0.0
 PyYAML==6.0
 regex==2023.6.3
@@ -84,13 +82,9 @@ In order to host the application locally, run the following command in the same 
 Database
 	The data is currently stored in an Atlas MongoDB, which is a noSQL database hosted on the cloud. The connection string for the database located in the dbsearch function is: 
 
-'mongodb+srv://Capstone:ProfWade2023@cluster0.9c4phbt.mongodb.net/?retryWrites=true&w=majority'
-
 The database contains a few different “collections”, with the “Preprocess” collection being pulled in order to encode the corpus. This collection contains all the information of each resource that was provided to us (name, location, description,...) along with a preprocessed description used for encoding. 
 
 In order to access the database using a GUI, download MongoDB Compass and connect using the string:
-
- mongodb+srv://Capstone:ProfWade2023@cluster0.9c4phbt.mongodb.net/test. 
 
 To add data to the database, we provide a file DatabaseInsertionTest.py where any CSV file named CHILD_Working_DB_v2 - Sheet1.csv located in the data directory is inserted into the database. This overrides all previous data in the database.
 

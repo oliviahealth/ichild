@@ -224,9 +224,11 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                             <p onClick={() => setDescriptionExpanded(!descriptionExpanded)} className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`}>{location.description}</p>
 
                                             <div className="flex gap-x-1 items-center">
-                                                {Array.from({ length: 5 }, (_, index) => (
-                                                    <BiSolidStar key={index} />
-                                                ))}
+                                                <div className="rating rating-md rating-half">
+                                                    {focusedLocation.rating && <>{Array.from({ length: Math.round(focusedLocation.rating * 2) }).map((_, elm) => (
+                                                        <>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</>
+                                                    ))}</>}
+                                                </div>
                                             </div>
 
                                             <div className="flex gap-x-1 items-center">
