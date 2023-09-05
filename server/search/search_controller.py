@@ -4,7 +4,7 @@ import torch
 from sentence_transformers import util
 import urllib.parse
 
-from db_models.RecordModel import Record
+from db_models.LocationModel import Location
 
 # core search algorithm separated out for testing
 def core_search(query, embedder, corpus, encoding_dict):
@@ -28,15 +28,15 @@ def grab_info(crossEncoderItems, crossEncoderScoresDict):
     for i in range(item_count):
         resource = crossEncoderItems[i][1]
     
-        location = Record.query.filter_by(description=resource).first()
+        location = Location.query.filter_by(description=resource).first()
 
         name = location.name
         description = location.description
-        phone = location.phone_number
+        phone = location.phone
         latitude = location.latitude
         longitude = location.longitude
         website = location.website
-        address_link = location.url
+        address_link = location.address_link
         rating = location.rating
         confidence = crossEncoderScoresDict[resource]
         
@@ -44,23 +44,17 @@ def grab_info(crossEncoderItems, crossEncoderScoresDict):
     
     return info_list
 
-# algorithm to create addresses separated out for testing
-def create_addresses(locations):
-    addresses = []
+def create_address(location):
+    address = 'No location provided'
 
-    for location in locations:
-        address = 'No location provided'
-
-        if location.zip_code != "":
+    if location.zip_code != "":
             address = location.street_number + ' ' + location.route + ", " + location.city + ", " + location.state + " " + str(int(location.zip_code))
             if address[0] == ',' and address[2] == ',':
                 address = "No location provided"
             elif address[0] == ',':
                 address = location.city + ", " + location.state + " " + str(int(location.zip_code))
-
-        addresses.append(address)
-
-    return tuple(addresses)
+    
+    return address
 
 def checkIfStreetViewExists(latitude, longitude):
     response = requests.get(f'https://maps.googleapis.com/maps/api/streetview/metadata?key={os.getenv("GOOGLE_API_KEY")}&location={latitude},{longitude}').json()

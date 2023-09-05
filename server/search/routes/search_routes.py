@@ -4,8 +4,8 @@ import certifi
 import os
 import time
 
-from search_controller import core_search, grab_info, create_addresses, checkIfStreetViewExists
-from db_models.RecordModel import Record
+from search_controller import core_search, grab_info, create_address, checkIfStreetViewExists
+from db_models.LocationModel import Location
 
 search_routes_bp = Blueprint('search_routes', __name__)
 
@@ -16,7 +16,7 @@ def connection_and_setup():
     embedder = SentenceTransformer('../models/model1')
     global corpus
     
-    corpus = [location.description for location in Record.query.all()] # Get all the location records from PSQL
+    corpus = [location.description for location in Location.query.all()] # Get all the location records from PSQL
 
     print("******BEGINNING PREPROCESS*******")
     embeddings = embedder.encode(corpus, convert_to_tensor=True)
@@ -54,7 +54,7 @@ def formatted_db_search():
     website_list = [info[7] for info in info_list]
     address_links_list = [info[8] for info in info_list]
     rating_list = [info[9] for info in info_list]
-    address_list = [address for address in create_addresses([info[0] for info in info_list])]
+    address_list = [create_address(info[0]) for info in info_list]
 
     validThreshold = 0.25 #threshold for "valid" results
 

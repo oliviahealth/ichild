@@ -104,8 +104,7 @@ def get_conversation():
     try:
         conversation = Conversation.query.filter_by(id=conversation_id).first()
 
-        location_dict = {
-            location.name: location for location in Location.query.all()}
+        location_dict = {location.name: location for location in Location.query.all()}
         
         saved_location_names = [saved_location[0] for saved_location in SavedLocation.query.filter_by(
         user_id=conversation.user_id).with_entities(SavedLocation.name).all()]
@@ -126,18 +125,18 @@ def get_conversation():
                 'conversationId': response.conversation_id,
                 'userQuery': response.user_query,
                 'dateCreated': response.date_created,
-                'locations': [
+            'locations': [
                     {
-                        'address': location.address,
-                        'addressLink': location.addressLink,
+                        'address': location.street_number + ' ' + location.route + ", " + location.city + ", " + location.state + " " + str(int(location.zip_code)),
+                        'addressLink': location.address_link,
                         'description': location.description,
-                        'latitude': location.latitude,
-                        'longitude': location.longitude,
+                        'latitude': float(location.latitude),
+                        'longitude': float(location.longitude),
                         'website': location.website,
                         'name': location.name,
                         'phone': location.phone,
-                        'streetViewExists': location.streetViewExists,
-                        'rating': location.rating,
+                        'streetViewExists': location.streetview_exists,
+                        'rating': float(location.rating) if location.rating.isalnum() else None,
                         'isSaved': location.name in saved_location_names
                     }
                     for name in response.locations
@@ -176,8 +175,7 @@ def get_conversations():
         return jsonify({'error': 'Something went wrong!'}), 500
 
     # Should be optimized
-    location_dict = {
-        location.name: location for location in Location.query.all()}
+    location_dict = {location.name: location for location in Location.query.all()}
 
     # Get all of the saved locations so we can check if each location thats being returned is saved by the user
     saved_location_names = [saved_location[0] for saved_location in SavedLocation.query.filter_by(
@@ -200,15 +198,15 @@ def get_conversations():
                     'locations': [
                         {
                             'address': location.address,
-                            'addressLink': location.addressLink,
+                            'addressLink': location.address_link,
                             'description': location.description,
-                            'latitude': location.latitude,
-                            'longitude': location.longitude,
+                            'latitude': float(location.latitude),
+                            'longitude': float(location.longitude),
                             'website': location.website,
                             'name': location.name,
                             'phone': location.phone,
-                            'streetViewExists': location.streetViewExists,
-                            'rating': location.rating,
+                            'streetViewExists': location.streetview_exists,
+                            'rating': float(location.rating) if location.rating.isalnum() else None,
                             'isSaved': location.name in saved_location_names
                         }
                         for name in response.locations

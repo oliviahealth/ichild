@@ -1,39 +1,32 @@
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
+
 from db_search import db
 
-'''
-The Location model represents a geographical place with associated information.
-
-It includes various attributes to define a location, such as its name, address, address link, description, latitude, longitude, and contact phone number.
-Additionally, it maintains a one-to-many relationship with the SavedLocation model to allow users to save and associate locations with their accounts.
-
-The Location model maintains the name as the primary key and must be unique.
-
-There should be no parent relationship between the Location model and and any other model as it must be able to stand alone.
-
-Child Relationship: The conversation model holds a foreign key relationship to an array of 'SavedLocations'. 
-                    These SavedLocations are the locations that a user can link to their account for future reference
-
-Example:
-{
-  "address": "1501 Independence Ave, Bryan, TX 77803",
-  "addressLink": "https://www.google.com/maps/search/?api=1&query=1501%20Independence%20Ave%2C%20Bryan%2C%20TX%2077803",
-  "description": "Regional food collection and distribution warehouses that have a goal of collecting and safely storing surplus food, organizing and sorting it with the help of volunteers, then distributing it to areas of high need through partner agencies and special programs to ensure that hungry neighbors are fed.",
-  "latitude": 30.6594912,
-  "longitude": -96.4084533,
-  "name": "Brazos Valley Food Bank",
-  "phone": "979-779-3663"
-}                    
-'''
-
 class Location(db.Model):
-    name = db.Column(db.String(), primary_key=True)
-    address = db.Column(db.String(), nullable=False)
-    addressLink = db.Column(db.String(), nullable=False)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = db.Column(db.String(), nullable=True)
+    street_number = db.Column(db.String(), nullable=False)
+    route = db.Column(db.String(), nullable=False)
+    city = db.Column(db.String(), nullable=False)
+    state = db.Column(db.String(), nullable=False)
+    country = db.Column(db.String(), nullable=False)
+    zip_code = db.Column(db.String(), nullable=False)
+    latitude = db.Column(db.String(), nullable=False)
+    longitude = db.Column(db.String(), nullable=False)
+    streetview_exists = db.Column(db.Boolean(), nullable=False)
     description = db.Column(db.String(), nullable=False)
-    latitude = db.Column(db.Float())
-    longitude = db.Column(db.Float())
-    website = db.Column(db.String())
-    streetViewExists = db.Column(db.Boolean(), default=False)
     phone = db.Column(db.String(), nullable=False)
-    rating = db.Column(db.Float())
-    saved_locations = db.relationship('SavedLocation', backref='location', lazy=True, cascade='all, delete-orphan')
+    sunday_hours = db.Column(db.String(), nullable=False)
+    monday_hours = db.Column(db.String(), nullable=False)
+    tuesday_hours = db.Column(db.String(), nullable=False)
+    wednesday_hours = db.Column(db.String(), nullable=False)
+    thursday_hours = db.Column(db.String(), nullable=False)
+    friday_hours = db.Column(db.String(), nullable=False)
+    saturday_hours = db.Column(db.String(), nullable=False)
+    photo_url = db.Column(db.String(), nullable=False)
+    rating = db.Column(db.String(), nullable=False)
+    address_link = db.Column(db.String(), nullable=False)
+    website = db.Column(db.String(), nullable=False)
+    tamu_affiliation = db.Column(db.String(), nullable=False)
+    resource_type = db.Column(db.String(), nullable=False)

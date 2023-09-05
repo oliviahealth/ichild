@@ -78,16 +78,16 @@ def get_saved_locations():
                 location_info = {
                     'id': info['id'],
                     'address': location.address,
-                    'addressLink': location.addressLink,
+                    'addressLink': location.address_link,
                     'description': location.description,
-                    'latitude': location.latitude,
-                    'longitude': location.longitude,
+                    'latitude': float(location.latitude),
+                    'longitude': float(location.longitude),
                     'website': location.website,
                     'name': location.name,
                     'phone': location.phone,
                     'dateCreated': info['dateCreated'],
-                    'streetViewExists': location.streetViewExists,
-                    'rating': location.rating,
+                    'streetViewExists': location.streetview_exists,
+                    'rating': float(location.rating) if location.rating.isalnum() else None,
                     'isSaved': True
                 }
                 saved_locations.append(location_info)
