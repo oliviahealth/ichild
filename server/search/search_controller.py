@@ -39,9 +39,10 @@ def grab_info(crossEncoderItems, crossEncoderScoresDict):
         address_link = location.address_link
         rating = location.rating
         streetViewExists = location.streetview_exists
+        hoursOfOperation = [{ "sunday": location.sunday_hours }, { "monday": location.monday_hours }, { "tuesday": location.tuesday_hours }, { "wednesday": location.wednesday_hours }, {  "thursday": location.thursday_hours }, { "friday": location.friday_hours }, { "saturday": location.saturday_hours }]
         confidence = crossEncoderScoresDict[resource]
         
-        info_list.append((location, name, description, phone, confidence, latitude, longitude, website, address_link, rating, streetViewExists))
+        info_list.append((location, name, description, phone, confidence, latitude, longitude, website, address_link, rating, streetViewExists, hoursOfOperation))
     
     return info_list
 
