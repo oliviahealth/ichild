@@ -19,7 +19,6 @@ interface Props {
 }
 
 const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
-    console.log(apiResponse);
     const user = useAppStore((state) => state.user);
 
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
@@ -100,7 +99,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                                 {focusedLocation.rating && (<>
                                                     <div>
                                                         {Array.from({ length: Math.round(focusedLocation.rating * 2) }).map((_, elm) => (
-                                                            <>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</>
+                                                            <span key={`Rating: ${elm}`}>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</span>
                                                         ))}
                                                     </div>
                                                     <span>({focusedLocation.rating})</span></>)}
@@ -114,7 +113,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                             </div>
                                             <div className="collapse-content bg-gray-200">
                                                 {focusedLocation.hoursOfOperation.map((hours, index) => (
-                                                   <div className="flex justify-between">
+                                                   <div key={index} className="flex justify-between">
                                                         <p key={index}>{Object.keys(hours)[0]}</p>
 
                                                         <p key={index}>{Object.values(hours)[0].split(": ")[1]}</p>
@@ -248,7 +247,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                                     {focusedLocation.rating && (<>
                                                         <div>
                                                             {Array.from({ length: Math.round(focusedLocation.rating * 2) }).map((_, elm) => (
-                                                                <>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</>
+                                                                <span key={elm}>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</span>
                                                             ))}
                                                         </div>
                                                         <span>({focusedLocation.rating})</span></>)}

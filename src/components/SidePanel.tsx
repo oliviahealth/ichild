@@ -96,11 +96,6 @@ const SidePanel: React.FC = () => {
                                         </button>
                                     </Link>
                                 ))}
-
-                                { /* Only display the load previous chats button if no chats are currently being loaded and if the conversations array length is less than 5 */}
-                                {!isLoading && conversationPreviews && !(conversationPreviews.length < 5) && (<button className="btn btn-sm border-none text-black hover:bg-gray-400 bg-gray-300 my-4">
-                                    Previous Chats
-                                </button>)}
                             </div>
                         ) : (
                             <div>

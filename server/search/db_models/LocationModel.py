@@ -5,15 +5,15 @@ from db_search import db
 
 class Location(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = db.Column(db.String(), nullable=True)
+    name = db.Column(db.String(), nullable=True, unique=True)
     street_number = db.Column(db.String(), nullable=False)
     route = db.Column(db.String(), nullable=False)
     city = db.Column(db.String(), nullable=False)
     state = db.Column(db.String(), nullable=False)
     country = db.Column(db.String(), nullable=False)
     zip_code = db.Column(db.String(), nullable=False)
-    latitude = db.Column(db.String(), nullable=False)
-    longitude = db.Column(db.String(), nullable=False)
+    latitude = db.Column(db.Float(), nullable=False)
+    longitude = db.Column(db.Float(), nullable=False)
     streetview_exists = db.Column(db.Boolean(), nullable=False)
     description = db.Column(db.String(), nullable=False)
     phone = db.Column(db.String(), nullable=False)
