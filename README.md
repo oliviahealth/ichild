@@ -9,3 +9,4 @@ Use `npm run dev` to spin up a hot reloading dev environment that runs on localh
 # How to build and make plugin
 Use `npm run build` to create a production ready minified build in the `/public/ollie-chatbox-plugin` folder
 Compress the `ollie-chatbox-plugin` folder to a zip file and add it to wordpress.
+# tcat-demo

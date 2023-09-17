@@ -28,8 +28,6 @@ const ChatComponent: React.FC = () => {
   // The actual response from the api including the locations the api suggests
   const [apiResponses, setApiResponses] = useState<IAPIResponse[]>([]);
 
-  console.log(apiResponses);
-
   // Conversation previews are an array of past conversations that the user has had, but only with the id and the title for each past conversation
   // We use the id to fetch the complete past conversation object when the user focuses on one of them
   const ConversationPreviews = useAppStore((state) => state.conversationPreviews);
@@ -66,7 +64,7 @@ const ChatComponent: React.FC = () => {
   { /* When the user focuses on a previous conversation from the sidepanel, we fetch the complete conversation object and populate the api response array to display the suggested locations */ }
   const { mutate: getConversationDetails, isLoading } = useMutation(async () => {
     const conversationDetails: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversation?conversationId=${currentConversationId}`, 'GET');
-
+    
     parseWithZod(conversationDetails, ConversationSchema)
 
     return conversationDetails
@@ -96,8 +94,8 @@ const ChatComponent: React.FC = () => {
 
     // If a user is logged in, save their conversation
     if (user) {
-      const conversation: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user.id}`, 'POST', { id: currentConversationId, title: response.userQuery, userId: user.id })
-      await fetchWithAxios(`${import.meta.env.VITE_API_URL}/response`, 'POST', { ...response, conversationId: conversation.id })
+      const conversation: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user.id}`, 'POST', { id: currentConversationId, title: response.userQuery, userId: user.id }).catch((err) => console.log(err))
+      await fetchWithAxios(`${import.meta.env.VITE_API_URL}/response`, 'POST', { ...response, conversationId: conversation.id }).catch((err) => console.log(err));
 
       // If this is a new conversation, add it to the recent activity on the sidepanel
       if (!currentConversationId) {

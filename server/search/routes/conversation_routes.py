@@ -136,6 +136,7 @@ def get_conversation():
                         'name': location.name,
                         'phone': location.phone,
                         'streetViewExists': location.streetview_exists,
+                        'hoursOfOperation': [{ "sunday": location.sunday_hours }, { "monday": location.monday_hours }, { "tuesday": location.tuesday_hours }, { "wednesday": location.wednesday_hours }, {  "thursday": location.thursday_hours }, { "friday": location.friday_hours }, { "saturday": location.saturday_hours }],
                         'rating': float(location.rating) if location.rating.isalnum() else None,
                         'isSaved': location.name in saved_location_names
                     }
@@ -206,6 +207,7 @@ def get_conversations():
                             'name': location.name,
                             'phone': location.phone,
                             'streetViewExists': location.streetview_exists,
+                            'hoursOfOperation': [{ "sunday": location.sunday_hours }, { "monday": location.monday_hours }, { "tuesday": location.tuesday_hours }, { "wednesday": location.wednesday_hours }, {  "thursday": location.thursday_hours }, { "friday": location.friday_hours }, { "saturday": location.saturday_hours }],
                             'rating': float(location.rating) if location.rating.isalnum() else None,
                             'isSaved': location.name in saved_location_names
                         }
@@ -219,7 +221,7 @@ def get_conversations():
         }
         for conversation in user_conversations
     ]
-
+    
     return jsonify(data)
 
 """

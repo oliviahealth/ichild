@@ -7,7 +7,7 @@ import fetchWithAxios from "../../utils/fetchWithAxios";
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
 import { MdOutlineOpenInNew } from "react-icons/md";
-import { BiCopy, BiBookmark, BiSolidBookmark, BiSolidPhone, BiLaptop, BiSolidStar } from "react-icons/bi";
+import { BiCopy, BiBookmark, BiSolidBookmark, BiSolidPhone, BiLaptop } from "react-icons/bi";
 import { RxDotFilled } from "react-icons/rx";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
@@ -19,7 +19,6 @@ interface Props {
 }
 
 const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
-    console.log(apiResponse);
     const user = useAppStore((state) => state.user);
 
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
@@ -93,13 +92,33 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                     </div>
 
                                     <div className="my-4 flex flex-col gap-4">
-                                        <p className="font-semibold text-2xl text-primary">{focusedLocation.name}</p>
+                                        <p className="font-semibold text-2xl">{focusedLocation.name}</p>
 
                                         <div className="flex gap-x-1 items-center">
-                                            <div className="rating rating-md rating-half">
-                                                {focusedLocation.rating && <>{Array.from({ length: Math.round(focusedLocation.rating * 2) }).map((_, elm) => (
-                                                    <>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</>
-                                                ))}</>}
+                                            <div className="rating rating-md rating-half flex items-center gap-2">
+                                                {focusedLocation.rating && (<>
+                                                    <div>
+                                                        {Array.from({ length: Math.round(focusedLocation.rating * 2) }).map((_, elm) => (
+                                                            <span key={`Rating: ${elm}`}>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</span>
+                                                        ))}
+                                                    </div>
+                                                    <span>({focusedLocation.rating})</span></>)}
+                                            </div>
+                                        </div>
+
+                                        <div className="collapse collapse-arrow bg-gray-200">
+                                            <input type="checkbox" className="peer" />
+                                            <div className="collapse-title bg-gray-200">
+                                                Hours of Operation
+                                            </div>
+                                            <div className="collapse-content bg-gray-200">
+                                                {focusedLocation.hoursOfOperation.map((hours, index) => (
+                                                   <div key={index} className="flex justify-between">
+                                                        <p key={index}>{Object.keys(hours)[0]}</p>
+
+                                                        <p key={index}>{Object.values(hours)[0].split(": ")[1]}</p>
+                                                   </div>
+                                                ))}
                                             </div>
                                         </div>
 
@@ -110,7 +129,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                                         <div className="flex gap-x-1 items-center">
                                             <BiSolidPhone />
-                                            <a className="text-primary" href={`tel:${focusedLocation.phone}`} target="_blank">{focusedLocation.phone}</a>
+                                            <a href={`tel:${focusedLocation.phone}`} target="_blank">{focusedLocation.phone}</a>
                                         </div>
 
                                         <p className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`} onClick={() => setDescriptionExpanded(!descriptionExpanded)} >{focusedLocation.description}</p>
@@ -224,10 +243,14 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                             <p onClick={() => setDescriptionExpanded(!descriptionExpanded)} className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`}>{location.description}</p>
 
                                             <div className="flex gap-x-1 items-center">
-                                                <div className="rating rating-md rating-half">
-                                                    {focusedLocation.rating && <>{Array.from({ length: Math.round(focusedLocation.rating * 2) }).map((_, elm) => (
-                                                        <>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</>
-                                                    ))}</>}
+                                                <div className="rating rating-md rating-half flex items-center gap-2">
+                                                    {focusedLocation.rating && (<>
+                                                        <div>
+                                                            {Array.from({ length: Math.round(focusedLocation.rating * 2) }).map((_, elm) => (
+                                                                <span key={elm}>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</span>
+                                                            ))}
+                                                        </div>
+                                                        <span>({focusedLocation.rating})</span></>)}
                                                 </div>
                                             </div>
 
@@ -238,7 +261,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                                             <div className="flex gap-x-1 items-center">
                                                 <BiSolidPhone />
-                                                <a className="text-primary" href={`tel:${focusedLocation.phone}`} target="_blank">{focusedLocation.phone}</a>
+                                                <a href={`tel:${focusedLocation.phone}`} target="_blank">{focusedLocation.phone}</a>
                                             </div>
 
                                         </div>

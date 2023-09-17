@@ -11,6 +11,7 @@ export const LocationSchema = z.object({
     longitude: z.number().optional(),
     streetViewExists: z.boolean(),
     rating: z.number().optional().nullable(),
+    hoursOfOperation: z.array(z.record(z.string(), z.string())),
     isSaved: z.boolean(),
 });
 export type ILocation = z.infer<typeof LocationSchema>
