@@ -6,13 +6,13 @@ import useAppStore from "../../stores/useAppStore";
 import fetchWithAxios from "../../utils/fetchWithAxios";
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
-import { MdOutlineOpenInNew } from "react-icons/md";
 import { BiCopy, BiBookmark, BiSolidBookmark, BiSolidPhone, BiLaptop } from "react-icons/bi";
 import { RxDotFilled } from "react-icons/rx";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import InteractiveMap from "./InteractiveMap";
 import PanoramicStreetView from "./PanoramicStreetView";
+import LocationInfoPanel from "./LocationInfoPanel";
 
 interface Props {
     apiResponse: IAPIResponse
@@ -86,59 +86,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                 </div>
 
                                 <div className="w-full h-full p-3 object-container">
-
-                                    <div className="h-80">
-                                        {focusedLocation.streetViewExists && focusedLocation.latitude && focusedLocation.longitude ? <PanoramicStreetView latitude={focusedLocation.latitude} longitude={focusedLocation.longitude} /> : <InteractiveMap locations={[focusedLocation]} />}
-                                    </div>
-
-                                    <div className="my-4 flex flex-col gap-4">
-                                        <p className="font-semibold text-2xl">{focusedLocation.name}</p>
-
-                                        <div className="flex gap-x-1 items-center">
-                                            <div className="rating rating-md rating-half flex items-center gap-2">
-                                                {focusedLocation.rating && (<>
-                                                    <div>
-                                                        {Array.from({ length: Math.round(focusedLocation.rating * 2) }).map((_, elm) => (
-                                                            <span key={`Rating: ${elm}`}>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</span>
-                                                        ))}
-                                                    </div>
-                                                    <span>({focusedLocation.rating})</span></>)}
-                                            </div>
-                                        </div>
-
-                                        <div className="collapse collapse-arrow bg-gray-200">
-                                            <input type="checkbox" className="peer" />
-                                            <div className="collapse-title bg-gray-200">
-                                                Hours of Operation
-                                            </div>
-                                            <div className="collapse-content bg-gray-200">
-                                                {focusedLocation.hoursOfOperation.map((hours, index) => (
-                                                   <div key={index} className="flex justify-between">
-                                                        <p key={index}>{Object.keys(hours)[0]}</p>
-
-                                                        <p key={index}>{Object.values(hours)[0].split(": ")[1]}</p>
-                                                   </div>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="flex gap-x-1 items-center">
-                                            <BiLaptop />
-                                            <a className="text-primary" href={focusedLocation.website} target="_blank">{focusedLocation.website}</a>
-                                        </div>
-
-                                        <div className="flex gap-x-1 items-center">
-                                            <BiSolidPhone />
-                                            <a href={`tel:${focusedLocation.phone}`} target="_blank">{focusedLocation.phone}</a>
-                                        </div>
-
-                                        <p className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`} onClick={() => setDescriptionExpanded(!descriptionExpanded)} >{focusedLocation.description}</p>
-
-                                        <a href={focusedLocation.addressLink} target="_blank" className={`max-w-[200px] btn btn-xs text-black bg-gray-300 border-none hover:bg-gray-400`}>
-                                            <MdOutlineOpenInNew className="text-lg" />
-                                            <p>Open Google Maps</p>
-                                        </a>
-                                    </div>
+                                    <LocationInfoPanel location={focusedLocation} />
                                 </div>
                             </div>
                         )}

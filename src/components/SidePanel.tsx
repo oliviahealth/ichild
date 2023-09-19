@@ -38,7 +38,7 @@ const SidePanel: React.FC = () => {
     })
 
     { /* Fetch only the id and title of each previous conversation the user has had to populate the recent activity on the sidepanel */ }
-    const { mutate: getConversationPreviews, isLoading } = useMutation(async () => {
+    const { mutate: getConversationPreviews } = useMutation(async () => {
         const conversationPreviews: IConversationPreview[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversationpreviews?userId=${user?.id}`);
 
         conversationPreviews.forEach((conversationDetail) => parseWithZod(conversationDetail, ConversationPreviewSchema));
