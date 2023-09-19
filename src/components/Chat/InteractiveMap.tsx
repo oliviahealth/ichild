@@ -28,7 +28,7 @@ const InteractiveMap: React.FC<Props> = ({ locations, center }) => {
                 {locations?.map((location, index) => {
                     if(location.latitude && location.longitude) {
                         return (
-                            <MapMarker key={index} latitude={location.latitude} longitude={location.longitude} text={String.fromCharCode(65 + index)} />
+                            <MapMarker key={`Map Marker: ${index}`} latitude={location.latitude} longitude={location.longitude} text={String.fromCharCode(65 + index)} />
                         )
                     }
                 })}

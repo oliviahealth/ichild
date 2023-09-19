@@ -6,12 +6,11 @@ import useAppStore from "../../stores/useAppStore";
 import fetchWithAxios from "../../utils/fetchWithAxios";
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
-import { BiCopy, BiBookmark, BiSolidBookmark, BiSolidPhone, BiLaptop } from "react-icons/bi";
+import { BiCopy, BiBookmark, BiSolidBookmark } from "react-icons/bi";
 import { RxDotFilled } from "react-icons/rx";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import InteractiveMap from "./InteractiveMap";
-import PanoramicStreetView from "./PanoramicStreetView";
 import LocationInfoPanel from "./LocationInfoPanel";
 
 interface Props {
@@ -22,7 +21,6 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     const user = useAppStore((state) => state.user);
 
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
-    const [descriptionExpanded, setDescriptionExpanded] = useState(false);
     const [locationToSave, setLocationToSave] = useState<null | ILocation>(null);
 
     useEffect(() => {
@@ -94,7 +92,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                         <div>
                             {apiResponse.locations.map((location, index) => {
                                 return (
-                                    <div key={index} onClick={() => setFocusedLocation(location)} className="cursor-pointer">
+                                    <div key={`API Response: ${index}`} onClick={() => setFocusedLocation(location)} className="cursor-pointer">
                                         <ChatBubble isResponse={true} isFocused={location === focusedLocation}>
                                             <div className="flex justify-between items-center p-1 sm:w-[27rem]">
                                                 <div className="flex items-center gap-6 w-full">
@@ -152,66 +150,8 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                 <div className="embla__container">
 
                                     {apiResponse.locations.map((location, index) => (
-                                        <div key={index} className="embla__slide p-3 mr-1 bg-white rounded-box space-y-3" >
-                                            <p className="font-semibold">{location.name}</p>
-
-                                            <div className="flex gap-2">
-                                                <a className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Website</a>
-                                                <a href={location.addressLink} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Directions</a>
-
-                                                <button className={`btn btn-square btn-xs bg-inherit border-none hover:bg-gray-200`} onClick={() => copyText(location.address)}>
-                                                    <BiCopy className="text-xl text-black" />
-                                                </button>
-
-                                                {user && (
-                                                    <button className={`btn btn-square btn-xs bg-inherit border-none hover:bg-gray-200`}>
-                                                        {location.isSaved ? (
-                                                            isDeleteLoading && locationToSave === location ? (
-                                                                <span className="loading loading-spinner loading-sm"></span>
-                                                            ) : (
-                                                                <BiSolidBookmark onClick={() => deleteSavedLocation(location)} className="text-xl text-black" />
-                                                            )
-                                                        ) : (
-                                                            isSaveLoading && locationToSave === location ? (
-                                                                <span className="loading loading-spinner loading-sm"></span>
-                                                            ) : (
-                                                                <BiBookmark onClick={() => saveLocation(location)} className="text-xl text-black" />
-                                                            )
-                                                        )}
-                                                    </button>
-                                                )}
-                                            </div>
-
-                                            <p className="text-sm">{location.address}</p>
-
-                                            <div className="h-40">
-                                                {location.streetViewExists && location.latitude && location.longitude ? <PanoramicStreetView latitude={location.latitude} longitude={location.longitude} /> : <InteractiveMap locations={[location]} />}
-                                            </div>
-
-                                            <p onClick={() => setDescriptionExpanded(!descriptionExpanded)} className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`}>{location.description}</p>
-
-                                            <div className="flex gap-x-1 items-center">
-                                                <div className="rating rating-md rating-half flex items-center gap-2">
-                                                    {focusedLocation.rating && (<>
-                                                        <div>
-                                                            {Array.from({ length: Math.round(focusedLocation.rating * 2) }).map((_, elm) => (
-                                                                <span key={elm}>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</span>
-                                                            ))}
-                                                        </div>
-                                                        <span>({focusedLocation.rating})</span></>)}
-                                                </div>
-                                            </div>
-
-                                            <div className="flex gap-x-1 items-center">
-                                                <BiLaptop />
-                                                <a className="text-primary" href={focusedLocation.website} target="_blank">{focusedLocation.website}</a>
-                                            </div>
-
-                                            <div className="flex gap-x-1 items-center">
-                                                <BiSolidPhone />
-                                                <a href={`tel:${focusedLocation.phone}`} target="_blank">{focusedLocation.phone}</a>
-                                            </div>
-
+                                        <div key={`Slide: ${index}`} className="embla__slide p-3 mr-1 bg-white rounded-box space-y-3" >
+                                             <LocationInfoPanel location={location} />
                                         </div>
                                     ))}
                                 </div>
@@ -219,7 +159,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                             <div className="flex justify-center items-center w-full py-2">
                                 {apiResponse.locations.map((_, index) => (
-                                    <button key={index} className={`text-xl ${currentSlideIndex === index ? "text-primary" : "text-gray-400"}`}>
+                                    <button key={`Button: ${index}`} className={`text-xl ${currentSlideIndex === index ? "text-primary" : "text-gray-400"}`}>
                                         <RxDotFilled />
                                     </button>
                                 ))}

@@ -115,11 +115,6 @@ const SidePanel: React.FC = () => {
                             <p className="text-lg"><IoLocationOutline /></p>
                             <p className="ml-4">Locations</p>
                         </Link>
-
-                        <Link to={'/savedchats'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
-                            <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
-                            <p className="ml-4">Chats</p>
-                        </Link>
                     </div>)}
                 </div>
             </div>

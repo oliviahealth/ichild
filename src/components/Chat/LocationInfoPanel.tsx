@@ -45,10 +45,10 @@ const LocationInfoPanel: React.FC<Props> = ({ location }) => {
                         const capitalizedDayOfWeek = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
 
                         return (
-                            <div key={index} className={`flex justify-between my-1 ${currentDayOfWeek === index ? 'font-semibold' : ''}`}>
-                                <p key={index}>{capitalizedDayOfWeek}</p>
+                            <div key={`DayOfWeek: ${index}`} className={`flex justify-between my-1 ${currentDayOfWeek === index ? 'font-semibold' : ''}`}>
+                                <p key={`Capitalized Day of Week: ${index}`}>{capitalizedDayOfWeek}</p>
 
-                                <p key={index}>{Object.values(hours)[0].split(": ")[1]}</p>
+                                <p key={`Hours: ${index}`}>{Object.values(hours)[0].split(": ")[1]}</p>
                             </div>
                         )
                     })}
