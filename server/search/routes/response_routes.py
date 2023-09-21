@@ -2,9 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_login import login_required
 import time
 
-from db_search import db
-from db_models.ResponseModel import Response
-from db_models.LocationModel import Location
+from database import db, Response, Location
 
 response_routes_bp = Blueprint('response_routes', __name__)
 

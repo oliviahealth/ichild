@@ -5,7 +5,7 @@ import os
 import time
 
 from search_controller import core_search, grab_info, create_address
-from db_models.LocationModel import Location
+from database import Location
 
 search_routes_bp = Blueprint('search_routes', __name__)
 
