@@ -2,8 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_login import login_user, login_required, logout_user
 import time
 
-from db_search import db, login_manager, bcrypt
-from db_models.UserModel import User
+from database import db, User, login_manager, bcrypt
 
 auth_routes_bp = Blueprint('auth_routes', __name__)
     

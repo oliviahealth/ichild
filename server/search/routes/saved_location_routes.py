@@ -2,9 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_login import login_required
 import time
 
-from db_search import db
-from db_models.SavedLocationModel import SavedLocation
-from db_models.LocationModel import Location
+from database import db, SavedLocation, Location
 
 saved_location_routes_bp = Blueprint('saved_location_routes', __name__)
 

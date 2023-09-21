@@ -2,10 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_login import login_required
 import time
 
-from db_search import db
-from db_models.ConversationModel import Conversation
-from db_models.LocationModel import Location
-from db_models.SavedLocationModel import SavedLocation
+from database import db, Conversation, Location, SavedLocation
 
 conversation_routes_bp = Blueprint('conversation_routes', __name__)
 

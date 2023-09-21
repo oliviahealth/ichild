@@ -4,7 +4,7 @@ import torch
 from sentence_transformers import util
 import urllib.parse
 
-from db_models.LocationModel import Location
+from database import Location
 
 # core search algorithm separated out for testing
 def core_search(query, embedder, corpus, encoding_dict):
