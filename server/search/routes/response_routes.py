@@ -21,8 +21,9 @@ response_routes_bp = Blueprint('response_routes', __name__)
         - If successful, returns JSON with response details and associated location details.
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
-@login_required
+
 @response_routes_bp.route('/response', methods=['POST'])
+@login_required
 def add_response():
     data = request.get_json()
     locations = data.get('locations')

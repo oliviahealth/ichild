@@ -22,8 +22,9 @@ conversation_routes_bp = Blueprint('conversation_routes', __name__)
         - If the conversation is added successfully, returns JSON with new conversation details and status code 201.
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
-@login_required
+
 @conversation_routes_bp.route('/conversations', methods=['POST'])
+@login_required
 def add_conversations():
     data = request.get_json()
 
@@ -67,10 +68,13 @@ def add_conversations():
         - If successful, returns JSON with the id and title for each conversation.
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
-@login_required
+
 @conversation_routes_bp.route('/conversationpreviews')
+@login_required
 def get_conversation_previews():
-    user_id = request.args.get('userId')
+    print(request.headers)
+    
+    user_id = request.headers.get('userId')
 
     try:
         conversation_previews = [{ 'id': conversation[0], 'title': conversation[1] } for conversation in Conversation.query.filter_by(user_id=user_id).with_entities(Conversation.id, Conversation.title).all()]
@@ -93,10 +97,11 @@ def get_conversation_previews():
         - If successful, returns JSON with the conversation and associated response details.
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
-@login_required
+
 @conversation_routes_bp.route('/conversation', methods=['GET'])
+@login_required
 def get_conversation():
-    conversation_id = request.args.get('conversationId')
+    conversation_id = request.headers.get('conversationId')
 
     try:
         conversation = Conversation.query.filter_by(id=conversation_id).first()
@@ -157,10 +162,11 @@ def get_conversation():
         - If successful, returns JSON with user conversations and associated details.
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
-@login_required
+
 @conversation_routes_bp.route('/conversations', methods=['GET'])
+@login_required
 def get_conversations():
-    user_id = request.args.get('userId')
+    user_id = request.headers.get('userId')
 
     try:
         # Get the conversations that match the userid and filter them from most recently updated to oldest
@@ -233,10 +239,11 @@ def get_conversations():
         - If successful, returns JSON with a success message.
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
-@login_required
+
 @conversation_routes_bp.route("/conversations", methods=['DELETE'])
+@login_required
 def delete_conversations():
-    conversation_id = request.args.get('id')
+    conversation_id = request.headers.get('id')
 
     try:
         conversation_to_delete = Conversation.query.get(conversation_id)

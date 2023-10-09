@@ -12,7 +12,7 @@ const User: React.FC = () => {
     const setUser = useAppStore((state) => state.setUser);
 
     const { mutate: signoutUser, isLoading } = useMutation(async () => {
-        fetchWithAxios(`${import.meta.env.VITE_API_URL}/signout?userId=${user?.id}`, 'POST')
+        fetchWithAxios(`${import.meta.env.VITE_API_URL}/signout`, 'POST')
     }, {
         onSuccess: () => {
             setUser(null);

@@ -26,7 +26,7 @@ const SidePanel: React.FC = () => {
 
     { /* Delete conversation based on a specific id and if successful, remove the conversation from the sidepanel and set the current conversation to be null  */ }
     const { mutate: deleteConversation, isLoading: isDeleteLoading } = useMutation(async (conversationId: string) => {
-        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?id=${conversationId}`, 'DELETE')
+        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations`, 'DELETE', null, { name: "userId", content: conversationId });
 
         return conversationId
     }, {
@@ -39,7 +39,7 @@ const SidePanel: React.FC = () => {
 
     { /* Fetch only the id and title of each previous conversation the user has had to populate the recent activity on the sidepanel */ }
     const { mutate: getConversationPreviews } = useMutation(async () => {
-        const conversationPreviews: IConversationPreview[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversationpreviews?userId=${user?.id}`);
+        const conversationPreviews: IConversationPreview[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversationpreviews`, 'GET', null, { name: 'userId', content: user!.id});
 
         conversationPreviews.forEach((conversationDetail) => parseWithZod(conversationDetail, ConversationPreviewSchema));
 

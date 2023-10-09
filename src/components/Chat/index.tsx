@@ -63,7 +63,7 @@ const ChatComponent: React.FC = () => {
 
   { /* When the user focuses on a previous conversation from the sidepanel, we fetch the complete conversation object and populate the api response array to display the suggested locations */ }
   const { mutate: getConversationDetails, isLoading } = useMutation(async () => {
-    const conversationDetails: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversation?conversationId=${currentConversationId}`, 'GET');
+    const conversationDetails: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversation`, 'GET', null, { name: 'conversationId', content: currentConversationId ?? "" });
     
     parseWithZod(conversationDetails, ConversationSchema)
 
@@ -90,11 +90,11 @@ const ChatComponent: React.FC = () => {
     const formData = new FormData();
     formData.append("data", data.query);
 
-    const response: IAPIResponse = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/formattedresults`, 'POST', formData, { "Content-Type": "multipart/form-data" })
+    const response: IAPIResponse = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/formattedresults`, 'POST', formData)
 
     // If a user is logged in, save their conversation
     if (user) {
-      const conversation: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?userId=${user.id}`, 'POST', { id: currentConversationId, title: response.userQuery, userId: user.id }).catch((err) => console.log(err))
+      const conversation: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations`, 'POST', { id: currentConversationId, title: response.userQuery, userId: user.id }, { name: 'userId', content: user.id }).catch((err) => console.log(err))
       await fetchWithAxios(`${import.meta.env.VITE_API_URL}/response`, 'POST', { ...response, conversationId: conversation.id }).catch((err) => console.log(err));
 
       // If this is a new conversation, add it to the recent activity on the sidepanel
