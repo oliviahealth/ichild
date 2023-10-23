@@ -1,8 +1,10 @@
+from functools import wraps
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
 import time
 
 from database import db, Conversation, Location, SavedLocation
+from utils import check_userid
 
 conversation_routes_bp = Blueprint('conversation_routes', __name__)
 
@@ -31,6 +33,9 @@ def add_conversations():
     id = data['id']
     title = data['title']
     user_id = data['userId']
+
+    if(not check_userid(user_id)):
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
     # Check if a conversation with the provided id exists, and if so, return that conversation
     existing_conversation = Conversation.query.filter_by(id=id).first()
@@ -71,10 +76,11 @@ def add_conversations():
 
 @conversation_routes_bp.route('/conversationpreviews')
 @login_required
-def get_conversation_previews():
-    print(request.headers)
-    
+def get_conversation_previews():    
     user_id = request.headers.get('userId')
+
+    if(not check_userid(user_id)):
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
     try:
         conversation_previews = [{ 'id': conversation[0], 'title': conversation[1] } for conversation in Conversation.query.filter_by(user_id=user_id).with_entities(Conversation.id, Conversation.title).all()]
@@ -167,6 +173,9 @@ def get_conversation():
 @login_required
 def get_conversations():
     user_id = request.headers.get('userId')
+
+    if(not check_userid(user_id)):
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
     try:
         # Get the conversations that match the userid and filter them from most recently updated to oldest

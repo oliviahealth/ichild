@@ -3,6 +3,7 @@ from flask_login import login_required
 import time
 
 from database import db, SavedLocation, Location
+from utils import check_userid
 
 saved_location_routes_bp = Blueprint('saved_location_routes', __name__)
 
@@ -25,10 +26,13 @@ saved_location_routes_bp = Blueprint('saved_location_routes', __name__)
 @saved_location_routes_bp.route('/savedlocations', methods=['POST'])
 @login_required
 def add_saved_location():
-    data = request.get_json()
-
-    location_name = request.headers.get('name') # Remember, the name is the primary key for the LocationModel
     user_id = request.headers.get("userId")
+
+    data = request.get_json()
+    location_name = data['name'] # Remember, the name is the primary key for the LocationModel
+
+    if(not check_userid(user_id)):
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
     try:
         # Check if the user provided location exists in the Locations table, and if not, return and error to the user
@@ -65,6 +69,9 @@ def add_saved_location():
 @login_required
 def get_saved_locations():
     user_id = request.headers.get("userId")
+
+    if(not check_userid(user_id)):
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
     try:
         # Step 1: Retrieve saved location names for the user sorted from newest to oldest

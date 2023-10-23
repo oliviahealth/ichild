@@ -38,7 +38,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     emblaApi?.on("select", () => setCurrentSlideIndex(emblaApi?.selectedScrollSnap()));
 
     const { mutate: saveLocation, isLoading: isSaveLoading } = useMutation(async (location: ILocation) => {
-        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'POST', { name: location.name, userId: user?.id });
+        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'POST', { name: location.name }, {name: 'userId', content: user!.id});
 
         return location
     }, {
