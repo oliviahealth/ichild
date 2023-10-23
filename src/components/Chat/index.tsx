@@ -63,7 +63,7 @@ const ChatComponent: React.FC = () => {
 
   { /* When the user focuses on a previous conversation from the sidepanel, we fetch the complete conversation object and populate the api response array to display the suggested locations */ }
   const { mutate: getConversationDetails, isLoading } = useMutation(async () => {
-    const conversationDetails: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversation`, 'GET', null, { name: 'conversationId', content: currentConversationId ?? "" });
+    const conversationDetails: IConversation = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversation?conversationId=${currentConversationId}`, 'GET', null);
     
     parseWithZod(conversationDetails, ConversationSchema)
 

@@ -24,12 +24,6 @@ def connection_and_setup():
     encoding_dict = {}
     encoding_dict["Encodings"] = embeddings
     print("*******END PREPROCESS********")
-
-    # print('******* Fetching locations from PostgreSQL **********')
-    # locations = Location.query.all()
-    # corpus = [location.description for location in locations]
-    # print('******* Finished fetching locations from PostgreSQL **********')
-
     
 # Render json search page
 @search_routes_bp.route("/", methods=['POST', 'GET'])

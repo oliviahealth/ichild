@@ -107,7 +107,7 @@ def get_conversation_previews():
 @conversation_routes_bp.route('/conversation', methods=['GET'])
 @login_required
 def get_conversation():
-    conversation_id = request.headers.get('conversationId')
+    conversation_id = request.args.get('conversationId')
 
     try:
         conversation = Conversation.query.filter_by(id=conversation_id).first()
@@ -252,7 +252,7 @@ def get_conversations():
 @conversation_routes_bp.route("/conversations", methods=['DELETE'])
 @login_required
 def delete_conversations():
-    conversation_id = request.headers.get('id')
+    conversation_id = request.args.get('id')
 
     try:
         conversation_to_delete = Conversation.query.get(conversation_id)
