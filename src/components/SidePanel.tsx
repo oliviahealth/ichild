@@ -26,7 +26,7 @@ const SidePanel: React.FC = () => {
 
     { /* Delete conversation based on a specific id and if successful, remove the conversation from the sidepanel and set the current conversation to be null  */ }
     const { mutate: deleteConversation, isLoading: isDeleteLoading } = useMutation(async (conversationId: string) => {
-        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations?id=${conversationId}`, 'DELETE', null);
+        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/conversations`, 'DELETE', null, { name: "conversationId", content: currentConversationId ?? "" });
 
         return conversationId
     }, {

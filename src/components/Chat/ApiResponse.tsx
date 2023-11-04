@@ -50,7 +50,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     });
 
     const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (location: ILocation) => {
-        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'DELETE', null, { name: 'savedLocations', content: location.name });
+        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'DELETE', { name: location.name }, { name: 'userId', content: user!.id });
 
         return location;
     }, {

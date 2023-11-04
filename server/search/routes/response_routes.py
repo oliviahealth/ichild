@@ -1,8 +1,8 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from flask_login import login_required
 import time
 
-from database import db, Response, Location
+from database import Conversation, db, Response, Location
 
 response_routes_bp = Blueprint('response_routes', __name__)
 
@@ -30,6 +30,21 @@ def add_response():
     user_query = data.get('userQuery')
     conversation_id = data.get('conversationId')
     date_created = data.get('dateCreated')
+
+    user_id = session['_user_id']
+
+    try:
+        conversation = Conversation.query.get(conversation_id)
+
+        if(not(str(user_id).strip() == str(conversation.user_id).strip())):
+            return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+        
+        if(not conversation):
+            return jsonify({ 'error': 'Conversation not found' }), 500
+        
+    except:
+        return jsonify({ 'error': 'Something went wrong!' }), 500
+    
     locationsArr = [Location.query.filter_by(name=location.get('name')).first().name for location in locations] # This array will hold only the name of the locations that are then stored as a column on the response record. Do not store entire location objects. 
 
     try:    

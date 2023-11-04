@@ -1,10 +1,9 @@
 from functools import wraps
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from flask_login import login_required
 import time
 
 from database import db, Conversation, Location, SavedLocation
-from utils import check_userid
 
 conversation_routes_bp = Blueprint('conversation_routes', __name__)
 
@@ -32,11 +31,12 @@ def add_conversations():
 
     id = data['id']
     title = data['title']
-    user_id = data['userId']
 
-    if(not check_userid(user_id)):
+    user_id = session['_user_id']
+    
+    if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
-
+    
     # Check if a conversation with the provided id exists, and if so, return that conversation
     existing_conversation = Conversation.query.filter_by(id=id).first()
     if (existing_conversation):
@@ -74,12 +74,12 @@ def add_conversations():
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
 
-@conversation_routes_bp.route('/conversationpreviews')
+@conversation_routes_bp.route('/conversationpreviews', methods=['GET'])
 @login_required
 def get_conversation_previews():    
-    user_id = request.headers.get('userId')
-
-    if(not check_userid(user_id)):
+    user_id = session['_user_id']
+    
+    if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
     try:
@@ -107,10 +107,18 @@ def get_conversation_previews():
 @conversation_routes_bp.route('/conversation', methods=['GET'])
 @login_required
 def get_conversation():
-    conversation_id = request.args.get('conversationId')
+    conversation_id = request.headers.get('conversationId')
+    user_id = session['_user_id']
+
+    if(not user_id):
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
     try:
         conversation = Conversation.query.filter_by(id=conversation_id).first()
+
+        # Check if the conversation user id is the same as the session user id
+        if(not(str(user_id).strip() == str(conversation.user_id).strip())):
+            return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
         location_dict = {location.name: location for location in Location.query.all()}
         
@@ -172,9 +180,9 @@ def get_conversation():
 @conversation_routes_bp.route('/conversations', methods=['GET'])
 @login_required
 def get_conversations():
-    user_id = request.headers.get('userId')
-
-    if(not check_userid(user_id)):
+    user_id = session['_user_id']
+    
+    if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
     try:
@@ -252,13 +260,19 @@ def get_conversations():
 @conversation_routes_bp.route("/conversations", methods=['DELETE'])
 @login_required
 def delete_conversations():
-    conversation_id = request.args.get('id')
+    conversation_id = request.headers.get('conversationId')
+    user_id = session['_user_id']
 
     try:
         conversation_to_delete = Conversation.query.get(conversation_id)
 
+        # Check if the user id of the conversation we're tying to delete is the same as the user id in the session        
+        if(not(str(user_id).strip() == str(conversation_to_delete.user_id).strip())):
+            return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+
         if (not conversation_to_delete):
-            return jsonify({'error': 'Conversation not found'})
+            return jsonify({'error': 'Conversation not found'}), 404
+
 
         db.session.delete(conversation_to_delete)
         db.session.commit()

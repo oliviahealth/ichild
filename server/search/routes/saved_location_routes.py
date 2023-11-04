@@ -1,9 +1,8 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from flask_login import login_required
 import time
 
 from database import db, SavedLocation, Location
-from utils import check_userid
 
 saved_location_routes_bp = Blueprint('saved_location_routes', __name__)
 
@@ -26,12 +25,12 @@ saved_location_routes_bp = Blueprint('saved_location_routes', __name__)
 @saved_location_routes_bp.route('/savedlocations', methods=['POST'])
 @login_required
 def add_saved_location():
-    user_id = request.headers.get("userId")
-
+    user_id = session['_user_id']
+    
     data = request.get_json()
     location_name = data['name'] # Remember, the name is the primary key for the LocationModel
 
-    if(not check_userid(user_id)):
+    if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
     try:
@@ -68,9 +67,9 @@ def add_saved_location():
 @saved_location_routes_bp.route('/savedlocations', methods=['GET'])
 @login_required
 def get_saved_locations():
-    user_id = request.headers.get("userId")
-
-    if(not check_userid(user_id)):
+    user_id = session['_user_id']
+    
+    if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
     try:
@@ -124,10 +123,19 @@ def get_saved_locations():
 @saved_location_routes_bp.route('/savedlocations', methods=['DELETE'])
 @login_required
 def delete_saved_location():
-    name = request.headers.get("name")
+    user_id = session['_user_id']
+    
+    if(not user_id):
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+
+    data = request.get_json()
+    location_name = data['name']
 
     try:
-        saved_location_to_delete = SavedLocation.query.filter_by(name=name).first()
+        saved_location_to_delete = SavedLocation.query.filter_by(name=location_name, user_id=user_id).first()
+
+        if(not(str(user_id).strip() == str(saved_location_to_delete.user_id).strip())):
+            return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
         if(not saved_location_to_delete):
             return jsonify({ 'error': 'Saved location not found' }), 500
