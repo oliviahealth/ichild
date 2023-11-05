@@ -254,7 +254,7 @@ def get_conversations():
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
 
-@conversation_routes_bp.route("/conversations", methods=['DELETE'])
+@conversation_routes_bp.route("/conversation", methods=['DELETE'])
 @login_required
 def delete_conversations():
     conversation_id = request.args.get('id')
