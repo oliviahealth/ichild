@@ -4,9 +4,9 @@ import { useMutation } from "react-query";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 
 import useAppStore from "../../stores/useAppStore";
-import fetchWithAxios from "../../utils/fetchWithAxios";
 import parseWithZod from "../../utils/parseWithZod";
 import { UserSchema, IUser } from "../../utils/interfaces";
 
@@ -29,7 +29,7 @@ const Signin: React.FC = () => {
     let { register: registerSignin, handleSubmit: handleSignin, formState: { errors: signinErrors } } = useForm<SigninFormData>({ resolver: zodResolver(signinSchema) });
 
     const { mutate: signinUser, isLoading } = useMutation(async (data: SigninFormData) => {
-        const user: IUser = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/signin`, 'POST', data);
+        const user: IUser = (await axios.post(`${import.meta.env.VITE_API_URL}/signin`, data, { withCredentials: true })).data;
 
         parseWithZod(user, UserSchema);
 

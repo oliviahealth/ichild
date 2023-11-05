@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import useEmblaCarousel from "embla-carousel-react";
+import axios from "axios";
 
 import useAppStore from "../../stores/useAppStore";
-import fetchWithAxios from "../../utils/fetchWithAxios";
 import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
 import { BiCopy, BiBookmark, BiSolidBookmark } from "react-icons/bi";
@@ -38,7 +38,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     emblaApi?.on("select", () => setCurrentSlideIndex(emblaApi?.selectedScrollSnap()));
 
     const { mutate: saveLocation, isLoading: isSaveLoading } = useMutation(async (location: ILocation) => {
-        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'POST', { name: location.name }, {name: 'userId', content: user!.id});
+        (await axios.post(`${import.meta.env.VITE_API_URL}/savedlocations`, { name: location.name }, { withCredentials: true })).data;
 
         return location
     }, {
@@ -50,7 +50,11 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     });
 
     const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (location: ILocation) => {
-        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'DELETE', { name: location.name }, { name: 'userId', content: user!.id });
+        const headers = {
+            "name": location.name
+        }
+
+        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations`, { ...headers, withCredentials: true })
 
         return location;
     }, {

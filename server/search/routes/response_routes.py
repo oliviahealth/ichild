@@ -35,8 +35,9 @@ def add_response():
 
     try:
         conversation = Conversation.query.get(conversation_id)
+        conversation_user_id = str(conversation.user_id).strip()
 
-        if(not(str(user_id).strip() == str(conversation.user_id).strip())):
+        if(not(user_id == conversation_user_id)):
             return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
         
         if(not conversation):

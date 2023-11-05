@@ -4,10 +4,10 @@ import { useMutation } from "react-query";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 
 import useAppStore from "../../stores/useAppStore";
 import parseWithZod from "../../utils/parseWithZod";
-import fetchWithAxios from "../../utils/fetchWithAxios";
 import { UserSchema, IUser } from "../../utils/interfaces";
 
 const Auth: React.FC = () => {
@@ -33,7 +33,7 @@ const Auth: React.FC = () => {
     let { register: registerSignup, handleSubmit: handleSignup, formState: { errors: signupErrors } } = useForm<SignupFormData>({ resolver: zodResolver(signupSchema) });
 
     const { mutate: signupUser, isLoading } = useMutation(async (data: SignupFormData) => {
-        const user: IUser = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/signup`, 'POST', data);
+        const user: IUser = (await axios.post(`${import.meta.env.VITE_API_URL}/signup`, data, { withCredentials: true })).data
 
         parseWithZod(user, UserSchema);
 

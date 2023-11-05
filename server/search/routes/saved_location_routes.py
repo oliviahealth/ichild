@@ -123,13 +123,11 @@ def get_saved_locations():
 @saved_location_routes_bp.route('/savedlocations', methods=['DELETE'])
 @login_required
 def delete_saved_location():
+    location_name = request.args.get('name')
     user_id = session['_user_id']
     
     if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
-
-    data = request.get_json()
-    location_name = data['name']
 
     try:
         saved_location_to_delete = SavedLocation.query.filter_by(name=location_name, user_id=user_id).first()

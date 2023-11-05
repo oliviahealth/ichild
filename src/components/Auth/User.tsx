@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { useMutation } from "react-query";
+import axios from "axios";
 
 import useAppStore from "../../stores/useAppStore";
-import fetchWithAxios from "../../utils/fetchWithAxios";
 
 const User: React.FC = () => {
     const navigate = useNavigate();
@@ -12,7 +12,7 @@ const User: React.FC = () => {
     const setUser = useAppStore((state) => state.setUser);
 
     const { mutate: signoutUser, isLoading } = useMutation(async () => {
-        fetchWithAxios(`${import.meta.env.VITE_API_URL}/signout`, 'POST')
+        await axios.post(`${import.meta.env.VITE_API_URL}/signout`, null, { withCredentials: true });
     }, {
         onSuccess: () => {
             setUser(null);

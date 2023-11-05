@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
+import axios from "axios";
 
 import useAppStore from "./stores/useAppStore";
-import fetchWithAxios from "./utils/fetchWithAxios";
 import parseWithZod from "./utils/parseWithZod";
 import { SavedLocationSchema, ISavedLocation, ILocation } from "./utils/interfaces";
 
@@ -27,7 +27,11 @@ const SavedLocations: React.FC = () => {
     const copyText = useAppStore((state) => state.copyText);
 
     const { mutate: getSavedLocations, isLoading } = useMutation(async () => {
-        const savedLocations: ISavedLocation[] = await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'GET', null, { name: 'userId', content: user!.id });
+        const headers = {
+            "userId": user?.id
+        }
+
+        const savedLocations: ISavedLocation[] = (await axios.get(`${import.meta.env.VITE_API_URL}/savedlocations`, { ...headers, withCredentials: true })).data
 
         // Make sure all of the saved locations are compliant with the location schema
         savedLocations.forEach((location: ISavedLocation) => parseWithZod(location, SavedLocationSchema));
@@ -40,7 +44,7 @@ const SavedLocations: React.FC = () => {
     });
 
     const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (savedLocationName: string) => {
-        await fetchWithAxios(`${import.meta.env.VITE_API_URL}/savedlocations`, 'DELETE', null, { name: 'name', content: savedLocationName });
+        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?name=${savedLocationName}`, { withCredentials: true });
 
         return savedLocationName;
     }, {

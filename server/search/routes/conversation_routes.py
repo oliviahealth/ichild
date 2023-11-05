@@ -32,11 +32,11 @@ def add_conversations():
     id = data['id']
     title = data['title']
 
-    user_id = session['_user_id']
-    
+    user_id = str(session['_user_id']).strip()
+
     if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
-    
+
     # Check if a conversation with the provided id exists, and if so, return that conversation
     existing_conversation = Conversation.query.filter_by(id=id).first()
     if (existing_conversation):
@@ -74,11 +74,11 @@ def add_conversations():
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
 
-@conversation_routes_bp.route('/conversationpreviews', methods=['GET'])
+@conversation_routes_bp.route('/conversationpreviews')
 @login_required
 def get_conversation_previews():    
-    user_id = session['_user_id']
-    
+    user_id = str(session['_user_id']).strip()
+
     if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
@@ -107,19 +107,16 @@ def get_conversation_previews():
 @conversation_routes_bp.route('/conversation', methods=['GET'])
 @login_required
 def get_conversation():
-    conversation_id = request.headers.get('conversationId')
-    user_id = session['_user_id']
-
-    if(not user_id):
-        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+    conversation_id = request.args.get('id')
+    user_id = str(session['_user_id']).strip()
 
     try:
         conversation = Conversation.query.filter_by(id=conversation_id).first()
+        conversation_user_id = str(conversation.user_id).strip()
 
-        # Check if the conversation user id is the same as the session user id
-        if(not(str(user_id).strip() == str(conversation.user_id).strip())):
+        if(not(user_id == conversation_user_id)):
             return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
-
+    
         location_dict = {location.name: location for location in Location.query.all()}
         
         saved_location_names = [saved_location[0] for saved_location in SavedLocation.query.filter_by(
@@ -180,8 +177,8 @@ def get_conversation():
 @conversation_routes_bp.route('/conversations', methods=['GET'])
 @login_required
 def get_conversations():
-    user_id = session['_user_id']
-    
+    user_id = str(session['_user_id']).strip()
+
     if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
@@ -260,19 +257,18 @@ def get_conversations():
 @conversation_routes_bp.route("/conversations", methods=['DELETE'])
 @login_required
 def delete_conversations():
-    conversation_id = request.headers.get('conversationId')
-    user_id = session['_user_id']
+    conversation_id = request.args.get('id')
+    user_id = str(session['_user_id']).strip()
 
     try:
-        conversation_to_delete = Conversation.query.get(conversation_id)
+        conversation_to_delete = Conversation.query.filter_by(id=conversation_id).first()
+        conversation_to_delete_user_id = str(conversation_to_delete.user_id).strip()
 
-        # Check if the user id of the conversation we're tying to delete is the same as the user id in the session        
-        if(not(str(user_id).strip() == str(conversation_to_delete.user_id).strip())):
+        if(not(user_id == conversation_to_delete_user_id)):
             return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
         if (not conversation_to_delete):
-            return jsonify({'error': 'Conversation not found'}), 404
-
+            return jsonify({'error': 'Conversation not found'})
 
         db.session.delete(conversation_to_delete)
         db.session.commit()
