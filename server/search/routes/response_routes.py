@@ -31,7 +31,7 @@ def add_response():
     conversation_id = data.get('conversationId')
     date_created = data.get('dateCreated')
 
-    user_id = session['_user_id']
+    user_id = session['edu.tamu.ollie.user_id']
 
     try:
         conversation = Conversation.query.get(conversation_id)

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from flask_login import login_user, login_required, logout_user
 import time
 
@@ -51,6 +51,7 @@ def signup():
         db.session.commit()
 
         login_user(new_user, remember=True)
+        session['edu.tamu.ollie.user_id'] = new_user.id
     except Exception as error:
         db.session.rollback()
         print(error)
@@ -88,6 +89,7 @@ def signin():
     try:
         # Run the login_user function provided by flask_login to create a session
         login_user(user, remember=True)
+        session['edu.tamu.ollie.user_id'] = user.id
     except Exception as error:
         db.session.rollback()
         print(error)

@@ -25,7 +25,7 @@ saved_location_routes_bp = Blueprint('saved_location_routes', __name__)
 @saved_location_routes_bp.route('/savedlocations', methods=['POST'])
 @login_required
 def add_saved_location():
-    user_id = session['_user_id']
+    user_id = session['edu.tamu.ollie.user_id']
     
     data = request.get_json()
     location_name = data['name'] # Remember, the name is the primary key for the LocationModel
@@ -67,7 +67,7 @@ def add_saved_location():
 @saved_location_routes_bp.route('/savedlocations', methods=['GET'])
 @login_required
 def get_saved_locations():
-    user_id = session['_user_id']
+    user_id = session['edu.tamu.ollie.user_id']
     
     if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
@@ -124,7 +124,7 @@ def get_saved_locations():
 @login_required
 def delete_saved_location():
     location_name = request.args.get('name')
-    user_id = session['_user_id']
+    user_id = session['edu.tamu.ollie.user_id']
     
     if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
