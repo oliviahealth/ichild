@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useMutation } from "react-query";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
+import { v4 as uuid } from "uuid";
 
 import useAppStore from "../stores/useAppStore";
 import parseWithZod from "../utils/parseWithZod";
@@ -10,7 +11,9 @@ import { IConversationPreview, ConversationPreviewSchema } from "../utils/interf
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { IoLocationOutline } from "react-icons/io5";
 import { BsTrash } from "react-icons/bs";
-import { TfiMenuAlt } from "react-icons/tfi";
+import { FiPlus } from "react-icons/fi";
+import { CgProfile } from "react-icons/cg";
+import { RxExit } from "react-icons/rx";
 
 const SidePanel: React.FC = () => {
     const location = useLocation();
@@ -62,29 +65,29 @@ const SidePanel: React.FC = () => {
 
     { /* Set the current conversation to be null whenever the 'New Chat' button is clicked */ }
     const createNewConversation = () => {
-        setCurrentConversationId(null);
+        setCurrentConversationId(uuid());
     }
 
     return (
         <>
             <input id="sidepanel" type="checkbox" className="drawer-toggle" />
 
-            <div className="drawer-side h-full shadow-xl rounded-box rounded-br-none bg-white text-base-neutral">
+            <div className="drawer-side h-full rounded-box rounded-tr-none rounded-br-none bg-white bg-opacity-50 text-base-neutral">
                 <label htmlFor="my-drawer" className="drawer-overlay"></label>
 
                 <div className="w-[275px] p-4 h-full flex flex-col justify-between">
                     <div>
                         <div className="flex gap-2 justify-around">
-                            <Link to={'/'} className="btn btn-primary w-2/3 btn-outline border-primary" onClick={createNewConversation}>
-                                New Chat
+                            <Link to={'/'} className="btn rounded-xl w-full bg-white border-none text-black shadow-md hover:bg-gray-100" onClick={createNewConversation}>
+                                <FiPlus className="text-xl" /> New Chat 
                             </Link>
 
-                            <button className="btn btn-primary btn-outline border-primary" onClick={() => setisSidePanelOpen(false)}>
+                            {/* <button className="btn btn-primary btn-outline border-primary" onClick={() => setisSidePanelOpen(false)}>
                                 <TfiMenuAlt className="text-lg" />
-                            </button>
+                            </button> */}
                         </div>
 
-                        <p className="text-sm text-gray-500 my-4 font-semibold">Recent Activity</p>
+                        <p className="text-sm text-black my-4 mt-6 font-semibold">Recent Activity</p>
 
                         {user ? (
                             <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-26rem)]">
@@ -104,21 +107,38 @@ const SidePanel: React.FC = () => {
                         ) : (
                             <div>
                                 <p className="mb-4 text-sm text-gray-500">You must be signed in to see your conversation history</p>
-
-                                <Link to="/signin" className="btn btn-primary w-full btn-outline border-primary">
-                                    Sign In
-                                </Link>
                             </div>
                         )}
                     </div>
 
                     {user && (<div>
-                        <p className="text-sm text-gray-500 font-medium my-4">Saved</p>
+                        <div className="pb-6">
+                            <p className="text-sm text-black font-medium my-4">Saved</p>
 
-                        <Link to={'/savedlocations'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
-                            <p className="text-lg"><IoLocationOutline /></p>
-                            <p className="ml-4">Locations</p>
-                        </Link>
+                            <Link to={'/savedlocations'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                                <p className="text-lg"><IoLocationOutline /></p>
+                                <p className="ml-4">Locations</p>
+                            </Link>
+
+                            <Link to={'/savedchats'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedchats' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                                <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
+                                <p className="ml-4">Chats</p>
+                            </Link>
+                        </div>
+
+                        <hr />
+
+                        <div>
+                            <Link to={'/user'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                                <p className="text-lg"><CgProfile /></p>
+                                <p className="ml-4">{ user.name }</p>
+                            </Link>
+                            
+                            <Link to={'/user'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                                <p className="text-lg"><RxExit /></p>
+                                <p className="ml-4">Sign out</p>
+                            </Link>
+                        </div>
                     </div>)}
                 </div>
             </div>

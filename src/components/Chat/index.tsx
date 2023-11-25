@@ -9,11 +9,13 @@ import parseWithZod from "../../utils/parseWithZod";
 import { APIResponseSchema, ConversationSchema, IAPIResponse, IConversation } from "../../utils/interfaces";
 
 import { TfiMenuAlt } from "react-icons/tfi";
+import { FaAngleRight } from "react-icons/fa6";
 
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import ChatLoadingSkeleton from "./ChatLoadingSkeleton";
 import ApiResponse from "./ApiResponse";
+import quickResponses from "../../utils/quickResponses";
 
 const ChatComponent: React.FC = () => {
   /*
@@ -39,7 +41,7 @@ const ChatComponent: React.FC = () => {
 
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
-  const { register, handleSubmit, reset, getValues } = useForm();
+  const { register, handleSubmit, reset, getValues, setValue } = useForm();
 
   // Creates the auto scroll when the api responds
   const containerRef = useRef<HTMLDivElement>(null);
@@ -84,7 +86,7 @@ const ChatComponent: React.FC = () => {
 
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
-  const { mutate: getResponse, isLoading: isResponseLoading } = useMutation(async (data: any) => {
+  const { mutate: getResponse, isLoading: isResponseLoading } = useMutation(async (data: { query: string }) => {
     if (data.query === "") return
 
     const formData = new FormData();
@@ -98,7 +100,7 @@ const ChatComponent: React.FC = () => {
       await axios.post(`${import.meta.env.VITE_API_URL}/response`, { ...response, conversationId: conversation.id }, { withCredentials: true });
 
       // If this is a new conversation, add it to the recent activity on the sidepanel
-      if (!currentConversationId) {
+      if (apiResponses.length < 1) {
         setConversationPreviews([...ConversationPreviews, { id: conversation.id ?? uuid(), title: response.userQuery }])
       }
 
@@ -119,6 +121,12 @@ const ChatComponent: React.FC = () => {
     }
   });
 
+  const handleQuickResponse = (query: string) => {
+    setValue("query", query);
+    
+    handleSubmit(() => getResponse({ query }))();
+  }
+
   return (
     <div className="flex w-full flex-col h-full">
       {!isSidePanelOpen && (
@@ -134,10 +142,29 @@ const ChatComponent: React.FC = () => {
             <>
               { /* Initial greeting */}
               <div className="xl:flex gap-4">
-                <OllieAvatar />
-                <ChatBubble isResponse={true}>
-                  <p>Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?</p>
-                </ChatBubble>
+                  <div>
+                    <OllieAvatar />
+                  </div>
+
+                  <div>
+                    <ChatBubble isResponse={true}>
+                      <p>Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?</p>
+                    </ChatBubble>
+
+                    <ChatBubble isResponse={true}>
+                      <p className="font-bold pb-4">Quick Responses</p>
+
+                      <div className="space-y-3 text-sm pb-3">
+                        { quickResponses.map((quickResponse, index) => (
+                          <div key={index} className="flex justify-between items-center space-x-5 text-primary cursor-pointer" onClick={() => handleQuickResponse(quickResponse)}>
+                            <p>{ quickResponse }</p>
+                            <FaAngleRight className='text-gray-300' />
+                          </div>
+                        )) }
+                      </div>
+                      
+                    </ChatBubble>
+                  </div>
               </div>
 
               { /* Api response to user query */}
@@ -172,7 +199,7 @@ const ChatComponent: React.FC = () => {
       </div>
 
       { /* input field with the submit button */}
-      <form className="form-control shadow-2xl" onSubmit={handleSubmit((data) => getResponse(data))}>
+      <form className="form-control shadow-2xl" onSubmit={handleSubmit((data) => getResponse(data as unknown as { query: string }))}>
         <div className="input-group">
           <input placeholder="Ask me a question" className="input w-full py-6 bg-white focus:outline-none" {...register("query")} style={{ "borderRadius": 0 }} />
           <button className="btn btn-square h-full bg-white border-none hover:bg-primary active:bg-primary-focus">

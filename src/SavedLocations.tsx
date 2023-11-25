@@ -79,10 +79,6 @@ const SavedLocations: React.FC = () => {
                 <div className="w-1/2">
                     {savedLocations?.map((location, index) => (
                         <div key={index} className="xl:flex gap-4 my-4">
-                            <div>
-                                <OllieAvatar />
-                            </div>
-
                             <div onClick={() => setFocusedLocation(location)}>
                                 <ChatBubble isResponse={true} >
                                     <div className="flex justify-between items-center p-1 sm:w-[27rem]">

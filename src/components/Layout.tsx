@@ -33,7 +33,7 @@ const Layout = () => {
           { /* Render all children components with the Outlet 
                 https://reactrouter.com/en/main/components/outlet
           */ }
-          <div className="flex h-full bg-opacity-80 bg-gray-100 rounded-box">
+          <div className="flex h-full bg-opacity-80 bg-gray-100 rounded-3xl">
             <div className="flex h-full w-full">
               <div>
                 <div className={`drawer ${isSidePanelOpen ? "drawer-open" : ""} h-full`}>
