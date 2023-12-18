@@ -8,7 +8,6 @@ import useAppStore from "../../stores/useAppStore";
 import parseWithZod from "../../utils/parseWithZod";
 import { APIResponseSchema, ConversationSchema, IAPIResponse, IConversation } from "../../utils/interfaces";
 
-import { TfiMenuAlt } from "react-icons/tfi";
 import { FaAngleRight } from "react-icons/fa6";
 
 import OllieAvatar from "./OllieAvatar";
@@ -23,9 +22,6 @@ const ChatComponent: React.FC = () => {
     https://github.com/pmndrs/zustand
   */
   const user = useAppStore((state) => state.user);
-
-  const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
-  const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
   // The actual response from the api including the locations the api suggests
   const [apiResponses, setApiResponses] = useState<IAPIResponse[]>([]);
@@ -129,12 +125,6 @@ const ChatComponent: React.FC = () => {
 
   return (
     <div className="flex w-full flex-col h-full">
-      {!isSidePanelOpen && (
-        <button className="drawer-content absolute btn w-12 m-3 btn-primary btn-outline border-primary bg-white z-10" onClick={() => setisSidePanelOpen(!isSidePanelOpen)}>
-          <TfiMenuAlt className="text-lg" />
-        </button>
-      )}
-
       <div className={ `h-full p-4 flex flex-col ${ !isLoading ? 'justify-end' : 'justify-start'}` }>
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-14rem)] ">
 

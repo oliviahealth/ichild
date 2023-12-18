@@ -7,9 +7,7 @@ import parseWithZod from "./utils/parseWithZod";
 import { SavedLocationSchema, ISavedLocation, ILocation } from "./utils/interfaces";
 
 import ChatBubble from "./components/Chat/ChatBubble";
-import OllieAvatar from "./components/Chat/OllieAvatar";
 import LoadingSkeleton from "./components/LoadingSkeleton";
-import { TfiMenuAlt } from "react-icons/tfi";
 import { BiCopy } from "react-icons/bi";
 import { BiSolidBookmark } from "react-icons/bi";
 import LocationInfoPanel from "./components/Chat/LocationInfoPanel";
@@ -20,9 +18,6 @@ const SavedLocations: React.FC = () => {
     const [savedLocations, setSavedLocations] = useState<null | ISavedLocation[]>(null);
     const [focusedLocation, setFocusedLocation] = useState<null | ILocation>(null);
     const [deletingLocationName, setDeletingLocationName] = useState<null | string>(null);
-
-    const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
-    const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
     const copyText = useAppStore((state) => state.copyText);
 
@@ -65,12 +60,6 @@ const SavedLocations: React.FC = () => {
 
     return (
         <div className="flex w-full flex-col h-full p-4">
-            {!isSidePanelOpen && (
-                <button className="drawer-content absolute btn w-12 m-3 btn-primary btn-outline border-primary bg-white z-10" onClick={() => setisSidePanelOpen(!isSidePanelOpen)}>
-                    <TfiMenuAlt className="text-lg" />
-                </button>
-            )}
-
             {isLoading && (
                 <LoadingSkeleton />
             )}

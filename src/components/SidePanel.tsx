@@ -10,7 +10,7 @@ import { IConversationPreview, ConversationPreviewSchema } from "../utils/interf
 
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { IoLocationOutline } from "react-icons/io5";
-import { BsTrash } from "react-icons/bs";
+import { BsTrash, BsBoxArrowInLeft } from "react-icons/bs";
 import { FiPlus } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { RxExit } from "react-icons/rx";
@@ -18,7 +18,6 @@ import { RxExit } from "react-icons/rx";
 const SidePanel: React.FC = () => {
     const location = useLocation();
     const user = useAppStore((state) => state.user);
-
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
     const conversationPreviews = useAppStore((state) => state.conversationPreviews);
@@ -72,19 +71,19 @@ const SidePanel: React.FC = () => {
         <>
             <input id="sidepanel" type="checkbox" className="drawer-toggle" />
 
-            <div className="drawer-side h-full rounded-box rounded-tr-none rounded-br-none bg-white bg-opacity-50 text-base-neutral">
+            <div className="drawer-side h-full md:rounded-box rounded-br-none bg-white bg-opacity-50 text-base-neutral">
                 <label htmlFor="my-drawer" className="drawer-overlay"></label>
 
                 <div className="w-[275px] p-4 h-full flex flex-col justify-between">
                     <div>
-                        <div className="flex gap-2 justify-around">
-                            <Link to={'/'} className="btn rounded-xl w-full bg-white border-none text-black shadow-md hover:bg-gray-100" onClick={createNewConversation}>
+                        <div className="flex gap-2 justify-between items-center">
+                            <Link to={'/'} className="btn rounded-xl md:w-full bg-white border-none text-black shadow-md hover:bg-gray-100" onClick={createNewConversation}>
                                 <FiPlus className="text-xl" /> New Chat 
                             </Link>
 
-                            {/* <button className="btn btn-primary btn-outline border-primary" onClick={() => setisSidePanelOpen(false)}>
-                                <TfiMenuAlt className="text-lg" />
-                            </button> */}
+                            <button className="md:hidden" onClick={() => setisSidePanelOpen(false)} >
+                                <BsBoxArrowInLeft className="text-lg" />
+                            </button>
                         </div>
 
                         <p className="text-sm text-black my-4 mt-6 font-semibold">Recent Activity</p>
