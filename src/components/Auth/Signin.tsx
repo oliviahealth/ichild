@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { z } from "zod";
@@ -15,6 +15,7 @@ const Signin: React.FC = () => {
     const navigate = useNavigate();
 
     const setUser = useAppStore((state) => state.setUser);
+    const [errorDetected, setErrorDetected] = useState(false);
 
     // Use zod to validate the form before submission
     // https://zod.dev/
@@ -40,7 +41,8 @@ const Signin: React.FC = () => {
                 setUser(user)
                 return navigate('/')
             }
-        }
+        },
+        onError: () => setErrorDetected(true)
     })
 
     return (
@@ -48,19 +50,8 @@ const Signin: React.FC = () => {
             <div>
                 <p className="font-semibold text-2xl">Welcome Back!</p>
                 <p className="text-sm">Sign in to your account</p>
-            </div>
 
-            <button className="w-full my-4 px-4 py-2 border flex justify-center gap-2 border-slate-200 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150">
-                <img className="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo" />
-                <span>Sign in with Google</span>
-            </button>
-
-            <div className="flex items-center py-4">
-                <div className="flex-grow h-px bg-gray-400"></div>
-
-                <span className="text-xs text-gray-500 px-4 font-light">or</span>
-
-                <div className="flex-grow h-px bg-gray-400"></div>
+                { errorDetected && (<p className="text-sm text-red-500">Something went wrong. Please try again</p>) }
             </div>
 
             <form onSubmit={handleSignin((data) => signinUser(data))} className="form-control w-full">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useMutation } from "react-query";
 import { z } from "zod";
@@ -14,6 +14,7 @@ const Auth: React.FC = () => {
     const navigate = useNavigate();
 
     const setUser = useAppStore((state) => state.setUser);
+    const [errorDetected, setErrorDetected] = useState(false);
 
     // Use zod to validate the form before submission
     // https://zod.dev/
@@ -44,30 +45,20 @@ const Auth: React.FC = () => {
                 setUser(user);
                 return navigate("/")
             }
-        }
+        },
+        onError: () => setErrorDetected(true)
     })
 
     return (
-        <>
+        <div>
             <div>
                 <p className="font-semibold text-2xl">Get Started</p>
                 <p className="text-sm">Create your account now</p>
+
+                { errorDetected && (<p className="text-sm text-red-500">Something went wrong. Please try again</p>) }
             </div>
 
-            <button className="w-full my-4 px-4 py-2 border flex justify-center gap-2 border-slate-200 rounded-lg text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150">
-                <img className="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo" />
-                <span>Sign in with Google</span>
-            </button>
-
-            <div className="flex items-center py-4">
-                <div className="flex-grow h-px bg-gray-400"></div>
-
-                <span className="text-xs text-gray-500 px-4 font-light">or</span>
-
-                <div className="flex-grow h-px bg-gray-400"></div>
-            </div>
-
-            <form onSubmit={handleSignup((data) => signupUser(data))} className="form-control w-full">
+            <form onSubmit={handleSignup((data) => signupUser(data))} className="form-control w-full py-4">
                 <div className="my-1">
                     <label className="label">
                         <span className="label-text text-black font-medium">Name</span>
@@ -107,7 +98,7 @@ const Auth: React.FC = () => {
             </form>
 
             <p className="text-sm mt-8">Have an account? <span className="text-primary"><Link to={'/signin'}>Sign In</Link></span></p>
-        </>
+        </div>
     )
 }
 

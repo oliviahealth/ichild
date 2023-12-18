@@ -7,7 +7,7 @@ import ErrorComponent from "../ErrorComponent";
 const AuthLayout = () => {
     return (
         <div className="flex flex-col justify-between text-black h-screen">
-            <div className="shadow-2xl bg-white">
+            <div className="bg-white">
                 <Navbar />
             </div>
 
@@ -15,7 +15,7 @@ const AuthLayout = () => {
 
             <div className="w-full mx-auto flex h-full">
                 <div className="w-full flex justify-center items-center bg-[url('src/assets/authBackground.png')] lg:bg-none">
-                    <div className="w-full p-8 m-auto sm:w-3/5 sm:max-w-2xl rounded-lg bg-white bg-opacity-90">
+                    <div className="w-full p-8 m-auto sm:w-3/5 sm:max-w-2xl rounded-lg sm:rounded-none bg-white bg-opacity-90">
                         <Outlet />
                     </div>
 
