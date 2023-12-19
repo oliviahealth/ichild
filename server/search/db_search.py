@@ -1,10 +1,12 @@
 import os
-from flask import Flask, request, Response
+from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
 import ssl
 
-from database import db, login_manager, bcrypt
+from flask_jwt_extended import JWTManager
+
+from database import db, bcrypt
 
 load_dotenv()
 
@@ -25,13 +27,13 @@ from routes.saved_location_routes import saved_location_routes_bp
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, supports_credentials=True)
 
-    bcrypt.init_app(app)
-    login_manager.init_app(app)
-    
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRESQL_CONNECTION_STRING')
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') # Change this
+    
+    CORS(app, supports_credentials=True)
+    bcrypt.init_app(app)
+    jwt = JWTManager(app)
 
     register_extensions(app)
     register_blueprints(app)

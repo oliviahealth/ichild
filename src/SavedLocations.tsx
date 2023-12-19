@@ -14,6 +14,7 @@ import LocationInfoPanel from "./components/Chat/LocationInfoPanel";
 
 const SavedLocations: React.FC = () => {
     const user = useAppStore((state) => state.user);
+    const accessToken = useAppStore((state) => state.accessToken);
 
     const [savedLocations, setSavedLocations] = useState<null | ISavedLocation[]>(null);
     const [focusedLocation, setFocusedLocation] = useState<null | ILocation>(null);
@@ -23,10 +24,11 @@ const SavedLocations: React.FC = () => {
 
     const { mutate: getSavedLocations, isLoading } = useMutation(async () => {
         const headers = {
-            "userId": user?.id
+            "Authorization": "Bearer " + accessToken,
+            "userId": user?.id,
         }
 
-        const savedLocations: ISavedLocation[] = (await axios.get(`${import.meta.env.VITE_API_URL}/savedlocations`, { ...headers, withCredentials: true })).data
+        const savedLocations: ISavedLocation[] = (await axios.get(`${import.meta.env.VITE_API_URL}/savedlocations`, { headers: { ...headers }, withCredentials: true })).data
 
         // Make sure all of the saved locations are compliant with the location schema
         savedLocations.forEach((location: ISavedLocation) => parseWithZod(location, SavedLocationSchema));
@@ -39,7 +41,12 @@ const SavedLocations: React.FC = () => {
     });
 
     const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (savedLocationName: string) => {
-        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?name=${savedLocationName}`, { withCredentials: true });
+        const headers = {
+            "Authorization": "Bearer " + accessToken,
+            "userId": user?.id,
+        }
+
+        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?name=${savedLocationName}`, { headers: { ...headers }, withCredentials: true });
 
         return savedLocationName;
     }, {

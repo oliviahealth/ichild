@@ -5,7 +5,10 @@ import { IUser, IConversationPreview } from "../utils/interfaces";
 interface AppState {
     user: IUser | null
     setUser: (user: IUser | null) => void
-    
+
+    accessToken: string | null
+    setAccessToken: (accessToken: string | null) => void
+
     isSidePanelOpen: boolean
     setisSidePanelOpen: (isSidePanelOpen: boolean) => void
 
@@ -24,6 +27,9 @@ interface AppState {
 const useAppStore = create<AppState>()((set) => ({
     user: null,
     setUser: (user) => set(() => ({ user })),
+
+    accessToken: null,
+    setAccessToken: (accessToken) => set(() => ({ accessToken })),
 
     isSidePanelOpen: true,
     setisSidePanelOpen: (isSidePanelOpen) => set(() => ({ isSidePanelOpen })),

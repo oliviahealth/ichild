@@ -1,5 +1,5 @@
-from flask import Blueprint, request, jsonify, session
-from flask_login import login_required
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import get_jwt_identity, jwt_required
 import time
 
 from database import db, SavedLocation, Location
@@ -23,9 +23,9 @@ saved_location_routes_bp = Blueprint('saved_location_routes', __name__)
 """
 
 @saved_location_routes_bp.route('/savedlocations', methods=['POST'])
-@login_required
+@jwt_required()
 def add_saved_location():
-    user_id = str(session['edu.tamu.ollie.user_id']).strip()
+    user_id = get_jwt_identity()
     
     data = request.get_json()
     location_name = data['name'] # Remember, the name is the primary key for the LocationModel
@@ -65,9 +65,9 @@ def add_saved_location():
 """
 
 @saved_location_routes_bp.route('/savedlocations', methods=['GET'])
-@login_required
+@jwt_required()
 def get_saved_locations():
-    user_id = str(session['edu.tamu.ollie.user_id']).strip()
+    user_id = get_jwt_identity()
     
     if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
@@ -121,10 +121,10 @@ def get_saved_locations():
 """
 
 @saved_location_routes_bp.route('/savedlocations', methods=['DELETE'])
-@login_required
+@jwt_required()
 def delete_saved_location():
     location_name = request.args.get('name')
-    user_id = str(session['edu.tamu.ollie.user_id']).strip()
+    user_id = get_jwt_identity()
     
     if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401

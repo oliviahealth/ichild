@@ -1,15 +1,11 @@
-from flask import Blueprint, request, jsonify, session
-from flask_login import login_user, login_required, logout_user
+from flask import Blueprint, request, jsonify
 import time
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
-from database import db, User, login_manager, bcrypt
+from database import db, User, bcrypt
 
 auth_routes_bp = Blueprint('auth_routes', __name__)
     
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(str(user_id))
-
 """
     User Signup Endpoint.
     
@@ -34,6 +30,8 @@ def signup():
     email = data.get('email')
     password = data.get('password')
     
+    access_token = None
+
     # Check if a user exists and if so, send an error message
     existing_user = User.query.filter_by(email=email).first()
     if existing_user:
@@ -47,17 +45,17 @@ def signup():
 
         new_user = User(name=name, email=email, password=hashed_password, date_created=date_created)
 
+        access_token = create_access_token(identity=new_user.id)
+
         db.session.add(new_user)
         db.session.commit()
-
-        login_user(new_user, remember=True)
-        session['edu.tamu.ollie.user_id'] = new_user.id
     except Exception as error:
         db.session.rollback()
         print(error)
         return jsonify({ 'error': "Something went wrong!" }), 500
 
-    return jsonify({ 'id': new_user.id, "name": new_user.name, "email": new_user.email, 'dateCreated': date_created }), 201
+    return jsonify({ 'id': new_user.id, "name": new_user.name, "email": new_user.email, 'dateCreated': date_created, 'accessToken': access_token }), 201
+
 
 """
     User Signin Endpoint.
@@ -80,22 +78,23 @@ def signin():
     email = data.get('email')
     password = data.get('password')
 
-    # Check if a user with the email and password exists, and if not, send an error message
-    user = User.query.filter_by(email=email).first()
-
-    if(user is None or not bcrypt.check_password_hash(user.password, password)):
-        return jsonify({ 'error': 'Invalid credentials' }), 401
+    access_token = None
     
     try:
-        # Run the login_user function provided by flask_login to create a session
-        login_user(user, remember=True)
-        session['edu.tamu.ollie.user_id'] = user.id
+        # Check if a user with the email and password exists, and if not, send an error message
+        user = User.query.filter_by(email=email).first()
+
+        if(user is None or not bcrypt.check_password_hash(user.password, password)):
+            return jsonify({ 'error': 'Invalid credentials' }), 401
+        
+        access_token = create_access_token(identity=user.id)
+    
     except Exception as error:
         db.session.rollback()
         print(error)
         return jsonify({ 'error': 'Something went wrong!' }), 500
         
-    return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created }), 200
+    return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created, 'accessToken': access_token }), 200
 
 """
     User Signout Endpoint.
@@ -108,11 +107,14 @@ def signin():
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
 @auth_routes_bp.route('/signout', methods=['POST'])
-@login_required
+@jwt_required()
 def signout():
     try:
-        # Delete the session
-        logout_user()
+        user_id = get_jwt_identity()
+
+        if(not user_id):
+            return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+
     except Exception as error:
         db.session.rollback()
         print(error)

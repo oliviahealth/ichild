@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from flask_login import login_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 import time
 
 from database import db, Conversation, Location, SavedLocation
@@ -24,14 +24,14 @@ conversation_routes_bp = Blueprint('conversation_routes', __name__)
 """
 
 @conversation_routes_bp.route('/conversations', methods=['POST'])
-@login_required
+@jwt_required()
 def add_conversations():
     data = request.get_json()
 
     id = data['id']
     title = data['title']
 
-    user_id = str(session['_user_id']).strip()
+    user_id = get_jwt_identity()
 
     if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
@@ -74,9 +74,9 @@ def add_conversations():
 """
 
 @conversation_routes_bp.route('/conversationpreviews')
-@login_required
+@jwt_required()
 def get_conversation_previews():    
-    user_id = str(session['_user_id']).strip()
+    user_id = get_jwt_identity()
 
     if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
@@ -104,10 +104,10 @@ def get_conversation_previews():
 """
 
 @conversation_routes_bp.route('/conversation', methods=['GET'])
-@login_required
+@jwt_required()
 def get_conversation():
     conversation_id = request.args.get('id')
-    user_id = str(session['_user_id']).strip()
+    user_id = get_jwt_identity()
 
     try:
         conversation = Conversation.query.filter_by(id=conversation_id).first()
@@ -174,9 +174,9 @@ def get_conversation():
 """
 
 @conversation_routes_bp.route('/conversations', methods=['GET'])
-@login_required
+@jwt_required()
 def get_conversations():
-    user_id = str(session['_user_id']).strip()
+    user_id = get_jwt_identity()
 
     if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
@@ -254,10 +254,10 @@ def get_conversations():
 """
 
 @conversation_routes_bp.route("/conversation", methods=['DELETE'])
-@login_required
+@jwt_required()
 def delete_conversations():
     conversation_id = request.args.get('id')
-    user_id = str(session['_user_id']).strip()
+    user_id = get_jwt_identity()
 
     try:
         conversation_to_delete = Conversation.query.filter_by(id=conversation_id).first()

@@ -11,10 +11,20 @@ const User: React.FC = () => {
     const user = useAppStore((state) => state.user);
     const setUser = useAppStore((state) => state.setUser);
 
+    const accessToken = useAppStore((state) => state.accessToken);
+    const setAccessToken = useAppStore((state) => state.setAccessToken);
+
     const { mutate: signoutUser, isLoading } = useMutation(async () => {
-        await axios.post(`${import.meta.env.VITE_API_URL}/signout`, null, { withCredentials: true });
+        const headers = {
+            "Authorization": "Bearer " + accessToken,
+            "userId": user?.id,
+        };
+
+        await axios.post(`${import.meta.env.VITE_API_URL}/signout`, null, { headers: { ...headers }, withCredentials: true });
     }, {
         onSuccess: () => {
+            setAccessToken(null);
+            
             setUser(null);
             return navigate('/signin')
         }

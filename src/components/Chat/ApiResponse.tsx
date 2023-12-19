@@ -19,6 +19,7 @@ interface Props {
 
 const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     const user = useAppStore((state) => state.user);
+    const accessToken = useAppStore((state) => state.accessToken);
 
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
     const [locationToSave, setLocationToSave] = useState<null | ILocation>(null);
@@ -38,7 +39,12 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     emblaApi?.on("select", () => setCurrentSlideIndex(emblaApi?.selectedScrollSnap()));
 
     const { mutate: saveLocation, isLoading: isSaveLoading } = useMutation(async (location: ILocation) => {
-        (await axios.post(`${import.meta.env.VITE_API_URL}/savedlocations`, { name: location.name }, { withCredentials: true })).data;
+        const headers = {
+            "Authorization": "Bearer " + accessToken,
+            "userId": user?.id,
+        };
+
+        (await axios.post(`${import.meta.env.VITE_API_URL}/savedlocations`, { name: location.name }, { headers: { ...headers }, withCredentials: true })).data;
 
         return location
     }, {
@@ -50,7 +56,12 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     });
 
     const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (location: ILocation) => {
-        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?name=${location.name}`, { withCredentials: true });        
+        const headers = {
+            "Authorization": "Bearer " + accessToken,
+            "userId": user?.id,
+        };
+
+        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?name=${location.name}`, { headers: { ...headers }, withCredentials: true });        
 
         return location;
     }, {

@@ -18,6 +18,7 @@ import { RxExit } from "react-icons/rx";
 const SidePanel: React.FC = () => {
     const location = useLocation();
     const user = useAppStore((state) => state.user);
+    const accessToken = useAppStore((state) => state.accessToken);
     const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
     const conversationPreviews = useAppStore((state) => state.conversationPreviews);
@@ -28,7 +29,12 @@ const SidePanel: React.FC = () => {
 
     { /* Delete conversation based on a specific id and if successful, remove the conversation from the sidepanel and set the current conversation to be null  */ }
     const { mutate: deleteConversation, isLoading: isDeleteLoading } = useMutation(async (conversationId: string) => {
-        await axios.delete(`${import.meta.env.VITE_API_URL}/conversation?id=${currentConversationId}`, { withCredentials: true })
+        const headers = {
+            "Authorization": "Bearer " + accessToken,
+            "userId": user?.id,
+        }
+
+        await axios.delete(`${import.meta.env.VITE_API_URL}/conversation?id=${currentConversationId}`, { headers: { ...headers }, withCredentials: true })
 
         return conversationId
     }, {
@@ -42,10 +48,11 @@ const SidePanel: React.FC = () => {
     { /* Fetch only the id and title of each previous conversation the user has had to populate the recent activity on the sidepanel */ }
     const { mutate: getConversationPreviews } = useMutation(async () => {
         const headers = {
-            "userId": user?.id
+            "Authorization": "Bearer " + accessToken,
+            "userId": user?.id,
         }
 
-        const conversationPreviews: IConversationPreview[] = (await axios.get(`${import.meta.env.VITE_API_URL}/conversationpreviews`, { ...headers, withCredentials: true })).data;
+        const conversationPreviews: IConversationPreview[] = (await axios.get(`${import.meta.env.VITE_API_URL}/conversationpreviews`, { headers: { ...headers }, withCredentials: true })).data;
 
         conversationPreviews.forEach((conversationDetail) => parseWithZod(conversationDetail, ConversationPreviewSchema));
 

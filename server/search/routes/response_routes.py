@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from flask_login import login_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 import time
 
 from database import Conversation, db, Response, Location
@@ -23,7 +23,7 @@ response_routes_bp = Blueprint('response_routes', __name__)
 """
 
 @response_routes_bp.route('/response', methods=['POST'])
-@login_required
+@jwt_required()
 def add_response():
     data = request.get_json()
     locations = data.get('locations')
@@ -31,7 +31,7 @@ def add_response():
     conversation_id = data.get('conversationId')
     date_created = data.get('dateCreated')
 
-    user_id = str(session['edu.tamu.ollie.user_id']).strip()
+    user_id = get_jwt_identity()
 
     try:
         conversation = Conversation.query.get(conversation_id)

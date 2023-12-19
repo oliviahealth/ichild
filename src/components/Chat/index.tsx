@@ -22,7 +22,8 @@ const ChatComponent: React.FC = () => {
     https://github.com/pmndrs/zustand
   */
   const user = useAppStore((state) => state.user);
-
+  const accessToken = useAppStore((state) => state.accessToken);
+  
   // The actual response from the api including the locations the api suggests
   const [apiResponses, setApiResponses] = useState<IAPIResponse[]>([]);
 
@@ -61,7 +62,12 @@ const ChatComponent: React.FC = () => {
 
   { /* When the user focuses on a previous conversation from the sidepanel, we fetch the complete conversation object and populate the api response array to display the suggested locations */ }
   const { mutate: getConversationDetails, isLoading } = useMutation(async () => {
-    const conversationDetails: IConversation = (await axios.get(`${import.meta.env.VITE_API_URL}/conversation?id=${currentConversationId}`, { withCredentials: true })).data
+    const headers = {
+      "Authorization": "Bearer " + accessToken,
+      "userId": user?.id,
+  }
+
+    const conversationDetails: IConversation = (await axios.get(`${import.meta.env.VITE_API_URL}/conversation?id=${currentConversationId}`, { headers: { ...headers }, withCredentials: true })).data
 
     parseWithZod(conversationDetails, ConversationSchema)
 
@@ -92,8 +98,13 @@ const ChatComponent: React.FC = () => {
 
     // If a user is logged in, save their conversation
     if (user) {
-      const conversation: IConversation = (await axios.post(`${import.meta.env.VITE_API_URL}/conversations`, { id: currentConversationId, title: response.userQuery }, { withCredentials: true })).data;
-      await axios.post(`${import.meta.env.VITE_API_URL}/response`, { ...response, conversationId: conversation.id }, { withCredentials: true });
+      const headers = {
+        "Authorization": "Bearer " + accessToken,
+        "userId": user?.id,
+      }
+
+      const conversation: IConversation = (await axios.post(`${import.meta.env.VITE_API_URL}/conversations`, { id: currentConversationId, title: response.userQuery }, { headers: { ...headers },  withCredentials: true })).data;
+      await axios.post(`${import.meta.env.VITE_API_URL}/response`, { ...response, conversationId: conversation.id }, { headers: { ...headers },  withCredentials: true });
 
       // If this is a new conversation, add it to the recent activity on the sidepanel
       if (apiResponses.length < 1) {

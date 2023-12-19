@@ -1,13 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
 from sqlalchemy.dialects.postgresql import UUID
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
 import uuid
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
-login_manager = LoginManager()
 
 class Conversation(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -61,7 +58,7 @@ class SavedLocation(db.Model):
     date_created = db.Column(db.BigInteger(), nullable=False)
     author = db.relationship('User', backref='saved_location_user')
 
-class User(UserMixin, db.Model):
+class User(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False, unique=True)

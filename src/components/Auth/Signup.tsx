@@ -14,6 +14,7 @@ const Auth: React.FC = () => {
     const navigate = useNavigate();
 
     const setUser = useAppStore((state) => state.setUser);
+    const setAccessToken = useAppStore((state) => state.setAccessToken);
     const [errorDetected, setErrorDetected] = useState(false);
 
     // Use zod to validate the form before submission
@@ -34,15 +35,21 @@ const Auth: React.FC = () => {
     let { register: registerSignup, handleSubmit: handleSignup, formState: { errors: signupErrors } } = useForm<SignupFormData>({ resolver: zodResolver(signupSchema) });
 
     const { mutate: signupUser, isLoading } = useMutation(async (data: SignupFormData) => {
-        const user: IUser = (await axios.post(`${import.meta.env.VITE_API_URL}/signup`, data, { withCredentials: true })).data
+        interface ISignupResponse extends IUser {
+            accessToken: string
+        }
+        
+        const user : ISignupResponse = (await axios.post(`${import.meta.env.VITE_API_URL}/signup`, data, { withCredentials: true })).data
 
         parseWithZod(user, UserSchema);
 
         return user
     }, {
-        onSuccess: (user) => {
-            if (user) {
-                setUser(user);
+        onSuccess: (response) => {
+            if (response) {
+                setAccessToken(response.accessToken);
+
+                setUser(response);
                 return navigate("/")
             }
         },
