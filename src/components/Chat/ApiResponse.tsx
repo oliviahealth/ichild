@@ -95,7 +95,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                 </div>
 
                                 <div className="w-full h-full p-3 object-container">
-                                    <LocationInfoPanel location={focusedLocation} />
+                                    <LocationInfoPanel location={focusedLocation} isSaveLoading={isSaveLoading} isDeleteLoading={isDeleteLoading} locationToSave={locationToSave} saveLocation={saveLocation} deleteSavedLocation={deleteSavedLocation} />
                                 </div>
                             </div>
                         )}
@@ -162,7 +162,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                                     {apiResponse.locations.map((location, index) => (
                                         <div key={`Slide: ${index}`} className="embla__slide p-3 mr-1 bg-white rounded-box space-y-3" >
-                                             <LocationInfoPanel location={location} />
+                                             <LocationInfoPanel  location={location} isSaveLoading={isSaveLoading} isDeleteLoading={isDeleteLoading} locationToSave={locationToSave} saveLocation={saveLocation} deleteSavedLocation={deleteSavedLocation}  />
                                         </div>
                                     ))}
                                 </div>

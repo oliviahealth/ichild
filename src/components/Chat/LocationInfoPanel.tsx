@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { ILocation } from "../../utils/interfaces";
 
+import { BiBookmark, BiSolidBookmark } from "react-icons/bi";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import PanoramicStreetView from "./PanoramicStreetView";
 import InteractiveMap from "./InteractiveMap";
 
 interface Props {
     location: ILocation
+    isDeleteLoading: boolean
+    isSaveLoading: boolean
+    locationToSave: ILocation | null
+
+    saveLocation: (location: ILocation) => void
+    deleteSavedLocation: (location: ILocation) => void
 }
 
-const LocationInfoPanel: React.FC<Props> = ({ location }) => {
+const LocationInfoPanel: React.FC<Props> = ({ location, isDeleteLoading, isSaveLoading, locationToSave, saveLocation, deleteSavedLocation }) => {
     const currentDayOfWeek = new Date().getDay()
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
@@ -19,7 +26,14 @@ const LocationInfoPanel: React.FC<Props> = ({ location }) => {
                 {location.streetViewExists && location.latitude && location.longitude ? <PanoramicStreetView latitude={location.latitude} longitude={location.longitude} /> : <InteractiveMap locations={[location]} />}
             </div>
 
-            <p className="font-semibold text-2xl">{location.name}</p>
+            <div className="flex gap-4 items-center">
+                <p className="font-semibold text-2xl">{location.name}</p>
+
+                {location.isSaved ? (
+                        isDeleteLoading && locationToSave === location ? ( <span className="loading loading-spinner loading-sm"></span> ) : ( <BiSolidBookmark onClick={() => deleteSavedLocation(location)} className="text-xl text-black" /> )
+                    ) : ( isSaveLoading && locationToSave === location ? ( <span className="loading loading-spinner loading-sm"></span> ) : ( <BiBookmark onClick={() => saveLocation(location)} className="text-xl text-black" /> ) 
+                )}
+            </div>
 
             <div className="flex gap-x-1 items-center">
                 <div className="rating rating-md rating-half flex items-center gap-2">
