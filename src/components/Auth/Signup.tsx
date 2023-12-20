@@ -49,6 +49,8 @@ const Auth: React.FC = () => {
             if (response) {
                 setAccessToken(response.accessToken);
 
+                sessionStorage.setItem('accessToken', response.accessToken);
+
                 setUser(response);
                 return navigate("/")
             }

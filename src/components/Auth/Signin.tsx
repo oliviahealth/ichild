@@ -42,8 +42,10 @@ const Signin: React.FC = () => {
         return user
     }, {
         onSuccess: (response) => {
-            if (response) {    
+            if (response) {        
                 setAccessToken(response.accessToken);
+
+                sessionStorage.setItem('accessToken', response.accessToken);
 
                 setUser(response)
                 return navigate('/')

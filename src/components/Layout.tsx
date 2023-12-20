@@ -1,15 +1,24 @@
-import { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useMutation } from "react-query";
 
+import parseWithZod from "../utils/parseWithZod";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import ErrorComponent from "./ErrorComponent";
 import SidePanel from "./SidePanel";
+import { IUser, UserSchema } from "../utils/interfaces";
 
 import useAppStore from "../stores/useAppStore";
 import { BsBoxArrowRight } from "react-icons/bs";
 
 const Layout = () => {
+  const navigate = useNavigate();
+ 
+  const setAccessToken = useAppStore((state) => state.setAccessToken);
+  const setUser = useAppStore((state) => state.setUser);
+  
   const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
   const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
@@ -26,6 +35,40 @@ const Layout = () => {
       setisSidePanelOpen(false);
     }
   }, []);
+
+  // Load the user from the session storage into the application state
+  const { mutate: getUser } = useMutation(async (accessToken: string) => {
+    const headers = {
+      "Authorization": "Bearer " + accessToken,
+    }
+
+    const user : IUser = (await axios.post(`${import.meta.env.VITE_API_URL}/restoreuser`, null, { headers: { ...headers }, withCredentials: true })).data
+
+    parseWithZod(user, UserSchema);
+
+    return { accessToken, user };  
+    }, {
+    onSuccess: ({ accessToken, user }) => {
+        setAccessToken(accessToken);
+        setUser(user);
+
+        return navigate('/');
+    }
+  });
+
+  // If we have a user stored in session storage, load the user into the application state
+  useEffect(() => {
+    const fetchData = async () => {
+      const accessToken = sessionStorage.getItem('accessToken');
+
+      if(accessToken) {
+        getUser(accessToken);
+      }
+    };
+  
+    fetchData();
+  }, []);
+
 
   //Open the sidepanel when going from mobile to desktop
   window.addEventListener('resize',() => {

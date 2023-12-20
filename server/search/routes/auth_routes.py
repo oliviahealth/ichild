@@ -6,6 +6,30 @@ from database import db, User, bcrypt
 
 auth_routes_bp = Blueprint('auth_routes', __name__)
     
+'''
+Restore User Endpoint
+
+This endpoint restores a users session on the frontend by taking in a jwt access token, validating it and returning the user object to the frontend
+'''    
+@auth_routes_bp.route("/restoreuser", methods=['POST'])
+@jwt_required()
+def getUser():
+    user = None
+
+    try:
+        user_id = get_jwt_identity()
+
+        user = User.query.filter_by(id=user_id).first()
+
+        if(user is None):
+            return jsonify({ 'error': 'Invalid credentials' }), 401
+        
+    except Exception as error:
+        print(error)
+        return jsonify({ 'error': "Something went wrong!" }), 500
+
+    return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created }), 200
+
 """
     User Signup Endpoint.
     
