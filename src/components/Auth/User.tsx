@@ -24,8 +24,10 @@ const User: React.FC = () => {
     }, {
         onSuccess: () => {
             setAccessToken(null);
-            
             setUser(null);
+            
+            sessionStorage.clear();
+
             return navigate('/signin')
         }
     });
@@ -43,12 +45,12 @@ const User: React.FC = () => {
                 <p className="text-sm">Sign out of your account</p>
             </div>
 
-            <form className="form-control w-full" onSubmit={() => signoutUser()}>
-                <button className="btn btn-primary w-full mt-6" disabled={isLoading}>
+            <div className="w-full">
+                <button className="btn btn-primary w-full mt-6" disabled={isLoading} onClick={() => signoutUser()}>
                     {isLoading && (<span className="loading loading-spinner loading-sm"></span>)}
                     Sign Out
                 </button>
-            </form>
+            </div>
         </>
     )
 }
