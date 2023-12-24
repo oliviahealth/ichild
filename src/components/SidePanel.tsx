@@ -78,7 +78,7 @@ const SidePanel: React.FC = () => {
         <>
             <input id="sidepanel" type="checkbox" className="drawer-toggle" />
 
-            <div className="drawer-side h-full md:rounded-box rounded-br-none bg-white bg-opacity-50 text-base-neutral">
+            <div className="drawer-side h-full md:rounded-box bg-white bg-opacity-50 text-base-neutral" style={{ borderBottomRightRadius: "0px" }}>
                 <label htmlFor="my-drawer" className="drawer-overlay"></label>
 
                 <div className="w-[275px] p-4 h-full flex flex-col justify-between">

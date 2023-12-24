@@ -81,7 +81,7 @@ const Layout = () => {
 
   return (
     <div className="h-screen overflow-hidden">
-      <div className="flex flex-col h-screen text-black bg-[url('../assets/background.png')]">
+      <div className="flex flex-col h-screen text-black bg-[url('../assets/background.png')] bg-cover">
         <div className="shadow-2xl bg-white">
           <Navbar />
         </div>

@@ -41,8 +41,8 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Route element={<AuthLayout />}>
             <Route path="/signup" Component={Signup} />
             <Route path="/signin" Component={Signin} />
-            <Route path="/user" Component={User} />
           </Route>
+          <Route path="/user" Component={User} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

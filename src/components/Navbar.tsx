@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
   const user = useAppStore((state) => state.user);
 
   return (
-    <div className="navbar xl:container xl:px-2 mx-auto px-5">
+    <div className="navbar xl:container xl:px-2 mx-auto px-5 text-black">
       <div className="navbar-start w-full flex justify-between ">
 
         { /* Make sure to use the <Link /> component provided by react-router to handle client side routing, or all app state will be reset */}

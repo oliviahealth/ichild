@@ -6,6 +6,8 @@ import { MdOutlineOpenInNew } from "react-icons/md";
 import PanoramicStreetView from "./PanoramicStreetView";
 import InteractiveMap from "./InteractiveMap";
 
+import useAppStore from "../../stores/useAppStore";
+
 interface Props {
     location: ILocation
     isDeleteLoading: boolean
@@ -20,6 +22,8 @@ const LocationInfoPanel: React.FC<Props> = ({ location, isDeleteLoading, isSaveL
     const currentDayOfWeek = new Date().getDay()
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
+    const user = useAppStore((state) => state.user);
+
     return (
         <div className="my-4 flex flex-col gap-4 bg-[#F8F5F5] p-3 rounded-xl">
             <div className="h-80">
@@ -29,10 +33,12 @@ const LocationInfoPanel: React.FC<Props> = ({ location, isDeleteLoading, isSaveL
             <div className="flex gap-4 items-center">
                 <p className="font-semibold text-2xl">{location.name}</p>
 
-                {location.isSaved ? (
-                        isDeleteLoading && locationToSave === location ? ( <span className="loading loading-spinner loading-sm"></span> ) : ( <BiSolidBookmark onClick={() => deleteSavedLocation(location)} className="text-xl text-black" /> )
-                    ) : ( isSaveLoading && locationToSave === location ? ( <span className="loading loading-spinner loading-sm"></span> ) : ( <BiBookmark onClick={() => saveLocation(location)} className="text-xl text-black" /> ) 
-                )}
+                { user && (<div>
+                    {location.isSaved ? (
+                            isDeleteLoading && locationToSave === location ? ( <span className="loading loading-spinner loading-sm"></span> ) : ( <BiSolidBookmark onClick={() => deleteSavedLocation(location)} className="text-xl text-black" /> )
+                        ) : ( isSaveLoading && locationToSave === location ? ( <span className="loading loading-spinner loading-sm"></span> ) : ( <BiBookmark onClick={() => saveLocation(location)} className="text-xl text-black" /> ) 
+                    )}
+                </div>) }
             </div>
 
             <div className="flex gap-x-1 items-center">

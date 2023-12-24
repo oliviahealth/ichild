@@ -202,7 +202,7 @@ const ChatComponent: React.FC = () => {
       { /* input field with the submit button */}
       <form className="form-control shadow-2xl" onSubmit={handleSubmit((data) => getResponse(data as unknown as { query: string }))}>
         <div className="input-group">
-          <input placeholder="Ask me a question" className="input w-full py-6 bg-white focus:outline-none" {...register("query")} style={{ "borderRadius": 0 }} />
+          <input placeholder="Ask me a question" className="input w-full py-6  bg-white focus:outline-none" {...register("query")} style={{ "borderRadius": 0 }} />
           <button className="btn btn-square h-full bg-white border-none hover:bg-primary active:bg-primary-focus">
             <p>
               <svg width="32" height="34" viewBox="0 0 32 34" fill="none" xmlns="http://www.w3.org/2000/svg">
