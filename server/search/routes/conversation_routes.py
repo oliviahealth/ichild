@@ -82,7 +82,17 @@ def get_conversation_previews():
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
 
     try:
-        conversation_previews = [{ 'id': conversation[0], 'title': conversation[1] } for conversation in Conversation.query.filter_by(user_id=user_id).with_entities(Conversation.id, Conversation.title).all()]
+        conversation_previews = [{
+        'id': conversation[0], 
+        'title': conversation[1]} 
+    for conversation in Conversation.query
+        .filter_by(user_id=user_id)
+        .with_entities(Conversation.id, Conversation.title, Conversation.date_updated)  # include dateUpdated
+        .order_by(Conversation.date_updated.desc())  # sort by dateUpdated in descending order
+        .limit(5)  # limit the results to the first 5 records
+        .all()
+    ]
+
     except Exception as error:
         db.session.rollback()
         print(error)

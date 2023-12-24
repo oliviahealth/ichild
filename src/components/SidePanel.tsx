@@ -42,6 +42,8 @@ const SidePanel: React.FC = () => {
             setConversationPreviews(conversationPreviews.filter((conversationDetail) => conversationDetail.id !== conversationId));
 
             setCurrentConversationId(null);
+
+            getConversationPreviews();
         }
     })
 
@@ -96,7 +98,7 @@ const SidePanel: React.FC = () => {
                         <p className="text-sm text-black my-4 mt-6 font-semibold">Recent Activity</p>
 
                         {user ? (
-                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-26rem)]">
+                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-34rem)]">
                                 {conversationPreviews.map((conversationDetail, index) => (
                                     <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversationDetail.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                         <div className="flex items-center">

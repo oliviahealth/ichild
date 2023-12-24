@@ -22,10 +22,9 @@ def core_search(query, embedder, corpus, encoding_dict):
     return crossEncoderItems, crossEncoderScoresDict
 
 def grab_info(crossEncoderItems, crossEncoderScoresDict):
-    item_count = 5  # Number of items to retrieve
     info_list = []
     
-    for i in range(item_count):
+    for i in range(len(crossEncoderItems)):
         resource = crossEncoderItems[i][1]
     
         location = Location.query.filter_by(description=resource).first()

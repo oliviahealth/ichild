@@ -3,6 +3,7 @@ import { useNavigate, Navigate, Link } from "react-router-dom";
 import { useMutation } from "react-query";
 import axios from "axios";
 
+import Footer from "../Footer";
 import Navbar from "../Navbar";
 import { BsFillPersonFill, BsChatFill } from "react-icons/bs";
 import { BiSolidBookmark } from "react-icons/bi";
@@ -115,7 +116,7 @@ const User: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                
+                <Footer />
             </div>
         </div>
     )
