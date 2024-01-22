@@ -119,3 +119,40 @@ def signin():
         return jsonify({ 'error': 'Something went wrong!' }), 500
         
     return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created, 'accessToken': access_token }), 200
+
+@auth_routes_bp.route("/updateuser", methods=['PUT'])
+@jwt_required()
+def updateUser():
+    data = request.get_json()
+    name = data.get('name')
+    email = data.get('email')
+    password = data.get('password')
+
+    user_id = get_jwt_identity()
+
+    if(not user_id):
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+
+    try:
+        user = User.query.get(user_id)
+
+        if(not user):
+            return jsonify({ 'error', 'User Does Not Exist' }), 404
+        
+        user.name = name
+        user.email = email
+
+        if(password):
+            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+            user.password = hashed_password
+
+        user.date_created = int(time.time() * 1000)
+
+        db.session.add(user)
+        db.session.commit()    
+    except Exception as error:
+        db.session.rollback()
+        print(error)
+        return jsonify({ 'error': 'Something went wrong!' }), 500
+
+    return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created }), 200
