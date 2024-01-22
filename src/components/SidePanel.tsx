@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useMutation } from "react-query";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
 
@@ -16,6 +16,8 @@ import { CgProfile } from "react-icons/cg";
 import { RxExit } from "react-icons/rx";
 
 const SidePanel: React.FC = () => {
+    const navigate = useNavigate();
+    
     const location = useLocation();
     const user = useAppStore((state) => state.user);
     const accessToken = useAppStore((state) => state.accessToken);
@@ -64,6 +66,12 @@ const SidePanel: React.FC = () => {
             setConversationPreviews(conversationDetails);
         }
     })
+
+    const handleSignout = () => {
+        sessionStorage.removeItem('accessToken');
+
+        navigate(0);
+    }
 
     useEffect(() => {
         if (user) {
@@ -142,10 +150,10 @@ const SidePanel: React.FC = () => {
                                 <p className="ml-4">{ user.name }</p>
                             </Link>
                             
-                            <Link to={'/user'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <span onClick={() => handleSignout()} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><RxExit /></p>
                                 <p className="ml-4">Sign out</p>
-                            </Link>
+                            </span>
                         </div>
                     </div>)}
                 </div>

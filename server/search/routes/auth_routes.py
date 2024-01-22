@@ -119,29 +119,3 @@ def signin():
         return jsonify({ 'error': 'Something went wrong!' }), 500
         
     return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created, 'accessToken': access_token }), 200
-
-"""
-    User Signout Endpoint.
-    
-    This endpoint allows logged-in users to sign out.
-    It logs the user out and returns a success message.
-
-    Returns:
-        - If successful, returns JSON with a success message.
-        - If any unexpected error occurs, returns a JSON error message with status code 500.
-"""
-@auth_routes_bp.route('/signout', methods=['POST'])
-@jwt_required()
-def signout():
-    try:
-        user_id = get_jwt_identity()
-
-        if(not user_id):
-            return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
-
-    except Exception as error:
-        db.session.rollback()
-        print(error)
-        return jsonify({ 'error': 'Something went wrong!' }), 500
-
-    return jsonify({ 'success' : 'User logged out successfully' }), 200
