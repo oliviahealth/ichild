@@ -150,7 +150,7 @@ const SidePanel: React.FC = () => {
                                 <p className="ml-4">{ user.name }</p>
                             </Link>
                             
-                            <span onClick={() => handleSignout()} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <span onClick={() => handleSignout()} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
                                 <p className="text-lg"><RxExit /></p>
                                 <p className="ml-4">Sign out</p>
                             </span>

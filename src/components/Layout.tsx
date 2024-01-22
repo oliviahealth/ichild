@@ -90,7 +90,7 @@ const Layout = () => {
           { /* Render all children components with the Outlet 
                 https://reactrouter.com/en/main/components/outlet
           */ }
-          <div className="flex flex-col h-full bg-opacity-80 bg-gray-100 rounded-box">
+          <div className="flex flex-col h-full bg-opacity-90 bg-gray-100 rounded-box">
             <div className={`flex items-center gap-4 md:hidden w-full px-4 py-2 bg-zinc-200  ${isSidePanelOpen ? "hidden" : ""}`} onClick={() => setisSidePanelOpen(!isSidePanelOpen)}>
               <span className="cursor-pointer text-lg" ><BsBoxArrowRight /></span>
             

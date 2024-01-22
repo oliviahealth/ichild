@@ -8,8 +8,8 @@ import AuthLayout from "./components/Auth/AuthLayout";
 import ChatComponent from "./components/Chat";
 import Signup from "./components/Auth/Signup";
 import Signin from "./components/Auth/Signin";
-import User from "./components/Auth/User";
 import SavedLocations from "./SavedLocations";
+import UserPage from "./components/User";
 
 import "./css/index.css";
 
@@ -37,12 +37,12 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Route element={<Layout />}>
             <Route path="/" Component={ChatComponent} />
             <Route path="/savedlocations" Component={SavedLocations} />
+            <Route path="/user" Component={UserPage} />
           </Route>
           <Route element={<AuthLayout />}>
             <Route path="/signup" Component={Signup} />
             <Route path="/signin" Component={Signin} />
           </Route>
-          <Route path="/user" Component={User} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
