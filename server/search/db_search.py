@@ -1,12 +1,14 @@
 import os
 from flask import Flask
 from flask_cors import CORS
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from dotenv import load_dotenv
 import ssl
 
 from flask_jwt_extended import JWTManager
 
-from database import db, bcrypt
+from database import db, bcrypt, Location
 
 load_dotenv()
 
@@ -37,6 +39,9 @@ def create_app():
 
     register_extensions(app)
     register_blueprints(app)
+    
+    admin = Admin(app, name='iCHILD Admin', template_mode='bootstrap3')
+    admin.add_view(ModelView(Location, db.session))
 
     return app
         

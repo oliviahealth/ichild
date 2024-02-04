@@ -7,16 +7,16 @@ db = SQLAlchemy()
 bcrypt = Bcrypt()
 
 class Conversation(db.Model):
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     title = db.Column(db.String(), nullable=False)
     date_created = db.Column(db.BigInteger(), nullable=False)
     date_updated = db.Column(db.BigInteger(), nullable=False)
-    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id', ondelete='CASCADE'))
+    user_id = db.Column(db.String(), db.ForeignKey('user.id', ondelete='CASCADE'))
     author = db.relationship('User', backref='conversation_user')
     responses = db.relationship('Response', backref='conversation', lazy=True, cascade='all, delete-orphan')
 
 class Location(db.Model):
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(), nullable=True, unique=True)
     street_number = db.Column(db.String(), nullable=False)
     route = db.Column(db.String(), nullable=False)
@@ -44,25 +44,26 @@ class Location(db.Model):
     resource_type = db.Column(db.String(), nullable=False)
 
 class Response(db.Model):
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_query = db.Column(db.String(), nullable=False)
     locations = db.Column(db.ARRAY(db.String()), nullable=False)
     date_created = db.Column(db.BigInteger(), nullable=False)
-    conversation_id = db.Column(UUID(as_uuid=True), db.ForeignKey('conversation.id', ondelete='CASCADE'), nullable=False)
+    conversation_id = db.Column(db.String(), db.ForeignKey('conversation.id', ondelete='CASCADE'), nullable=False)
     author = db.relationship('Conversation', backref='conversations')
 
 class SavedLocation(db.Model):
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = db.Column(db.String(), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     name = db.Column(db.String(), db.ForeignKey('location.name', ondelete='CASCADE'), nullable=False)
     date_created = db.Column(db.BigInteger(), nullable=False)
     author = db.relationship('User', backref='saved_location_user')
 
 class User(db.Model):
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
+    admin=db.Column(db.Boolean(), default=False)
     date_created = db.Column(db.BigInteger(), nullable=False)
     conversations = db.relationship('Conversation', backref='user', cascade='all, delete-orphan')
     saved_locations = db.relationship('SavedLocation', backref='user', lazy=True, cascade='all, delete-orphan')
