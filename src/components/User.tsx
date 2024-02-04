@@ -63,25 +63,7 @@ const UserPage: React.FC = () => {
     });
 
     return (
-        <div className="p-8 px-12 space-y-14 h-full">
-            <div role="tablist" className="tabs tabs-boxed">
-                <div role='tab' className="tab tab-active space-x-1">
-                    <p className="text-lg"><IoPersonSharp /></p>
-
-                    <p>Account</p>
-                </div>
-                <div role='tab' className="tab space-x-1 text-gray-400">
-                    <p className="text-lg"><HiChatBubbleOvalLeft /></p>
-
-                    <p>All Chats</p>
-                </div>
-                <div role='tab' className="tab space-x-1 text-gray-400">
-                    <p className="text-lg"><BiSolidBookmark /></p>
-
-                    <p>Saved</p>
-                </div>
-            </div>
-
+        <>
             <div className="space-y-1">
                 {errorDetected && (<p className="text-sm text-red-500">Something went wrong. Please try again</p>)}
 
@@ -99,7 +81,7 @@ const UserPage: React.FC = () => {
                         </div>
 
                         <div className="indicator">
-                            <button disabled={nameValue === user?.name} className="btn join-item bg-neutral-300 disabled:text-neutral-200 hover:bg-neutral-400 border-none">{ isLoading && nameValue !== user?.name ? <span className="loading loading-spinner loading-sm"></span> : "Save" }</button>
+                            <button disabled={nameValue === user?.name} className="btn join-item bg-primary text-white disabled:text-neutral-400 disabled:bg-neutral-200 hover:bg-neutral-400 border-none">{ isLoading && nameValue !== user?.name ? <span className="loading loading-spinner loading-sm"></span> : "Save" }</button>
                         </div>
                     </div>
                 </div>
@@ -113,7 +95,7 @@ const UserPage: React.FC = () => {
                         </div>
 
                         <div className="indicator">
-                            <button disabled={emailValue === user?.email} className="btn join-item bg-neutral-300 disabled:text-neutral-200 hover:bg-neutral-400 border-none">{ isLoading && emailValue !== user?.email ? <span className="loading loading-spinner loading-sm"></span> : "Save" }</button>
+                            <button disabled={emailValue === user?.email} className="btn join-item bg-primary text-white disabled:text-neutral-400 disabled:bg-neutral-200 hover:bg-neutral-400 border-none">{ isLoading && emailValue !== user?.email ? <span className="loading loading-spinner loading-sm"></span> : "Save" }</button>
                         </div>
                     </div>
                 </div>
@@ -128,12 +110,12 @@ const UserPage: React.FC = () => {
                         </div>
 
                         <div className="indicator">
-                            <button disabled={!passwordValue} className="btn join-item bg-neutral-300 disabled:text-neutral-200 hover:bg-neutral-400 border-none">{ isLoading && passwordValue ? <span className="loading loading-spinner loading-sm"></span> : "Save" }</button>
+                            <button disabled={!passwordValue} className="btn join-item bg-primary text-white disabled:text-neutral-400 disabled:bg-neutral-200 hover:bg-neutral-400 border-none">{ isLoading && passwordValue ? <span className="loading loading-spinner loading-sm"></span> : "Save" }</button>
                         </div>
                     </div>
                 </div>
             </form>
-        </div>
+        </>
     )
 }
 

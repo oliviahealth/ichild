@@ -145,7 +145,7 @@ const SidePanel: React.FC = () => {
                         <hr />
 
                         <div>
-                            <Link to={'/user'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <Link to={'/settings/user'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/settings/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><CgProfile /></p>
                                 <p className="ml-4">{ user.name }</p>
                             </Link>
