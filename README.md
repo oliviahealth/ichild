@@ -1,12 +1,18 @@
 ## This is a repo for the ollie chatbox 
 
-The chatbox is a svelte web component located ollie-web-component directory 
-`cd ollie-web-component`
+# Frontend
+The frontend is build with React, Vite, Tailwind and Typescript
 
-# How to develop and test
-Use `npm run dev` to spin up a hot reloading dev environment that runs on localhost.
+To run locally:
+- Install all packages with `npm install`
+- Run the local dev server with `npm run dev`
 
-# How to build and make plugin
-Use `npm run build` to create a production ready minified build in the `/public/ollie-chatbox-plugin` folder
-Compress the `ollie-chatbox-plugin` folder to a zip file and add it to wordpress.
-# tcat-demo
+# Backend
+The backend is built with Flask, SQLAlchemy and PostgreSQL
+
+To Run Locally:
+- cd into `/server`
+- Create a virtual environment: `python3 -m venv venv`
+- Activate virtual environment `source venv/bin/activate`
+- cd into `/search`
+- Run `python3 db_search.py`
