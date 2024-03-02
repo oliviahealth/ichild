@@ -67,7 +67,6 @@ def add_response():
                     'longitude': location.get('longitude'),
                     'website': location.get('website'),
                     'name': location.get('name'),
-                    'streetViewExists': location.get('streetViewExists'),
                     'phone': location.get('phone'),
                     'rating': location.get('rating')
                 }

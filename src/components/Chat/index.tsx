@@ -119,12 +119,26 @@ const ChatComponent: React.FC = () => {
 
     return response
   }, {
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       if (response) {
-        setApiResponses([...apiResponses, response])
-      }
+        // Check if the location has a streetview
+        const updatedLocations = await Promise.all(response.locations.map(async (location) => {
+          const { status } = (await axios.get(`https://maps.googleapis.com/maps/api/streetview/metadata?key=${import.meta.env.VITE_GOOGLE_API_KEY}&location=${location.latitude},${location.longitude}`)).data;
+    
+          if (status === "OK") {
+            return { ...location, streetViewExists: true };
+          }
+    
+          return { ...location, streetViewExists: false };
+        }));
+    
+        // Update the response object with the modified locations
+        response.locations = updatedLocations;
 
-      reset()
+        setApiResponses([...apiResponses, response]);
+      }
+    
+      reset();
     }
   });
 

@@ -26,7 +26,6 @@ class Location(db.Model):
     zip_code = db.Column(db.String(), nullable=False)
     latitude = db.Column(db.Float(), nullable=False)
     longitude = db.Column(db.Float(), nullable=False)
-    streetview_exists = db.Column(db.Boolean(), nullable=False)
     description = db.Column(db.String(), nullable=False)
     phone = db.Column(db.String(), nullable=False)
     sunday_hours = db.Column(db.String(), nullable=False)
@@ -36,11 +35,9 @@ class Location(db.Model):
     thursday_hours = db.Column(db.String(), nullable=False)
     friday_hours = db.Column(db.String(), nullable=False)
     saturday_hours = db.Column(db.String(), nullable=False)
-    photo_url = db.Column(db.String(), nullable=False)
     rating = db.Column(db.String(), nullable=False)
     address_link = db.Column(db.String(), nullable=False)
     website = db.Column(db.String(), nullable=False)
-    tamu_affiliation = db.Column(db.String(), nullable=False)
     resource_type = db.Column(db.String(), nullable=False)
 
 class Response(db.Model):

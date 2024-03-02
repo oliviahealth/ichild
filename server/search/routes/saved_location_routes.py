@@ -93,7 +93,6 @@ def get_saved_locations():
                     'name': location.name,
                     'phone': location.phone,
                     'dateCreated': info['dateCreated'],
-                    'streetViewExists': location.streetview_exists,
                     'hoursOfOperation': [{ "sunday": location.sunday_hours }, { "monday": location.monday_hours }, { "tuesday": location.tuesday_hours }, { "wednesday": location.wednesday_hours }, {  "thursday": location.thursday_hours }, { "friday": location.friday_hours }, { "saturday": location.saturday_hours }],
                     'rating': float(location.rating) if location.rating.isalnum() else None,
                     'isSaved': True
