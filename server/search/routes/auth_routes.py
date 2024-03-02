@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 import time
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_login import login_user, current_user
 
 from database import db, User, bcrypt
 
@@ -111,6 +112,10 @@ def signin():
         if(user is None or not bcrypt.check_password_hash(user.password, password)):
             return jsonify({ 'error': 'Invalid credentials' }), 401
         
+        login_user(user)
+
+        print(current_user)
+
         access_token = create_access_token(identity=user.id)
     
     except Exception as error:

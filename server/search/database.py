@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 from flask_bcrypt import Bcrypt
+from flask_login import UserMixin
 import uuid
 
 db = SQLAlchemy()
@@ -54,11 +55,13 @@ class SavedLocation(db.Model):
     date_created = db.Column(db.BigInteger(), nullable=False)
     author = db.relationship('User', backref='saved_location_user')
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
+    is_admin=db.Column(db.Boolean(), nullable=False)
     date_created = db.Column(db.BigInteger(), nullable=False)
+
     conversations = db.relationship('Conversation', backref='user', cascade='all, delete-orphan')
     saved_locations = db.relationship('SavedLocation', backref='user', lazy=True, cascade='all, delete-orphan')
