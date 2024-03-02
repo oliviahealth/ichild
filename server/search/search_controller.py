@@ -34,13 +34,14 @@ def grab_info(crossEncoderItems, crossEncoderScoresDict):
         phone = location.phone
         latitude = location.latitude
         longitude = location.longitude
+        address = location.address
         website = location.website
         address_link = location.address_link
         rating = location.rating
         hoursOfOperation = [{ "sunday": location.sunday_hours }, { "monday": location.monday_hours }, { "tuesday": location.tuesday_hours }, { "wednesday": location.wednesday_hours }, {  "thursday": location.thursday_hours }, { "friday": location.friday_hours }, { "saturday": location.saturday_hours }]
         confidence = crossEncoderScoresDict[resource]
         
-        info_list.append((location, name, description, phone, confidence, latitude, longitude, website, address_link, rating, hoursOfOperation))
+        info_list.append((location, name, description, phone, confidence, latitude, longitude, address, website, address_link, rating, hoursOfOperation))
     
     return info_list
 
@@ -48,7 +49,7 @@ def create_address(location):
     address = 'No location provided'
 
     if location.zip_code != "":
-            address = location.street_number + ' ' + location.route + ", " + location.city + ", " + location.state + " " + str(int(location.zip_code))
+            address = location.address + ", " + location.city + ", " + location.state + " " + str(int(location.zip_code))
             if address[0] == ',' and address[2] == ',':
                 address = "No location provided"
             elif address[0] == ',':

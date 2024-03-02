@@ -18,8 +18,7 @@ class Conversation(db.Model):
 class Location(db.Model):
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(), nullable=True, unique=True)
-    street_number = db.Column(db.String(), nullable=False)
-    route = db.Column(db.String(), nullable=False)
+    address = db.Column(db.String(), nullable=False)
     city = db.Column(db.String(), nullable=False)
     state = db.Column(db.String(), nullable=False)
     country = db.Column(db.String(), nullable=False)

@@ -45,11 +45,13 @@ def formatted_db_search():
     phone_list = [info[3] for info in info_list]
     latitude_list = [info[5] for info in info_list]
     longitude_list = [info[6] for info in info_list]
-    website_list = [info[7] for info in info_list]
-    address_links_list = [info[8] for info in info_list]
-    rating_list = [info[9] for info in info_list]
-    hours_of_operation_list = [info[10] for info in info_list]
+    website_list = [info[8] for info in info_list]
+    address_links_list = [info[9] for info in info_list]
+    rating_list = [info[10] for info in info_list]
+    hours_of_operation_list = [info[11] for info in info_list]
     address_list = [create_address(info[0]) for info in info_list]
+
+    print(address_list)
 
     validThreshold = 0.25 #threshold for "valid" results
 
