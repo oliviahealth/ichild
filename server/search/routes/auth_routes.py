@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 import time
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user
 
 from database import db, User, bcrypt
 
@@ -31,7 +31,7 @@ def getUser():
         return jsonify({ 'error': "Something went wrong!" }), 500
 
     # Return the user object
-    return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created }), 200
+    return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'isAdmin': user.is_admin, 'dateCreated': user.date_created }), 200
 
 """
     User Signup Endpoint.
@@ -85,7 +85,7 @@ def signup():
         print(error)
         return jsonify({ 'error': "Something went wrong!" }), 500
 
-    return jsonify({ 'id': new_user.id, "name": new_user.name, "email": new_user.email, 'dateCreated': date_created, 'accessToken': access_token }), 201
+    return jsonify({ 'id': new_user.id, "name": new_user.name, "email": new_user.email, 'isAdmin': new_user.is_admin, 'dateCreated': date_created, 'accessToken': access_token }), 201
 
 
 """
@@ -126,7 +126,7 @@ def signin():
         print(error)
         return jsonify({ 'error': 'Something went wrong!' }), 500
         
-    return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created, 'accessToken': access_token }), 200
+    return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'isAdmin': user.is_admin, 'dateCreated': user.date_created, 'accessToken': access_token }), 200
 
 @auth_routes_bp.route('/signout', methods=['POST'])
 @jwt_required()
@@ -180,4 +180,4 @@ def updateUser():
         print(error)
         return jsonify({ 'error': 'Something went wrong!' }), 500
 
-    return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created }), 200
+    return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'isAdmin': user.is_admin, 'dateCreated': user.date_created }), 200

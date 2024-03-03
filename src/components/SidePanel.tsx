@@ -14,10 +14,11 @@ import { BsTrash, BsBoxArrowInLeft } from "react-icons/bs";
 import { FiPlus } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { RxExit } from "react-icons/rx";
+import { RiAdminLine } from "react-icons/ri";
 
 const SidePanel: React.FC = () => {
     const navigate = useNavigate();
-    
+
     const location = useLocation();
     const user = useAppStore((state) => state.user);
     const accessToken = useAppStore((state) => state.accessToken);
@@ -95,7 +96,7 @@ const SidePanel: React.FC = () => {
                     <div>
                         <div className="flex gap-2 justify-between items-center">
                             <Link to={'/'} className="btn rounded-xl md:w-full bg-white border-none text-black shadow-md hover:bg-gray-100" onClick={createNewConversation}>
-                                <FiPlus className="text-xl" /> New Chat 
+                                <FiPlus className="text-xl" /> New Chat
                             </Link>
 
                             <button className="md:hidden" onClick={() => setisSidePanelOpen(false)} >
@@ -147,9 +148,14 @@ const SidePanel: React.FC = () => {
                         <div>
                             <Link to={'/settings/user'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/settings/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><CgProfile /></p>
-                                <p className="ml-4">{ user.name }</p>
+                                <p className="ml-4">{user.name}</p>
                             </Link>
-                            
+
+                            {user.isAdmin && (<a href="http://localhost:5000/admin" className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
+                                <p className="text-lg"><RiAdminLine /></p>
+                                <p className="ml-4">Admin</p>
+                            </a>)}
+
                             <span onClick={() => handleSignout()} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
                                 <p className="text-lg"><RxExit /></p>
                                 <p className="ml-4">Sign out</p>

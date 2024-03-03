@@ -60,7 +60,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
-    is_admin=db.Column(db.Boolean(), nullable=False)
+    is_admin=db.Column(db.Boolean(), nullable=False, default=False)
     date_created = db.Column(db.BigInteger(), nullable=False)
 
     conversations = db.relationship('Conversation', backref='user', cascade='all, delete-orphan')

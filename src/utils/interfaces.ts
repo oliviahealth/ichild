@@ -50,6 +50,7 @@ export const UserSchema = z.object({
     id: z.string().uuid(),
     name: z.string(),
     email: z.string(),
+    isAdmin: z.boolean(),
     dateCreated: z.number()
 });
 export type IUser = z.infer<typeof UserSchema>;
