@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 import time
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from flask_login import login_user, current_user
+from flask_login import login_user, logout_user, current_user
 
 from database import db, User, bcrypt
 
@@ -22,6 +22,7 @@ def getUser():
 
         user = User.query.filter_by(id=user_id).first()
 
+        # If the JWT does not point to a user, return an error
         if(user is None):
             return jsonify({ 'error': 'Invalid credentials' }), 401
         
@@ -29,6 +30,7 @@ def getUser():
         print(error)
         return jsonify({ 'error': "Something went wrong!" }), 500
 
+    # Return the user object
     return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created }), 200
 
 """
@@ -68,8 +70,12 @@ def signup():
 
         date_created = int(time.time() * 1000)
 
-        new_user = User(name=name, email=email, password=hashed_password, date_created=date_created)
+        new_user = User(name=name, email=email, password=hashed_password, is_admin=False, date_created=date_created)
 
+        # Set the current_user to the new_user (Mainly for auth panel security)
+        login_user(new_user)
+
+        # Create a JWT to store in the frontend
         access_token = create_access_token(identity=new_user.id)
 
         db.session.add(new_user)
@@ -113,9 +119,6 @@ def signin():
             return jsonify({ 'error': 'Invalid credentials' }), 401
         
         login_user(user)
-
-        print(current_user)
-
         access_token = create_access_token(identity=user.id)
     
     except Exception as error:
@@ -124,6 +127,23 @@ def signin():
         return jsonify({ 'error': 'Something went wrong!' }), 500
         
     return jsonify({ 'id': user.id, 'name': user.name, 'email': user.email, 'dateCreated': user.date_created, 'accessToken': access_token }), 200
+
+@auth_routes_bp.route('/signout', methods=['POST'])
+@jwt_required()
+def signout():
+    user_id = get_jwt_identity()
+
+    if(not user_id):
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+    
+    try:
+        # Clear the current_user
+        logout_user()
+    except Exception as error:
+        print(error)
+        return jsonify({ 'error': 'Something went wrong!' }), 500
+    
+    return jsonify({ 'Success': 'User signed out successfully' })
 
 @auth_routes_bp.route("/updateuser", methods=['PUT'])
 @jwt_required()

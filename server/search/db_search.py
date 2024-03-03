@@ -1,10 +1,10 @@
 import os
 import ssl
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask
 from flask_cors import CORS
 from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
-from flask_login import LoginManager, login_user, current_user
+from flask_login import LoginManager, current_user
 from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager
 
@@ -26,9 +26,24 @@ except AttributeError:
 else:
     ssl._create_default_https_context = _create_unverified_https_context
 
-class MyAdminIndexView(AdminIndexView):
+# Override the admin panel views to prevent access to non-admin users
+class IndexAdminView(AdminIndexView):
     def is_accessible(self):
-        return current_user.is_authenticated
+        if(not current_user.is_authenticated):
+            return False
+        
+        user = User.query.get(str(current_user.id))
+
+        return user.is_admin
+    
+class LocationView(ModelView):
+    def is_accessible(self):
+        if(not current_user.is_authenticated):
+            return False
+        
+        user = User.query.get(str(current_user.id))
+        
+        return user.is_admin
 
 def create_app():
     app = Flask(__name__)
@@ -43,8 +58,8 @@ def create_app():
     register_extensions(app)
     register_blueprints(app)
 
-    admin = Admin(app, index_view=MyAdminIndexView(name='iCHILD Admin'), template_mode='bootstrap3')
-    admin.add_view(ModelView(Location, db.session))
+    admin = Admin(app, index_view=IndexAdminView(name='iCHILD Admin'), template_mode='bootstrap3')
+    admin.add_view(LocationView(Location, db.session))
 
     login_manager = LoginManager()
     login_manager.init_app(app)
@@ -52,23 +67,6 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(str(user_id))
-
-    @app.route('/login', methods=['GET', 'POST'])
-    def login():
-        if request.method == 'POST':
-            email = request.form.get('email')
-            password = request.form.get('password')
-
-            user = User.query.filter_by(email=email).first()
-
-            if(user is None or not bcrypt.check_password_hash(user.password, password)):
-                print("Invalid admin login")
-                return render_template('login.html')
-                
-            login_user(user)
-            return redirect(url_for('admin.index'))
-
-        return render_template('login.html')
 
     return app
 
