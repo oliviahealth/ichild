@@ -38,18 +38,35 @@ class IndexAdminView(AdminIndexView):
     
 class LocationView(ModelView):
     def is_accessible(self):
-        if(not current_user.is_authenticated):
+        if not current_user.is_authenticated:
             return False
-        
+
         user = User.query.get(str(current_user.id))
-        
         return user.is_admin
+
+    def get_query(self):
+        # The Location model is now bound to 'second_db'
+        return super(LocationView, self).get_query()
+
+    def get_count_query(self):
+        # Use the second connection string for the count query
+        return super(LocationView, self).get_count_query()
+
+    def create_model(self, form):
+        # Explicitly bind the session to 'second_db' when creating a new model instance
+        with self.session.get_bind(self.model.__bind_key__).begin():
+            return super(LocationView, self).create_model(form)
 
 def create_app():
     app = Flask(__name__)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRESQL_CONNECTION_STRING')
+    app.config['ADMIN_SQLALCHEMY_DATABASE_URI'] = os.getenv('ADMIN_POSTGRESQL_CONNECTION_STRING')
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Change this
+
+    app.config['SQLALCHEMY_BINDS'] = {
+        'admin_db': app.config['ADMIN_SQLALCHEMY_DATABASE_URI']
+    }
     
     CORS(app, supports_credentials=True)
     bcrypt.init_app(app)
