@@ -84,7 +84,7 @@ def get_saved_locations():
             if location:
                 location_info = {
                     'id': info['id'],
-                    'address': location.street_number + ' ' + location.route + ", " + location.city + ", " + location.state + " " + str(int(location.zip_code)),
+                    'address': location.address + ", " + location.city + ", " + location.state + " " + str(int(location.zip_code)),
                     'addressLink': location.address_link,
                     'description': location.description,
                     'latitude': float(location.latitude),

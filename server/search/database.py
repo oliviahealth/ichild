@@ -20,7 +20,7 @@ class Location(db.Model):
     __bind_key__ = 'admin_db'
 
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = db.Column(db.String(), nullable=True, unique=True)
+    name = db.Column(db.String(), nullable=False, unique=True)
     address = db.Column(db.String(), nullable=False)
     city = db.Column(db.String(), nullable=False)
     state = db.Column(db.String(), nullable=False)
@@ -53,7 +53,7 @@ class Response(db.Model):
 class SavedLocation(db.Model):
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = db.Column(db.String(), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
-    name = db.Column(db.String(), db.ForeignKey('location.name', ondelete='CASCADE'), nullable=False)
+    name = db.Column(db.String(), db.ForeignKey(Location.name, ondelete='CASCADE'), nullable=False)
     date_created = db.Column(db.BigInteger(), nullable=False)
     author = db.relationship('User', backref='saved_location_user')
 

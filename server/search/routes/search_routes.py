@@ -51,8 +51,6 @@ def formatted_db_search():
     hours_of_operation_list = [info[11] for info in info_list]
     address_list = [create_address(info[0]) for info in info_list]
 
-    print(address_list)
-
     validThreshold = 0.25 #threshold for "valid" results
 
     results = []
