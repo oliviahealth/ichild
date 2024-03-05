@@ -119,7 +119,7 @@ const ChatComponent: React.FC = () => {
 
     return response
   }, {
-    onSuccess: async (response) => {    
+    onSuccess: async (response) => {
       if (response) {
         setApiResponses([...apiResponses, response]);
       }
