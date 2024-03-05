@@ -24,6 +24,8 @@ const LocationInfoPanel: React.FC<Props> = ({ location, isDeleteLoading, isSaveL
 
     const user = useAppStore((state) => state.user);
 
+    console.log(location);
+
     return (
         <div className="my-4 flex flex-col gap-4 bg-[#F8F5F5] p-3 rounded-xl">
             <div className="h-80">
@@ -68,7 +70,7 @@ const LocationInfoPanel: React.FC<Props> = ({ location, isDeleteLoading, isSaveL
                             <div key={`DayOfWeek: ${index}`} className={`flex justify-between my-1 ${currentDayOfWeek === index ? 'font-semibold' : ''}`}>
                                 <p key={`Capitalized Day of Week: ${index}`}>{capitalizedDayOfWeek}</p>
 
-                                <p key={`Hours: ${index}`}>{Object.values(hours)[0].split(": ")[1]}</p>
+                                <p key={`Hours: ${index}`}>{Object.values(hours)[0]}</p>
                             </div>
                         )
                     })}
