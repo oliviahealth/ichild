@@ -75,10 +75,10 @@ def formatted_db_search():
             rating = float(rating_list[index])
         except:
             rating = None
-    
-        date_created = int(time.time() * 1000)
 
         results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'website': website, 'rating': rating, "hoursOfOperation": hoursOfOperation, 'isSaved': False })
+
+    date_created = int(time.time() * 1000)
 
     results = {
         'userQuery': query,
