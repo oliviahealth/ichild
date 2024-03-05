@@ -149,7 +149,7 @@ def get_conversation():
                 'dateCreated': response.date_created,
             'locations': [
                     {
-                        'address': location.street_number + ' ' + location.route + ", " + location.city + ", " + location.state + " " + str(int(location.zip_code)),
+                        'address': location.address + ", " + location.city + ", " + location.state + " " + str(int(location.zip_code)),
                         'addressLink': location.address_link,
                         'description': location.description,
                         'latitude': float(location.latitude),

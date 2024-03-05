@@ -1,3 +1,4 @@
+import requests
 from flask import Blueprint, render_template, request, jsonify
 from sentence_transformers import SentenceTransformer
 import certifi
@@ -49,6 +50,7 @@ def formatted_db_search():
     address_links_list = [info[9] for info in info_list]
     rating_list = [info[10] for info in info_list]
     hours_of_operation_list = [info[11] for info in info_list]
+    streetViewExists_list = [info[12] for info in info_list]
     address_list = [create_address(info[0]) for info in info_list]
 
     print(address_list)
@@ -71,12 +73,13 @@ def formatted_db_search():
         longitude = float(longitude_list[index])
         website = website_list[index]
         hoursOfOperation = hours_of_operation_list[index]
+        streetViewExists = streetViewExists_list[index]
         try:
             rating = float(rating_list[index])
         except:
             rating = None
 
-        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'website': website, 'rating': rating, "hoursOfOperation": hoursOfOperation, 'isSaved': False })
+        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'website': website, 'rating': rating, "hoursOfOperation": hoursOfOperation, 'streetViewExists': streetViewExists, 'isSaved': False })
 
     date_created = int(time.time() * 1000)
 

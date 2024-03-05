@@ -39,11 +39,21 @@ def grab_info(crossEncoderItems, crossEncoderScoresDict):
         address_link = location.address_link
         rating = location.rating
         hoursOfOperation = [{ "sunday": location.sunday_hours }, { "monday": location.monday_hours }, { "tuesday": location.tuesday_hours }, { "wednesday": location.wednesday_hours }, {  "thursday": location.thursday_hours }, { "friday": location.friday_hours }, { "saturday": location.saturday_hours }]
+        streetViewExists = checkIfStreetViewExists(latitude, longitude)
         confidence = crossEncoderScoresDict[resource]
         
-        info_list.append((location, name, description, phone, confidence, latitude, longitude, address, website, address_link, rating, hoursOfOperation))
+        info_list.append((location, name, description, phone, confidence, latitude, longitude, address, website, address_link, rating, hoursOfOperation, streetViewExists))
     
     return info_list
+
+def checkIfStreetViewExists(latitude, longitude):
+    response = requests.get(f"https://maps.googleapis.com/maps/api/streetview/metadata?key={os.getenv('GOOGLE_API_KEY')}&location={latitude},{longitude}")
+    status = response.json().get('status')
+
+    if(status == 'OK'):
+        return True
+
+    return False
 
 def create_address(location):
     address = 'No location provided'
