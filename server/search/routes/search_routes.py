@@ -12,10 +12,12 @@ search_routes_bp = Blueprint('search_routes', __name__)
 # Executes when first user accesses site
 @search_routes_bp.before_app_first_request
 def connection_and_setup():
-    global embedder
-    embedder = SentenceTransformer('../models/model1')
-    global corpus
+    model_path = os.getenv('MODEL_PATH')
     
+    global embedder
+    embedder = SentenceTransformer(model_path)
+
+    global corpus
     corpus = [location.description for location in Location.query.all()] # Get all the location records from PSQL
 
     print("******BEGINNING PREPROCESS*******")

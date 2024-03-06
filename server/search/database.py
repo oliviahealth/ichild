@@ -19,7 +19,8 @@ class Conversation(db.Model):
 class Location(db.Model):
     __bind_key__ = 'admin_db'
 
-    name = db.Column(db.String(), primary_key=True, nullable=False, unique=True)
+    id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = db.Column(db.String(), nullable=False, unique=True)
     address = db.Column(db.String(), nullable=False)
     city = db.Column(db.String(), nullable=False)
     state = db.Column(db.String(), nullable=False)
