@@ -17,7 +17,7 @@ class Conversation(db.Model):
     responses = db.relationship('Response', backref='conversation', lazy=True, cascade='all, delete-orphan')
 
 class Location(db.Model):
-    __bind_key__ = 'admin_db'
+    # __bind_key__ = 'admin_db'
 
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(), nullable=False, unique=True)
@@ -49,14 +49,6 @@ class Response(db.Model):
     date_created = db.Column(db.BigInteger(), nullable=False)
     conversation_id = db.Column(db.String(), db.ForeignKey('conversation.id', ondelete='CASCADE'), nullable=False)
     author = db.relationship('Conversation', backref='conversations')
-
-class SavedLocation(db.Model):
-    id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = db.Column(db.String(), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
-    name = db.Column(db.String(), db.ForeignKey(Location.name, ondelete='CASCADE'), nullable=False)
-    date_created = db.Column(db.BigInteger(), nullable=False)
-    author = db.relationship('User', backref='saved_location_user')
-
 class User(UserMixin, db.Model):
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(), nullable=False)
@@ -67,3 +59,11 @@ class User(UserMixin, db.Model):
 
     conversations = db.relationship('Conversation', backref='user', cascade='all, delete-orphan')
     saved_locations = db.relationship('SavedLocation', backref='user', lazy=True, cascade='all, delete-orphan')
+
+class SavedLocation(db.Model):
+    id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = db.Column(db.String(), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    name = db.Column(db.String(), db.ForeignKey('location.id', ondelete='CASCADE'), nullable=False)
+    date_created = db.Column(db.BigInteger(), nullable=False)
+
+    author = db.relationship('User', backref='saved_location_user')
