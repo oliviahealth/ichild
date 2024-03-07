@@ -72,14 +72,14 @@ def signup():
 
         new_user = User(name=name, email=email, password=hashed_password, is_admin=False, date_created=date_created)
 
+        db.session.add(new_user)
+        db.session.commit()
+
         # Set the current_user to the new_user (Mainly for auth panel security)
         login_user(new_user)
 
         # Create a JWT to store in the frontend
         access_token = create_access_token(identity=new_user.id)
-
-        db.session.add(new_user)
-        db.session.commit()
     except Exception as error:
         db.session.rollback()
         print(error)
