@@ -7,7 +7,7 @@ import { BiSolidBookmark } from "react-icons/bi";
 const SettingsLayout = () => {
     return (
         <div className="p-8 px-12 space-y-14 h-full">
-            <div role="tablist" className="tabs tabs-boxed">
+            {/* <div role="tablist" className="tabs tabs-boxed">
                 <div role='tab' className="tab tab-active space-x-1">
                     <p className="text-lg"><IoPersonSharp /></p>
 
@@ -23,7 +23,7 @@ const SettingsLayout = () => {
 
                     <p>Saved</p>
                 </div>
-            </div>            
+            </div>             */}
 
             <Outlet />
         </div>

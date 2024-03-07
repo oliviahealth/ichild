@@ -41,6 +41,7 @@ def formatted_db_search():
 
     info_list = grab_info(crossEncoderItems, crossEncoderScoresDict)
 
+    address_list = [create_address(info[0]) for info in info_list]
     names_list = [info[1] for info in info_list]
     desc_list = [info[2] for info in info_list]
     conf_list = [info[4].item() for info in info_list]
@@ -51,7 +52,7 @@ def formatted_db_search():
     address_links_list = [info[9] for info in info_list]
     rating_list = [info[10] for info in info_list]
     hours_of_operation_list = [info[11] for info in info_list]
-    address_list = [create_address(info[0]) for info in info_list]
+    id_list = [info[12] for info in info_list]
 
     validThreshold = 0.25 #threshold for "valid" results
 
@@ -63,6 +64,7 @@ def formatted_db_search():
         if(confidence < validThreshold):
             break
 
+        id = id_list[index]
         description = desc_list[index]
         phone = phone_list[index]
         address = address_list[index]
@@ -76,7 +78,7 @@ def formatted_db_search():
         except:
             rating = None
 
-        results.append({ 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'website': website, 'rating': rating, "hoursOfOperation": hoursOfOperation, 'isSaved': False })
+        results.append({ 'id': id, 'name': name, 'description': description, 'confidence': confidence, 'phone': phone, 'address': address, 'addressLink': addressLink, "latitude": latitude, "longitude": longitude, 'website': website, 'rating': rating, "hoursOfOperation": hoursOfOperation, 'isSaved': False })
 
     date_created = int(time.time() * 1000)
 

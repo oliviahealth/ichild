@@ -2,10 +2,6 @@ import React, { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
-import { IoPersonSharp } from "react-icons/io5";
-import { HiChatBubbleOvalLeft } from "react-icons/hi2";
-import { BiSolidBookmark } from "react-icons/bi";
-
 import useAppStore from "../stores/useAppStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "react-query";

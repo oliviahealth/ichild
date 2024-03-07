@@ -123,7 +123,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                                 </div>
 
                                                 <div className="flex flex-col gap-6">
-                                                    {user && (
+                                                    {/* {user && (
                                                         <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`}>
                                                             {location.isSaved ? (
                                                                 isDeleteLoading && locationToSave === location ? (
@@ -139,7 +139,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                                                 )
                                                             )}
                                                         </button>
-                                                    )}
+                                                    )} */}
 
 
                                                     <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={() => copyText(location.address)}>

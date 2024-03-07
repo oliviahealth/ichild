@@ -29,6 +29,7 @@ def grab_info(crossEncoderItems, crossEncoderScoresDict):
     
         location = Location.query.filter_by(description=resource).first()
 
+        id = location.id
         name = location.name
         description = location.description
         phone = location.phone
@@ -41,7 +42,7 @@ def grab_info(crossEncoderItems, crossEncoderScoresDict):
         hoursOfOperation = [{ "sunday": location.sunday_hours }, { "monday": location.monday_hours }, { "tuesday": location.tuesday_hours }, { "wednesday": location.wednesday_hours }, {  "thursday": location.thursday_hours }, { "friday": location.friday_hours }, { "saturday": location.saturday_hours }]
         confidence = crossEncoderScoresDict[resource]
         
-        info_list.append((location, name, description, phone, confidence, latitude, longitude, address, website, address_link, rating, hoursOfOperation))
+        info_list.append((location, name, description, phone, confidence, latitude, longitude, address, website, address_link, rating, hoursOfOperation, id))
     
     return info_list
 

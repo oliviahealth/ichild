@@ -107,7 +107,7 @@ const SidePanel: React.FC = () => {
                         <p className="text-sm text-black my-4 mt-6 font-semibold">Recent Activity</p>
 
                         {user ? (
-                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-34rem)]">
+                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-28rem)]">
                                 {conversationPreviews.map((conversationDetail, index) => (
                                     <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversationDetail.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                         <div className="flex items-center">
@@ -130,12 +130,12 @@ const SidePanel: React.FC = () => {
 
                     {user && (<div>
                         <div className="pb-6">
-                            <p className="text-sm text-black font-medium my-4">Saved</p>
+                            {/* <p className="text-sm text-black font-medium my-4">Saved</p> */}
 
-                            <Link to={'/savedlocations'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            {/* <Link to={'/savedlocations'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><IoLocationOutline /></p>
                                 <p className="ml-4">Locations</p>
-                            </Link>
+                            </Link> */}
 {/*
                             <Link to={'/savedchats'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedchats' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>

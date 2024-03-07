@@ -24,8 +24,6 @@ const LocationInfoPanel: React.FC<Props> = ({ location, isDeleteLoading, isSaveL
 
     const user = useAppStore((state) => state.user);
 
-    console.log(location);
-
     return (
         <div className="my-4 flex flex-col gap-4 bg-[#F8F5F5] p-3 rounded-xl">
             <div className="h-80">
@@ -35,12 +33,12 @@ const LocationInfoPanel: React.FC<Props> = ({ location, isDeleteLoading, isSaveL
             <div className="flex gap-4 items-center">
                 <p className="font-semibold text-2xl">{location.name}</p>
 
-                { user && (<div>
+                {/* { user && (<div>
                     {location.isSaved ? (
                             isDeleteLoading && locationToSave === location ? ( <span className="loading loading-spinner loading-sm"></span> ) : ( <BiSolidBookmark onClick={() => deleteSavedLocation(location)} className="text-xl text-black" /> )
                         ) : ( isSaveLoading && locationToSave === location ? ( <span className="loading loading-spinner loading-sm"></span> ) : ( <BiBookmark onClick={() => saveLocation(location)} className="text-xl text-black" /> ) 
                     )}
-                </div>) }
+                </div>) } */}
             </div>
 
             <div className="flex gap-x-1 items-center">

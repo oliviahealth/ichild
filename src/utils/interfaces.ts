@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const LocationSchema = z.object({
+    id: z.string(),
     address: z.string(),
     addressLink: z.string().optional(),
     description: z.string(),
@@ -9,7 +10,7 @@ export const LocationSchema = z.object({
     website: z.string().optional(),
     latitude: z.number().optional(),
     longitude: z.number().optional(),
-    streetViewExists: z.boolean().optional(),
+    streetViewExists: z.boolean().optional().nullable(),
     rating: z.number().optional().nullable(),
     hoursOfOperation: z.array(z.record(z.string(), z.string())),
     isSaved: z.boolean(),
@@ -17,7 +18,6 @@ export const LocationSchema = z.object({
 export type ILocation = z.infer<typeof LocationSchema>
 
 export const SavedLocationSchema = LocationSchema.extend({
-    id: z.string().uuid(),
     dateCreated: z.number()
 })
 export type ISavedLocation = z.infer<typeof SavedLocationSchema>
