@@ -17,8 +17,6 @@ class Conversation(db.Model):
     responses = db.relationship('Response', backref='conversation', lazy=True, cascade='all, delete-orphan')
 
 class Location(db.Model):
-    # __bind_key__ = 'admin_db'
-
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(), nullable=False, unique=True)
     address = db.Column(db.String(), nullable=False)
