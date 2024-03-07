@@ -9,7 +9,6 @@ import parseWithZod from "../utils/parseWithZod";
 import { IConversationPreview, ConversationPreviewSchema } from "../utils/interfaces";
 
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
-import { IoLocationOutline } from "react-icons/io5";
 import { BsTrash, BsBoxArrowInLeft } from "react-icons/bs";
 import { FiPlus } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";

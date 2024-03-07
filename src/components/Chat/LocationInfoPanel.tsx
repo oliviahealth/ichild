@@ -1,28 +1,17 @@
 import React, { useState } from "react";
 import { ILocation } from "../../utils/interfaces";
 
-import { BiBookmark, BiSolidBookmark } from "react-icons/bi";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import PanoramicStreetView from "./PanoramicStreetView";
 import InteractiveMap from "./InteractiveMap";
 
-import useAppStore from "../../stores/useAppStore";
-
 interface Props {
     location: ILocation
-    isDeleteLoading: boolean
-    isSaveLoading: boolean
-    locationToSave: ILocation | null
-
-    saveLocation: (location: ILocation) => void
-    deleteSavedLocation: (location: ILocation) => void
 }
 
-const LocationInfoPanel: React.FC<Props> = ({ location, isDeleteLoading, isSaveLoading, locationToSave, saveLocation, deleteSavedLocation }) => {
+const LocationInfoPanel: React.FC<Props> = ({ location }) => {
     const currentDayOfWeek = new Date().getDay()
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
-
-    const user = useAppStore((state) => state.user);
 
     return (
         <div className="my-4 flex flex-col gap-4 bg-[#F8F5F5] p-3 rounded-xl">

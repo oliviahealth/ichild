@@ -1,9 +1,5 @@
 import { Outlet } from "react-router-dom";
 
-import { IoPersonSharp } from "react-icons/io5";
-import { HiChatBubbleOvalLeft } from "react-icons/hi2";
-import { BiSolidBookmark } from "react-icons/bi";
-
 const SettingsLayout = () => {
     return (
         <div className="p-8 px-12 space-y-14 h-full">
