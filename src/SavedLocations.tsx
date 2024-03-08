@@ -22,7 +22,7 @@ const SavedLocations: React.FC = () => {
 
     const copyText = useAppStore((state) => state.copyText);
 
-    const { mutate: getSavedLocations, isLoading } = useMutation(async () => {
+    const { mutate: getSavedLocations, isLoading: getSavedLocationsLoading } = useMutation(async () => {
         const headers = {
             "Authorization": "Bearer " + accessToken,
             "userId": user?.id,
@@ -40,19 +40,23 @@ const SavedLocations: React.FC = () => {
         }
     });
 
-    const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (savedLocationName: string) => {
+    const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (savedLocation: ILocation) => {
         const headers = {
             "Authorization": "Bearer " + accessToken,
             "userId": user?.id,
         }
 
-        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?name=${savedLocationName}`, { headers: { ...headers }, withCredentials: true });
+        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?name=${savedLocation.name}`, { headers: { ...headers }, withCredentials: true });
 
-        return savedLocationName;
+        return savedLocation;
     }, {
-        onMutate: (savedLocationName) => setDeletingLocationName(savedLocationName),
-        onSuccess: (savedLocationName) => {
-            const newSavedLocations = savedLocations?.filter((location) => location.name !== savedLocationName);
+        onMutate: (savedLocation) => setDeletingLocationName(savedLocation.name),
+        onSuccess: (savedLocation) => {
+            if(savedLocation === focusedLocation) {
+                setFocusedLocation(null)
+            }
+
+            const newSavedLocations = savedLocations?.filter((location) => location.name !== savedLocation.name);
 
             setSavedLocations(newSavedLocations ?? null);
         },
@@ -67,7 +71,7 @@ const SavedLocations: React.FC = () => {
 
     return (
         <div className="flex w-full flex-col h-full p-4">
-            {isLoading && (
+            {getSavedLocationsLoading && (
                 <LoadingSkeleton />
             )}
 
@@ -95,7 +99,7 @@ const SavedLocations: React.FC = () => {
                                         </div>
 
                                         <div className="flex flex-col gap-6">
-                                            {user && (<button onClick={() => deleteSavedLocation(location.name)} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
+                                            {user && (<button onClick={() => deleteSavedLocation(location)} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
                                                 {isDeleteLoading && deletingLocationName === location.name ? (<span className="loading loading-spinner loading-sm"></span>) : (<BiSolidBookmark className="text-xl text-black" />)}
                                             </button>)}
 
@@ -111,7 +115,7 @@ const SavedLocations: React.FC = () => {
                 </div>
 
                 <div className="w-1/2">
-                    {  focusedLocation && (<LocationInfoPanel location={focusedLocation} />) }
+                    { focusedLocation && (<LocationInfoPanel location={focusedLocation} locationToSave={null} saveLocation={null} isSaveLoading={null} isDeleteLoading={isDeleteLoading} deleteSavedLocation={deleteSavedLocation} />) }
                 </div>
             </div>
         </div>

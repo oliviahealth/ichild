@@ -1,15 +1,26 @@
 import React, { useState } from "react";
-import { ILocation } from "../../utils/interfaces";
+import { BiSolidBookmark, BiBookmark } from "react-icons/bi";
 
+import useAppStore from "../../stores/useAppStore";
+import { ILocation } from "../../utils/interfaces";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import PanoramicStreetView from "./PanoramicStreetView";
 import InteractiveMap from "./InteractiveMap";
 
 interface Props {
     location: ILocation
+
+    locationToSave: ILocation | null
+    isDeleteLoading: boolean | null
+    isSaveLoading: boolean | null
+
+    saveLocation: ((location: ILocation) => void) | null
+    deleteSavedLocation: ((location: ILocation) => void) | null
 }
 
-const LocationInfoPanel: React.FC<Props> = ({ location }) => {
+const LocationInfoPanel: React.FC<Props> = ({ location, locationToSave, isDeleteLoading, isSaveLoading, saveLocation, deleteSavedLocation }) => {
+    const user = useAppStore(state => state.user)
+
     const currentDayOfWeek = new Date().getDay()
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
@@ -22,12 +33,25 @@ const LocationInfoPanel: React.FC<Props> = ({ location }) => {
             <div className="flex gap-4 items-center">
                 <p className="font-semibold text-2xl">{location.name}</p>
 
-                {/* { user && (<div>
-                    {location.isSaved ? (
-                            isDeleteLoading && locationToSave === location ? ( <span className="loading loading-spinner loading-sm"></span> ) : ( <BiSolidBookmark onClick={() => deleteSavedLocation(location)} className="text-xl text-black" /> )
-                        ) : ( isSaveLoading && locationToSave === location ? ( <span className="loading loading-spinner loading-sm"></span> ) : ( <BiBookmark onClick={() => saveLocation(location)} className="text-xl text-black" /> ) 
-                    )}
-                </div>) } */}
+                {user && (
+                    <div>
+                        {location?.isSaved ? (
+                            isDeleteLoading && locationToSave === location ? (
+                                <span className="loading loading-spinner loading-sm"></span>
+                            ) : (
+                                deleteSavedLocation && <BiSolidBookmark
+                                    onClick={() => deleteSavedLocation(location)}
+                                    className="text-xl text-black"
+                                />
+                            )
+                        ) : isSaveLoading && locationToSave === location ? (
+                            <span className="loading loading-spinner loading-sm"></span>
+                        ) : (
+                            saveLocation && <BiBookmark onClick={() => saveLocation(location)} className="text-xl text-black" />
+                        )}
+                    </div>
+                )}
+
             </div>
 
             <div className="flex gap-x-1 items-center">

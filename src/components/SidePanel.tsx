@@ -14,6 +14,7 @@ import { FiPlus } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { RxExit } from "react-icons/rx";
 import { RiAdminLine } from "react-icons/ri";
+import { IoLocationOutline } from "react-icons/io5";
 
 const SidePanel: React.FC = () => {
     const navigate = useNavigate();
@@ -129,17 +130,17 @@ const SidePanel: React.FC = () => {
 
                     {user && (<div>
                         <div className="pb-6">
-                            {/* <p className="text-sm text-black font-medium my-4">Saved</p> */}
+                            <p className="text-sm text-black font-medium my-4">Saved</p>
 
-                            {/* <Link to={'/savedlocations'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <Link to={'/savedlocations'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><IoLocationOutline /></p>
                                 <p className="ml-4">Locations</p>
-                            </Link> */}
-{/*
-                            <Link to={'/savedchats'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedchats' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            </Link>
+
+                            {/* <Link to={'/savedchats'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedchats' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
                                 <p className="ml-4">Chats</p>
-                    </Link> */}
+                            </Link> */}
                         </div>
 
                         <hr />

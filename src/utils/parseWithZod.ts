@@ -13,11 +13,7 @@ const parseWithZod = async (dataToParse: any, zodSchema: ZodSchema) => {
         if(!parseResult.success) {
             throw new Error(parseResult.error.toString())
         }
-    } catch (error: any) {
-        console.log(error);
-        console.log(dataToParse);
-        console.log(zodSchema)
-        
+    } catch (error: any) {        
         useAppStore.setState({ error: 'Something went wrong!' });
         throw error
     }

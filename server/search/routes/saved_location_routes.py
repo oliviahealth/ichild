@@ -28,7 +28,7 @@ def add_saved_location():
     user_id = get_jwt_identity()
     
     data = request.get_json()
-    location_name = data['name'] # Remember, the name is the primary key for the LocationModel
+    location_name = data['name']
 
     if(not user_id):
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
@@ -36,11 +36,12 @@ def add_saved_location():
     try:
         # Check if the user provided location exists in the Locations table, and if not, return and error to the user
         existing_location = Location.query.filter_by(name=location_name).first()
+
         if(not existing_location):
             return jsonify({ 'error': "Location doesn't exist" }), 400
         
         date_created = int(time.time() * 1000)
-        saved_location = SavedLocation(name=location_name, user_id=user_id, date_created=date_created)
+        saved_location = SavedLocation(name=location_name, user_id=user_id, date_created=date_created, existing_location_id = existing_location.id)
         
         db.session.add(saved_location)
         db.session.commit()

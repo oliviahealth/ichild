@@ -61,7 +61,9 @@ class User(UserMixin, db.Model):
 class SavedLocation(db.Model):
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = db.Column(db.String(), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
-    name = db.Column(db.String(), db.ForeignKey('location.id', ondelete='CASCADE'), nullable=False)
+    name = db.Column(db.String(), nullable=False)
     date_created = db.Column(db.BigInteger(), nullable=False)
+
+    existing_location_id = db.Column(db.String(), db.ForeignKey('location.id', ondelete='CASCADE'), nullable=False)
 
     author = db.relationship('User', backref='saved_location_user')

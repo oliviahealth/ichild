@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import { useMutation } from "react-query";
+import axios from "axios";
+import { BiBookmark, BiCopy, BiSolidBookmark, } from "react-icons/bi";
+import { RxDotFilled } from "react-icons/rx";
 
 import useAppStore from "../../stores/useAppStore";
-import { IAPIResponse } from "../../utils/interfaces";
+import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
-import { BiCopy, } from "react-icons/bi";
-import { RxDotFilled } from "react-icons/rx";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import InteractiveMap from "./InteractiveMap";
 import LocationInfoPanel from "./LocationInfoPanel";
+
 
 interface Props {
     apiResponse: IAPIResponse
 }
 
 const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
+    const user = useAppStore(state => state.user);
+    const accessToken = useAppStore(state => state.accessToken);
+    
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
+    const [locationToSave, setLocationToSave] = useState<null | ILocation>(null);
 
     useEffect(() => {
         setFocusedLocation(apiResponse.locations[0] ?? null);
@@ -32,38 +39,38 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
     // Whenever a new slide is in view, update the currentSlideIndex
     emblaApi?.on("select", () => setCurrentSlideIndex(emblaApi?.selectedScrollSnap()));
 
-    // const { mutate: saveLocation, isLoading: isSaveLoading } = useMutation(async (location: ILocation) => {
-    //     const headers = {
-    //         "Authorization": "Bearer " + accessToken,
-    //         "userId": user?.id,
-    //     };
+    const { mutate: saveLocation, isLoading: isSaveLoading } = useMutation(async (location: ILocation) => {
+        const headers = {
+            "Authorization": "Bearer " + accessToken,
+            "userId": user?.id,
+        };
 
-    //     (await axios.post(`${import.meta.env.VITE_API_URL}/savedlocations`, { name: location.name }, { headers: { ...headers }, withCredentials: true })).data;
+        (await axios.post(`${import.meta.env.VITE_API_URL}/savedlocations`, { name: location.name }, { headers: { ...headers }, withCredentials: true })).data;
 
-    //     return location
-    // }, {
-    //     onMutate: (location) => setLocationToSave(location),
-    //     onSuccess: (location) => {
-    //         apiResponse.locations.map((elm) => elm == location ? elm.isSaved = true : '')
-    //     },
-    //     onSettled: () => setLocationToSave(null)
-    // });
+        return location
+    }, {
+        onMutate: (location) => setLocationToSave(location),
+        onSuccess: (location) => {
+            apiResponse.locations.map((elm) => elm == location ? elm.isSaved = true : '')
+        },
+        onSettled: () => setLocationToSave(null)
+    });
 
-    // const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (location: ILocation) => {
-    //     const headers = {
-    //         "Authorization": "Bearer " + accessToken,
-    //         "userId": user?.id,
-    //     };
+    const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (location: ILocation) => {
+        const headers = {
+            "Authorization": "Bearer " + accessToken,
+            "userId": user?.id,
+        };
 
-    //     await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?name=${location.name}`, { headers: { ...headers }, withCredentials: true });        
+        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?name=${location.name}`, { headers: { ...headers }, withCredentials: true });        
 
-    //     return location;
-    // }, {
-    //     onMutate: (location) => setLocationToSave(location),
-    //     onSuccess: (deletedLocation) => {
-    //         apiResponse.locations.map((location) => location.name === deletedLocation.name ? location.isSaved = false : location)
-    //     }
-    // })
+        return location;
+    }, {
+        onMutate: (location) => setLocationToSave(location),
+        onSuccess: (deletedLocation) => {
+            apiResponse.locations.map((location) => location.name === deletedLocation.name ? location.isSaved = false : location)
+        }
+    })
 
     return (
         <div>
@@ -89,7 +96,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                 </div>
 
                                 <div className="w-full h-full p-3 object-container">
-                                    <LocationInfoPanel location={focusedLocation} />
+                                    <LocationInfoPanel location={focusedLocation} locationToSave={locationToSave} isSaveLoading={isSaveLoading} isDeleteLoading={isDeleteLoading} saveLocation={saveLocation} deleteSavedLocation={deleteSavedLocation} />
                                 </div>
                             </div>
                         )}
@@ -117,7 +124,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                                 </div>
 
                                                 <div className="flex flex-col gap-6">
-                                                    {/* {user && (
+                                                    {user && (
                                                         <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`}>
                                                             {location.isSaved ? (
                                                                 isDeleteLoading && locationToSave === location ? (
@@ -133,7 +140,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                                                 )
                                                             )}
                                                         </button>
-                                                    )} */}
+                                                    )}
 
 
                                                     <button className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} onClick={() => copyText(location.address)}>
@@ -156,7 +163,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                                     {apiResponse.locations.map((location, index) => (
                                         <div key={`Slide: ${index}`} className="embla__slide p-3 mr-1 bg-white rounded-box space-y-3" >
-                                             <LocationInfoPanel  location={location} />
+                                             <LocationInfoPanel location={location} locationToSave={locationToSave} isSaveLoading={isSaveLoading} isDeleteLoading={isDeleteLoading} saveLocation={saveLocation} deleteSavedLocation={deleteSavedLocation} />
                                         </div>
                                     ))}
                                 </div>
