@@ -10,7 +10,6 @@ export const LocationSchema = z.object({
     website: z.string().optional(),
     latitude: z.number().optional(),
     longitude: z.number().optional(),
-    streetViewExists: z.boolean().optional().nullable(),
     rating: z.number().optional().nullable(),
     hoursOfOperation: z.array(z.record(z.string(), z.string())),
     isSaved: z.boolean(),

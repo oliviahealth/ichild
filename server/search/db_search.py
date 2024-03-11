@@ -9,9 +9,9 @@ from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from datetime import timedelta
 
-
-from database import db, bcrypt, Location, User
+from database import db, bcrypt, Location, User, revoked_tokens
 from routes.search_routes import search_routes_bp
 from routes.auth_routes import auth_routes_bp
 from routes.conversation_routes import conversation_routes_bp
@@ -60,6 +60,10 @@ def create_app():
 
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRESQL_CONNECTION_STRING')
     app.config['ADMIN_SQLALCHEMY_DATABASE_URI'] = os.getenv('ADMIN_POSTGRESQL_CONNECTION_STRING')
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
+    app.config['JWT_BLACKLIST_ENABLED'] = True
+    app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Change this
 
     engine_sec = create_engine(os.getenv('ADMIN_POSTGRESQL_CONNECTION_STRING'))
@@ -69,7 +73,7 @@ def create_app():
     CORS(app, supports_credentials=True)
     bcrypt.init_app(app)
     jwt = JWTManager(app)
-
+    
     register_extensions(app)
     register_blueprints(app)
 
@@ -78,6 +82,10 @@ def create_app():
 
     login_manager = LoginManager()
     login_manager.init_app(app)
+
+    @jwt.token_in_blocklist_loader
+    def check_if_token_in_blocklist(jwt_header, jwt_payload):
+        return jwt_payload["jti"] in revoked_tokens
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -100,7 +108,6 @@ def setup_database(app):
         db.create_all()
 
 app = create_app()
-
 setup_database(app)
 
 if __name__ == '__main__':

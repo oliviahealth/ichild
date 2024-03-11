@@ -28,20 +28,20 @@ def add_saved_location():
     user_id = get_jwt_identity()
     
     data = request.get_json()
-    location_name = data['name']
+    existing_location_id = data['id']
 
     if(not user_id):
-        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
 
     try:
         # Check if the user provided location exists in the Locations table, and if not, return and error to the user
-        existing_location = Location.query.filter_by(name=location_name).first()
+        existing_location = Location.query.filter_by(id=existing_location_id).first()
 
         if(not existing_location):
             return jsonify({ 'error': "Location doesn't exist" }), 400
         
         date_created = int(time.time() * 1000)
-        saved_location = SavedLocation(name=location_name, user_id=user_id, date_created=date_created, existing_location_id = existing_location.id)
+        saved_location = SavedLocation(name=existing_location.name, user_id=user_id, date_created=date_created, existing_location_id = existing_location.id)
         
         db.session.add(saved_location)
         db.session.commit()
@@ -50,7 +50,7 @@ def add_saved_location():
         print(error)
         return jsonify({ 'error': 'Something went wrong!' }), 500
 
-    return jsonify({ 'name': saved_location.name, 'userId': saved_location.user_id, 'dateCreated': saved_location.date_created })
+    return jsonify({ 'name': saved_location.name, 'userId': saved_location.user_id, 'dateCreated': saved_location.date_created, 'existingLocationId': saved_location.existing_location_id })
 
 """
     Get Saved Locations Endpoint.
@@ -69,22 +69,22 @@ def add_saved_location():
 @jwt_required()
 def get_saved_locations():
     user_id = get_jwt_identity()
-    
+
     if(not user_id):
-        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
 
     try:
         # Step 1: Retrieve saved location names for the user sorted from newest to oldest
-        saved_location_info = [{ 'id': saved_location.id, 'name': saved_location.name, 'dateCreated': saved_location.date_created } for saved_location in SavedLocation.query.filter_by(user_id=user_id).order_by(db.func.to_timestamp(SavedLocation.date_created / 1000).desc()).all()]
+        saved_location_info = [{ 'id': saved_location.id, 'name': saved_location.name, 'dateCreated': saved_location.date_created, 'existingLocationId': saved_location.existing_location_id } for saved_location in SavedLocation.query.filter_by(user_id=user_id).order_by(db.func.to_timestamp(SavedLocation.date_created / 1000).desc()).all()]
         
         # Step 2: Use the saved location names to fetch Location objects
         saved_locations = []
         for info in saved_location_info:
             # We need to query the database to find the entire location object from the name
-            location = Location.query.filter_by(name=info['name']).first()
+            location = Location.query.filter_by(id=info['existingLocationId']).first()
             if location:
                 location_info = {
-                    'id': info['id'],
+                    'id': location.id,
                     'address': location.address + ", " + location.city + ", " + location.state + " " + str(int(location.zip_code)),
                     'addressLink': location.address_link,
                     'description': location.description,
@@ -112,6 +112,9 @@ def get_saved_locations():
 
     This endpoint retrieves all of the saved locations for an authenticated user
 
+    Request Query Parameters:
+        - id (UUID): The ID of the location that needs to to be unsaved. Note, this is not the savedlocation.id, it is the id of the actual location
+
     Request JSON Parameters:
         - userId (UUID): The ID of the user that wants to get their saved locations
 
@@ -123,17 +126,17 @@ def get_saved_locations():
 @saved_location_routes_bp.route('/savedlocations', methods=['DELETE'])
 @jwt_required()
 def delete_saved_location():
-    location_name = request.args.get('name')
+    existing_location_id = request.args.get('id')
     user_id = get_jwt_identity()
-    
+
     if(not user_id):
-        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
 
     try:
-        saved_location_to_delete = SavedLocation.query.filter_by(name=location_name, user_id=user_id).first()
+        saved_location_to_delete = SavedLocation.query.filter_by(existing_location_id=existing_location_id, user_id=user_id).first()
 
         if(not(str(user_id).strip() == str(saved_location_to_delete.user_id).strip())):
-            return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+            return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
 
         if(not saved_location_to_delete):
             return jsonify({ 'error': 'Saved location not found' }), 500

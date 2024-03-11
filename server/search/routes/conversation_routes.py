@@ -34,7 +34,7 @@ def add_conversations():
     user_id = get_jwt_identity()
 
     if(not user_id):
-        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
 
     # Check if a conversation with the provided id exists, and if so, return that conversation
     existing_conversation = Conversation.query.filter_by(id=id).first()
@@ -43,9 +43,11 @@ def add_conversations():
         existing_conversation.date_updated = date_updated
         db.session.commit()
 
-        return jsonify({'id': existing_conversation.id, 'title': existing_conversation.title, 'userId': existing_conversation.user_id, 'dateUpdated': existing_conversation.date_updated}), 201
+        return jsonify({'id': existing_conversation.id, 'title': existing_conversation.title, 'userId': existing_conversation.user_id, 'dateCreated': existing_conversation.date_created, 'dateUpdated': existing_conversation.date_updated}), 201
 
     try:
+        print('fdsfdfdsfasfdsdsafdfs')
+
         date_created = int(time.time() * 1000)
 
         new_conversation = Conversation(title=title, user_id=user_id, date_created=date_created, date_updated=date_created)
@@ -57,29 +59,30 @@ def add_conversations():
         print(error)
         return jsonify({'error': 'Something went wrong!'}), 500
 
-    return jsonify({'id': new_conversation.id, 'title': new_conversation.title, 'userId': new_conversation.user_id}), 201
+    return jsonify({'id': new_conversation.id, 'title': new_conversation.title, 'userId': new_conversation.user_id, 'dateCreated': new_conversation.date_created, 'dateUpdated': new_conversation.date_updated}), 201
 
 """
     Get Conversation Preview Endpoint.
 
     This endpoint allows authenticated users to retrieve a few details about their previous conversations
-    It retrieves only the id and title for each previous conversation so that they can be displayed on the side panel
+    It retrieves only the id, title and date_updated for each previous conversation so that they can be displayed on the side panel
     
     Request Query Parameters:
         - conversationId (UUID): The ID of the conversation to be retrieved.
 
     Returns:
-        - If successful, returns JSON with the id and title for each conversation.
+        - If successful, returns JSON with the id, title and date_updated for each conversation.
         - If any unexpected error occurs, returns a JSON error message with status code 500.
 """
 
 @conversation_routes_bp.route('/conversationpreviews')
 @jwt_required()
-def get_conversation_previews():    
+def get_conversation_previews():
+    limit = request.args.get('limit')
     user_id = get_jwt_identity()
 
     if(not user_id):
-        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
 
     try:
         conversation_previews = [{
@@ -89,7 +92,7 @@ def get_conversation_previews():
         .filter_by(user_id=user_id)
         .with_entities(Conversation.id, Conversation.title, Conversation.date_updated)  # include dateUpdated
         .order_by(Conversation.date_updated.desc())  # sort by dateUpdated in descending order
-        .limit(5)  # limit the results to the first 5 records
+        .limit(limit or 5)  # limit the results to the first 5 records
         .all()
     ]
 
@@ -124,12 +127,12 @@ def get_conversation():
         conversation_user_id = str(conversation.user_id).strip()
 
         if(not(user_id == conversation_user_id)):
-            return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+            return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
     
-        location_dict = {location.name: location for location in Location.query.all()}
+        location_dict = {location.id: location for location in Location.query.all()}
         
-        saved_location_names = [saved_location[0] for saved_location in SavedLocation.query.filter_by(
-        user_id=conversation.user_id).with_entities(SavedLocation.name).all()]
+        saved_location_ids = [saved_location[0] for saved_location in SavedLocation.query.filter_by(
+        user_id=conversation.user_id).with_entities(SavedLocation.existing_location_id).all()]
 
     except Exception as error:
         db.session.rollback()
@@ -160,10 +163,10 @@ def get_conversation():
                         'phone': location.phone,
                         'hoursOfOperation': [{ "sunday": location.sunday_hours }, { "monday": location.monday_hours }, { "tuesday": location.tuesday_hours }, { "wednesday": location.wednesday_hours }, {  "thursday": location.thursday_hours }, { "friday": location.friday_hours }, { "saturday": location.saturday_hours }],
                         'rating': float(location.rating) if location.rating.isalnum() else None,
-                        'isSaved': location.name in saved_location_names
+                        'isSaved': location.id in saved_location_ids
                     }
-                    for name in response.locations
-                    for location in [location_dict.get(name)]
+                    for id in response.locations
+                    for location in [location_dict.get(id)]
                 ]
             }
             for response in conversation.responses
@@ -189,7 +192,7 @@ def get_conversations():
     user_id = get_jwt_identity()
 
     if(not user_id):
-        return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
 
     try:
         # Get the conversations that match the userid and filter them from most recently updated to oldest
@@ -202,11 +205,11 @@ def get_conversations():
         return jsonify({'error': 'Something went wrong!'}), 500
 
     # Should be optimized
-    location_dict = {location.name: location for location in Location.query.all()}
+    location_dict = {location.id: location for location in Location.query.all()}
 
     # Get all of the saved locations so we can check if each location thats being returned is saved by the user
-    saved_location_names = [saved_location[0] for saved_location in SavedLocation.query.filter_by(
-        user_id=user_id).with_entities(SavedLocation.name).all()]
+    saved_location_ids = [saved_location[0] for saved_location in SavedLocation.query.filter_by(
+        user_id=user_id).with_entities(SavedLocation.existing_location_id).all()]
 
     # Destructure all of the data out of user_conversations by running a couple nested loops for some of the nested arrays
     # This process can be inefficient for large data sets, so it should be optimized
@@ -234,10 +237,10 @@ def get_conversations():
                             'phone': location.phone,
                             'hoursOfOperation': [{ "sunday": location.sunday_hours }, { "monday": location.monday_hours }, { "tuesday": location.tuesday_hours }, { "wednesday": location.wednesday_hours }, {  "thursday": location.thursday_hours }, { "friday": location.friday_hours }, { "saturday": location.saturday_hours }],
                             'rating': float(location.rating) if location.rating.isalnum() else None,
-                            'isSaved': location.name in saved_location_names
+                            'isSaved': location.id in saved_location_ids
                         }
-                        for name in response.locations
-                        for location in [location_dict.get(name)]
+                        for id in response.locations
+                        for location in [location_dict.get(id)]
                     ]
                 }
                 for response in conversation.responses
@@ -273,7 +276,7 @@ def delete_conversations():
         conversation_to_delete_user_id = str(conversation_to_delete.user_id).strip()
 
         if(not(user_id == conversation_to_delete_user_id)):
-            return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+            return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
 
         if (not conversation_to_delete):
             return jsonify({'error': 'Conversation not found'})

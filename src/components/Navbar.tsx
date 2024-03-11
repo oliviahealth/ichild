@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
 
     await axios.post(`${import.meta.env.VITE_API_URL}/signout`, null, { headers: { ...headers }, withCredentials: true })
   }, {
-    onSuccess: () => {
+    onSettled: () => {
       sessionStorage.removeItem('accessToken');
 
       navigate(0);

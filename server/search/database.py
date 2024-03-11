@@ -6,7 +6,7 @@ import uuid
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
-
+revoked_tokens = set()
 class Conversation(db.Model):
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     title = db.Column(db.String(), nullable=False)
@@ -43,7 +43,7 @@ class Location(db.Model):
 class Response(db.Model):
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_query = db.Column(db.String(), nullable=False)
-    locations = db.Column(db.ARRAY(db.String()), nullable=False)
+    locations = db.Column(db.ARRAY(db.String(), db.ForeignKey('location.id', ondelete='CASCADE')), nullable=False)
     date_created = db.Column(db.BigInteger(), nullable=False)
     conversation_id = db.Column(db.String(), db.ForeignKey('conversation.id', ondelete='CASCADE'), nullable=False)
     author = db.relationship('Conversation', backref='conversations')

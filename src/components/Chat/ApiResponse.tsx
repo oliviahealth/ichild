@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useMutation } from "react-query";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import axios, { AxiosError } from "axios";
 import { BiBookmark, BiCopy, BiSolidBookmark, } from "react-icons/bi";
 import { RxDotFilled } from "react-icons/rx";
 
@@ -19,6 +20,9 @@ interface Props {
 }
 
 const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
+    const navigate = useNavigate();
+    const setError = useAppStore(state => state.setError);
+    
     const user = useAppStore(state => state.user);
     const accessToken = useAppStore(state => state.accessToken);
     
@@ -45,7 +49,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
             "userId": user?.id,
         };
 
-        (await axios.post(`${import.meta.env.VITE_API_URL}/savedlocations`, { name: location.name }, { headers: { ...headers }, withCredentials: true })).data;
+        (await axios.post(`${import.meta.env.VITE_API_URL}/savedlocations`, { id: location.id }, { headers: { ...headers }, withCredentials: true })).data;
 
         return location
     }, {
@@ -53,22 +57,36 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
         onSuccess: (location) => {
             apiResponse.locations.map((elm) => elm == location ? elm.isSaved = true : '')
         },
-        onSettled: () => setLocationToSave(null)
+        onSettled: () => setLocationToSave(null),
+        onError: (error: AxiosError) => {
+            setError(error.message);
+
+            if(error.request.status === 403) {
+                navigate('/signin');
+            }
+        }
     });
 
-    const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (location: ILocation) => {
+    const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (savedLocation: ILocation) => {
         const headers = {
             "Authorization": "Bearer " + accessToken,
             "userId": user?.id,
         };
 
-        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?name=${location.name}`, { headers: { ...headers }, withCredentials: true });        
+        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?id=${savedLocation.id}`, { headers: { ...headers }, withCredentials: true });        
 
-        return location;
+        return savedLocation;
     }, {
         onMutate: (location) => setLocationToSave(location),
         onSuccess: (deletedLocation) => {
             apiResponse.locations.map((location) => location.name === deletedLocation.name ? location.isSaved = false : location)
+        },
+        onError: (error: AxiosError) => {
+            setError(error.message);
+            
+            if(error.request.status === 403) {
+                navigate('/signin');
+            }
         }
     })
 

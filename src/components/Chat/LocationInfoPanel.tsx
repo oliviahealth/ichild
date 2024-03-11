@@ -4,7 +4,6 @@ import { BiSolidBookmark, BiBookmark } from "react-icons/bi";
 import useAppStore from "../../stores/useAppStore";
 import { ILocation } from "../../utils/interfaces";
 import { MdOutlineOpenInNew } from "react-icons/md";
-import PanoramicStreetView from "./PanoramicStreetView";
 import InteractiveMap from "./InteractiveMap";
 
 interface Props {
@@ -27,7 +26,7 @@ const LocationInfoPanel: React.FC<Props> = ({ location, locationToSave, isDelete
     return (
         <div className="my-4 flex flex-col gap-4 bg-[#F8F5F5] p-3 rounded-xl">
             <div className="h-80">
-                {location.streetViewExists && location.latitude && location.longitude ? <PanoramicStreetView latitude={location.latitude} longitude={location.longitude} /> : <InteractiveMap locations={[location]} />}
+                <InteractiveMap locations={[location]} />
             </div>
 
             <div className="flex gap-4 items-center">

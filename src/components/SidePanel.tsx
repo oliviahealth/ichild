@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useMutation } from "react-query";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { v4 as uuid } from "uuid";
 
 import useAppStore from "../stores/useAppStore";
@@ -18,6 +18,7 @@ import { IoLocationOutline } from "react-icons/io5";
 
 const SidePanel: React.FC = () => {
     const navigate = useNavigate();
+    const setError = useAppStore(state => state.setError);
 
     const location = useLocation();
     const user = useAppStore((state) => state.user);
@@ -47,6 +48,13 @@ const SidePanel: React.FC = () => {
             setCurrentConversationId(null);
 
             getConversationPreviews();
+        },
+        onError: (error: AxiosError) => {
+            if(error.request.status === 403) {
+                navigate('/signin')
+            }
+
+            setError(error.message);
         }
     })
 
@@ -57,7 +65,7 @@ const SidePanel: React.FC = () => {
             "userId": user?.id,
         }
 
-        const conversationPreviews: IConversationPreview[] = (await axios.get(`${import.meta.env.VITE_API_URL}/conversationpreviews`, { headers: { ...headers }, withCredentials: true })).data;
+        const conversationPreviews: IConversationPreview[] = (await axios.get(`${import.meta.env.VITE_API_URL}/conversationpreviews?limit=5`, { headers: { ...headers }, withCredentials: true })).data;
 
         conversationPreviews.forEach((conversationDetail) => parseWithZod(conversationDetail, ConversationPreviewSchema));
 
@@ -68,11 +76,19 @@ const SidePanel: React.FC = () => {
         }
     })
 
-    const handleSignout = () => {
-        sessionStorage.removeItem('accessToken');
-
-        navigate(0);
-    }
+    const { mutate: handleSignout } = useMutation(async () => {
+        const headers = {
+          "Authorization": "Bearer " + accessToken,
+        }
+    
+        await axios.post(`${import.meta.env.VITE_API_URL}/signout`, null, { headers: { ...headers }, withCredentials: true })
+      }, {
+        onSettled: () => {
+          sessionStorage.removeItem('accessToken');
+    
+          navigate(0);
+        }
+      })
 
     useEffect(() => {
         if (user) {
@@ -151,7 +167,7 @@ const SidePanel: React.FC = () => {
                                 <p className="ml-4">{user.name}</p>
                             </Link>
 
-                            {user.isAdmin && (<a href="http://localhost:5000/admin" className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
+                            {user.isAdmin && (<a href={`${import.meta.env.VITE_API_URL}/admin`} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
                                 <p className="text-lg"><RiAdminLine /></p>
                                 <p className="ml-4">Admin</p>
                             </a>)}

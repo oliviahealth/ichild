@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useMutation } from "react-query";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import axios, { AxiosError } from "axios";
 
 import useAppStore from "./stores/useAppStore";
 import parseWithZod from "./utils/parseWithZod";
@@ -13,6 +14,10 @@ import { BiSolidBookmark } from "react-icons/bi";
 import LocationInfoPanel from "./components/Chat/LocationInfoPanel";
 
 const SavedLocations: React.FC = () => {
+    const navigate = useNavigate()
+
+    const setError = useAppStore(state => state.setError);
+
     const user = useAppStore((state) => state.user);
     const accessToken = useAppStore((state) => state.accessToken);
 
@@ -37,6 +42,13 @@ const SavedLocations: React.FC = () => {
     }, {
         onSuccess: (savedLocations) => {
             setSavedLocations(savedLocations);
+        },
+        onError: (error: AxiosError) => {
+            if(error.response?.status === 403) {
+                navigate('/signin')
+            }
+
+            setError(error.message);
         }
     });
 
@@ -46,7 +58,7 @@ const SavedLocations: React.FC = () => {
             "userId": user?.id,
         }
 
-        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?name=${savedLocation.name}`, { headers: { ...headers }, withCredentials: true });
+        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?id=${savedLocation.id}`, { headers: { ...headers }, withCredentials: true });
 
         return savedLocation;
     }, {
@@ -60,7 +72,14 @@ const SavedLocations: React.FC = () => {
 
             setSavedLocations(newSavedLocations ?? null);
         },
-        onSettled: () => setDeletingLocationName(null)
+        onSettled: () => setDeletingLocationName(null),
+        onError: (error: AxiosError) => {
+            if(error.request.status === 403) {
+                navigate('/signin')
+            }
+
+            setError(error.message);
+        }
     })
 
     useEffect(() => {
@@ -99,7 +118,11 @@ const SavedLocations: React.FC = () => {
                                         </div>
 
                                         <div className="flex flex-col gap-6">
-                                            {user && (<button onClick={() => deleteSavedLocation(location)} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
+                                            {user && (<button onClick={(evt) => {
+                                                evt.stopPropagation();
+
+                                                deleteSavedLocation(location);
+                                            }} className={`btn btn-square btn-xs bg-inherit border-none ml-4 hover:bg-gray-200`} >
                                                 {isDeleteLoading && deletingLocationName === location.name ? (<span className="loading loading-spinner loading-sm"></span>) : (<BiSolidBookmark className="text-xl text-black" />)}
                                             </button>)}
 

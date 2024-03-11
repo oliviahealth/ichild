@@ -38,7 +38,7 @@ def add_response():
         conversation_user_id = str(conversation.user_id).strip()
 
         if(not(user_id == conversation_user_id)):
-            return jsonify({ 'Unauthorized': 'Unauthorized' }), 401
+            return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
         
         if(not conversation):
             return jsonify({ 'error': 'Conversation not found' }), 500
@@ -46,7 +46,7 @@ def add_response():
     except:
         return jsonify({ 'error': 'Something went wrong!' }), 500
     
-    locationsArr = [Location.query.filter_by(name=location.get('name')).first().name for location in locations] # This array will hold only the name of the locations that are then stored as a column on the response record. Do not store entire location objects. 
+    locationsArr = [Location.query.filter_by(id=location.get('id')).first().id for location in locations] # This array will hold only the id of the locations that are then stored as a column on the response record. Do not store entire location objects. 
 
     try:    
         new_response = Response(user_query=user_query, conversation_id=conversation_id, locations=locationsArr, date_created=date_created)
@@ -74,4 +74,4 @@ def add_response():
             ],
             'dateCreated': new_response.date_created,
             "userQuery": new_response.user_query,
-            "conversation_id": new_response.conversation_id }), 201
+            "conversationId": new_response.conversation_id }), 201

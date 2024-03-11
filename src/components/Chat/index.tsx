@@ -2,7 +2,8 @@ import React, { useRef, useEffect, useState } from "react";
 import { v4 as uuid } from 'uuid';
 import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import axios, { AxiosError } from "axios";
 
 import useAppStore from "../../stores/useAppStore";
 import parseWithZod from "../../utils/parseWithZod";
@@ -17,13 +18,16 @@ import ApiResponse from "./ApiResponse";
 import quickResponses from "../../utils/quickResponses";
 
 const ChatComponent: React.FC = () => {
+  const navigate = useNavigate();
+  const setError = useAppStore(state => state.setError);
+
   /*
     Use Zustand to manage global state for the application
     https://github.com/pmndrs/zustand
   */
   const user = useAppStore((state) => state.user);
   const accessToken = useAppStore((state) => state.accessToken);
-  
+
   // The actual response from the api including the locations the api suggests
   const [apiResponses, setApiResponses] = useState<IAPIResponse[]>([]);
 
@@ -65,16 +69,22 @@ const ChatComponent: React.FC = () => {
     const headers = {
       "Authorization": "Bearer " + accessToken,
       "userId": user?.id,
-  }
+    }
 
-    const conversationDetails: IConversation = (await axios.get(`${import.meta.env.VITE_API_URL}/conversation?id=${currentConversationId}`, { headers: { ...headers }, withCredentials: true })).data
+    const conversationDetails: IConversation = await axios.get(`${import.meta.env.VITE_API_URL}/conversation?id=${currentConversationId}`, { headers: { ...headers }, withCredentials: true })
+      .then((res) => {
+        parseWithZod(res.data, ConversationSchema);
 
-    parseWithZod(conversationDetails, ConversationSchema)
+        return res.data
+      })
+      .catch(() => null)
 
     return conversationDetails
   }, {
     onSuccess: (conversationDetails) => {
-      setApiResponses(conversationDetails.responses);
+      if (conversationDetails) {
+        setApiResponses(conversationDetails.responses);
+      }
     }
   });
 
@@ -103,8 +113,8 @@ const ChatComponent: React.FC = () => {
         "userId": user?.id,
       }
 
-      const conversation: IConversation = (await axios.post(`${import.meta.env.VITE_API_URL}/conversations`, { id: currentConversationId, title: response.userQuery }, { headers: { ...headers },  withCredentials: true })).data;
-      await axios.post(`${import.meta.env.VITE_API_URL}/response`, { ...response, conversationId: conversation.id }, { headers: { ...headers },  withCredentials: true });
+      const conversation: IConversation = (await axios.post(`${import.meta.env.VITE_API_URL}/conversations`, { id: currentConversationId, title: response.userQuery }, { headers: { ...headers }, withCredentials: true })).data;
+      await axios.post(`${import.meta.env.VITE_API_URL}/response`, { ...response, conversationId: conversation.id }, { headers: { ...headers }, withCredentials: true });
 
       // If this is a new conversation, add it to the recent activity on the sidepanel
       if (apiResponses.length < 1) {
@@ -123,49 +133,56 @@ const ChatComponent: React.FC = () => {
       if (response) {
         setApiResponses([...apiResponses, response]);
       }
-    
+
       reset();
+    },
+    onError: (error: AxiosError) => {
+      setError(error.message);
+
+      if (error.request.status === 403) {
+        navigate('/signin');
+      }
     }
   });
 
   const handleQuickResponse = (query: string) => {
     setValue("query", query);
-    
+
     handleSubmit(() => getResponse({ query }))();
   }
 
   return (
     <div className="flex w-full flex-col h-full">
-      <div className={ `h-full p-4 flex flex-col ${ !isLoading ? 'justify-end' : 'justify-start'}` }>
+      <div className={`h-full p-4 flex flex-col ${!isLoading ? 'justify-end' : 'justify-start'}`}>
         <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-14rem)] ">
 
           {isLoading ? (<ChatLoadingSkeleton />) : (
             <>
               { /* Initial greeting */}
               <div className="xl:flex gap-4">
-                  <div>
-                    <OllieAvatar />
-                  </div>
+                <div>
+                  <OllieAvatar />
+                </div>
 
-                  <div>
-                    <ChatBubble isResponse={true}>
-                      <p>Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?</p>
-                    </ChatBubble>
+                <div>
+                  <ChatBubble isResponse={true}>
+                    <p>Hi! I’m Ollie, your virtual assistant for the OliviaHealth network. How can I help you?</p>
+                  </ChatBubble>
 
-                    <ChatBubble isResponse={true}>
-                      <p className="font-bold pb-4">Quick Responses</p>
+                  <ChatBubble isResponse={true}>
+                    <p className="font-bold pb-4">Quick Responses</p>
 
-                      <div className="space-y-3 text-sm pb-3">
-                        { quickResponses.map((quickResponse, index) => (
-                          <div key={index} className="flex justify-between items-center space-x-5 text-primary cursor-pointer" onClick={() => handleQuickResponse(quickResponse)}>
-                            <p>{ quickResponse }</p>
-                            <FaAngleRight className='text-gray-300' />
-                          </div>
-                        )) }
-                      </div>
-                      
-                    </ChatBubble>
-                  </div>
+                    <div className="space-y-3 text-sm pb-3">
+                      {quickResponses.map((quickResponse, index) => (
+                        <div key={index} className="flex justify-between items-center space-x-5 text-primary cursor-pointer" onClick={() => handleQuickResponse(quickResponse)}>
+                          <p>{quickResponse}</p>
+                          <FaAngleRight className='text-gray-300' />
+                        </div>
+                      ))}
+                    </div>
+
+                  </ChatBubble>
+                </div>
               </div>
 
               { /* Api response to user query */}

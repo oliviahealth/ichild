@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+import { useNavigate } from "react-router-dom";
 
 import useAppStore from "../stores/useAppStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "react-query";
 import { IUser, UserSchema } from "../utils/interfaces";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import parseWithZod from "../utils/parseWithZod";
 
 const UserPage: React.FC = () => {
+    const navigate = useNavigate();
+    const setError = useAppStore(state => state.setError);
+
     const user = useAppStore(state => state.user);
     const setUser = useAppStore(state => state.setUser);
     
@@ -54,7 +58,14 @@ const UserPage: React.FC = () => {
 
             setUser(response);
         },
-        onError: () => setErrorDetected(true),
+        onError: (error: AxiosError) => {
+            if(error.request.status === 403) {
+                navigate('/signin')
+            }
+            
+            setError(error.message);
+            setErrorDetected(true)
+        },
         onSettled: () => setValue('password', undefined)
     });
 

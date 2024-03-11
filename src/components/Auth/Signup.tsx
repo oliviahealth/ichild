@@ -4,7 +4,7 @@ import { useMutation } from "react-query";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 import useAppStore from "../../stores/useAppStore";
 import parseWithZod from "../../utils/parseWithZod";
@@ -12,6 +12,7 @@ import { UserSchema, IUser } from "../../utils/interfaces";
 
 const Auth: React.FC = () => {
     const navigate = useNavigate();
+    const setError = useAppStore(state => state.setError);
 
     const setUser = useAppStore((state) => state.setUser);
     const setAccessToken = useAppStore((state) => state.setAccessToken);
@@ -55,7 +56,10 @@ const Auth: React.FC = () => {
                 return navigate("/")
             }
         },
-        onError: () => setErrorDetected(true)
+        onError: (error: AxiosError) => {
+            setError(error.message);
+            setErrorDetected(true);
+        }
     })
 
     return (
