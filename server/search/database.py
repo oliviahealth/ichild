@@ -24,6 +24,7 @@ class Location(db.Model):
     state = db.Column(db.String(), nullable=False)
     country = db.Column(db.String(), nullable=False)
     zip_code = db.Column(db.String(), nullable=False)
+    county = db.Column(db.String(), nullable=False)
     latitude = db.Column(db.Float(), nullable=False)
     longitude = db.Column(db.Float(), nullable=False)
     description = db.Column(db.String(), nullable=False)
