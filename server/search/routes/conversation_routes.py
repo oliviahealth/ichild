@@ -46,8 +46,6 @@ def add_conversations():
         return jsonify({'id': existing_conversation.id, 'title': existing_conversation.title, 'userId': existing_conversation.user_id, 'dateCreated': existing_conversation.date_created, 'dateUpdated': existing_conversation.date_updated}), 201
 
     try:
-        print('fdsfdfdsfasfdsdsafdfs')
-
         date_created = int(time.time() * 1000)
 
         new_conversation = Conversation(title=title, user_id=user_id, date_created=date_created, date_updated=date_created)
