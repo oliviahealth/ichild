@@ -34,7 +34,7 @@ const SidePanel: React.FC = () => {
     { /* Delete conversation based on a specific id and if successful, remove the conversation from the sidepanel and set the current conversation to be null  */ }
     const { mutate: deleteConversation, isLoading: isDeleteLoading } = useMutation(async (conversationId: string) => {
         const headers = {
-            "Authorization": "Bearer " + accessToken,
+            "OliviaAuthorization": "Bearer " + accessToken,
             "userId": user?.id,
         }
 
@@ -61,7 +61,7 @@ const SidePanel: React.FC = () => {
     { /* Fetch only the id and title of each previous conversation the user has had to populate the recent activity on the sidepanel */ }
     const { mutate: getConversationPreviews } = useMutation(async () => {
         const headers = {
-            "Authorization": "Bearer " + accessToken,
+            "OliviaAuthorization": "Bearer " + accessToken,
             "userId": user?.id,
         }
 
@@ -78,7 +78,7 @@ const SidePanel: React.FC = () => {
 
     const { mutate: handleSignout } = useMutation(async () => {
         const headers = {
-          "Authorization": "Bearer " + accessToken,
+          "OliviaAuthorization": "Bearer " + accessToken,
         }
     
         await axios.post(`${import.meta.env.VITE_API_URL}/signout`, null, { headers: { ...headers }, withCredentials: true })

@@ -67,7 +67,7 @@ const ChatComponent: React.FC = () => {
   { /* When the user focuses on a previous conversation from the sidepanel, we fetch the complete conversation object and populate the api response array to display the suggested locations */ }
   const { mutate: getConversationDetails, isLoading } = useMutation(async () => {
     const headers = {
-      "Authorization": "Bearer " + accessToken,
+      "OliviaAuthorization": "Bearer " + accessToken,
       "userId": user?.id,
     }
 
@@ -109,7 +109,7 @@ const ChatComponent: React.FC = () => {
     // If a user is logged in, save their conversation
     if (user) {
       const headers = {
-        "Authorization": "Bearer " + accessToken,
+        "OliviaAuthorization": "Bearer " + accessToken,
         "userId": user?.id,
       }
 

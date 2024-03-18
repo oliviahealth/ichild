@@ -35,7 +35,7 @@ const UserPage: React.FC = () => {
 
     const { mutate: editUserDetails, isLoading } = useMutation(async (data: EditUserDetailsFromData) => {
         const headers = {
-            "Authorization": "Bearer " + accessToken,
+            "OliviaAuthorization": "Bearer " + accessToken,
             "userId": user?.id,
         }
 

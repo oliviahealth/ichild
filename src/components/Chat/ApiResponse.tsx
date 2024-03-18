@@ -45,7 +45,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
     const { mutate: saveLocation, isLoading: isSaveLoading } = useMutation(async (location: ILocation) => {
         const headers = {
-            "Authorization": "Bearer " + accessToken,
+            "OliviaAuthorization": "Bearer " + accessToken,
             "userId": user?.id,
         };
 
@@ -69,7 +69,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
     const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (savedLocation: ILocation) => {
         const headers = {
-            "Authorization": "Bearer " + accessToken,
+            "OliviaAuthorization": "Bearer " + accessToken,
             "userId": user?.id,
         };
 

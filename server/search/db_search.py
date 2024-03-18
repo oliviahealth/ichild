@@ -64,6 +64,7 @@ def create_app():
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
     app.config['JWT_BLACKLIST_ENABLED'] = True
     app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
+    app.config["JWT_HEADER_NAME"] = "OliviaAuthorization"
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Change this
 
     engine_sec = create_engine(os.getenv('ADMIN_POSTGRESQL_CONNECTION_STRING'))

@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
 
   const { mutate: handleSignout } = useMutation(async () => {
     const headers = {
-      "Authorization": "Bearer " + accessToken,
+      "OliviaAuthorization": "Bearer " + accessToken,
     }
 
     await axios.post(`${import.meta.env.VITE_API_URL}/signout`, null, { headers: { ...headers }, withCredentials: true })

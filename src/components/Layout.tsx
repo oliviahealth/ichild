@@ -41,7 +41,7 @@ const Layout = () => {
   // Load the user from the session storage into the application state
   const { mutate: getUser } = useMutation(async (accessToken: string) => {
     const headers = {
-      "Authorization": "Bearer " + accessToken,
+      "OliviaAuthorization": "Bearer " + accessToken,
     }
 
     const user : IUser = (await axios.post(`${import.meta.env.VITE_API_URL}/restoreuser`, null, { headers: { ...headers }, withCredentials: true })).data
