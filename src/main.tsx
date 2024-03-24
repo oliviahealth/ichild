@@ -6,7 +6,6 @@ import { ErrorBoundary } from "react-error-boundary";
 import Layout from "./components/Layout";
 import AuthLayout from "./components/Auth/AuthLayout";
 import ChatComponent from "./components/Chat";
-import Signup from "./components/Auth/Signup";
 import Signin from "./components/Auth/Signin";
 import SavedLocations from "./SavedLocations";
 import SettingsLayout from "./components/Settings/Layout";
