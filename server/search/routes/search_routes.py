@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify
 from sentence_transformers import SentenceTransformer
+from flask_jwt_extended import get_jwt_identity, jwt_required
 import certifi
 import os
 import time
@@ -34,7 +35,13 @@ def msg():
 
 # API route for ICHILD frontend
 @search_routes_bp.route("/formattedresults", methods=['POST', 'GET'])
+@jwt_required()
 def formatted_db_search():
+    user_id = get_jwt_identity()
+
+    if(not user_id):
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
+
     query = request.form['data']
 
     crossEncoderItems, crossEncoderScoresDict = core_search(query, embedder, corpus, encoding_dict)

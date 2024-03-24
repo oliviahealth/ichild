@@ -29,7 +29,7 @@ const SavedLocations: React.FC = () => {
 
     const { mutate: getSavedLocations, isLoading: getSavedLocationsLoading } = useMutation(async () => {
         const headers = {
-            "OliviaAuthorization": "Bearer " + accessToken,
+            "Authorization": "Bearer " + accessToken,
             "userId": user?.id,
         }
 
@@ -54,7 +54,7 @@ const SavedLocations: React.FC = () => {
 
     const { mutate: deleteSavedLocation, isLoading: isDeleteLoading } = useMutation(async (savedLocation: ILocation) => {
         const headers = {
-            "OliviaAuthorization": "Bearer " + accessToken,
+            "Authorization": "Bearer " + accessToken,
             "userId": user?.id,
         }
 

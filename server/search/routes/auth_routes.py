@@ -150,6 +150,7 @@ def updateUser():
     data = request.get_json()
     name = data.get('name')
     email = data.get('email')
+    password = data.get('password')
 
     user_id = get_jwt_identity()
 
@@ -162,8 +163,11 @@ def updateUser():
         if(not user):
             return jsonify({ 'error', 'User Does Not Exist' }), 404
         
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
         user.name = name
         user.email = email
+        user.password = hashed_password
 
         user.date_created = int(time.time() * 1000)
 

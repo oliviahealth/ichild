@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { v4 as uuid } from 'uuid';
 import { useMutation } from "react-query";
 import { useForm } from "react-hook-form";
@@ -17,7 +17,7 @@ import ChatLoadingSkeleton from "./ChatLoadingSkeleton";
 import ApiResponse from "./ApiResponse";
 import quickResponses from "../../utils/quickResponses";
 
-const ChatComponent: React.FC = () => {
+const ChatComponent = () => {
   const navigate = useNavigate();
   const setError = useAppStore(state => state.setError);
 
@@ -67,7 +67,7 @@ const ChatComponent: React.FC = () => {
   { /* When the user focuses on a previous conversation from the sidepanel, we fetch the complete conversation object and populate the api response array to display the suggested locations */ }
   const { mutate: getConversationDetails, isLoading } = useMutation(async () => {
     const headers = {
-      "OliviaAuthorization": "Bearer " + accessToken,
+      "Authorization": "Bearer " + accessToken,
       "userId": user?.id,
     }
 
@@ -104,25 +104,22 @@ const ChatComponent: React.FC = () => {
     const formData = new FormData();
     formData.append("data", data.query);
 
-    const response: IAPIResponse = (await axios.post(`${import.meta.env.VITE_API_URL}/formattedresults`, formData, { withCredentials: true })).data;
-
-    // If a user is logged in, save their conversation
-    if (user) {
-      const headers = {
-        "OliviaAuthorization": "Bearer " + accessToken,
-        "userId": user?.id,
-      }
-
-      const conversation: IConversation = (await axios.post(`${import.meta.env.VITE_API_URL}/conversations`, { id: currentConversationId, title: response.userQuery }, { headers: { ...headers }, withCredentials: true })).data;
-      await axios.post(`${import.meta.env.VITE_API_URL}/response`, { ...response, conversationId: conversation.id }, { headers: { ...headers }, withCredentials: true });
-
-      // If this is a new conversation, add it to the recent activity on the sidepanel
-      if (apiResponses.length < 1) {
-        setConversationPreviews([{ id: conversation.id ?? uuid(), title: response.userQuery }, ...ConversationPreviews])
-      }
-
-      setCurrentConversationId(conversation.id);
+    const headers = {
+      "Authorization": "Bearer " + accessToken,
+      "userId": user?.id,
     }
+
+    const response: IAPIResponse = (await axios.post(`${import.meta.env.VITE_API_URL}/formattedresults`, formData, { headers: { ...headers }, withCredentials: true })).data;
+
+    const conversation: IConversation = (await axios.post(`${import.meta.env.VITE_API_URL}/conversations`, { id: currentConversationId, title: response.userQuery }, { headers: { ...headers }, withCredentials: true })).data;
+    await axios.post(`${import.meta.env.VITE_API_URL}/response`, { ...response, conversationId: conversation.id }, { headers: { ...headers }, withCredentials: true });
+
+    // If this is a new conversation, add it to the recent activity on the sidepanel
+    if (apiResponses.length < 1) {
+      setConversationPreviews([{ id: conversation.id ?? uuid(), title: response.userQuery }, ...ConversationPreviews])
+    }
+
+    setCurrentConversationId(conversation.id);
 
     // Parse the response and make sure it complies with the expected API Response
     parseWithZod(response, APIResponseSchema);

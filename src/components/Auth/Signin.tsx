@@ -86,7 +86,7 @@ const Signin: React.FC = () => {
                 </button>
             </form>
 
-            <p className="text-sm mt-8">Don't have an account? <span className="text-primary"><Link to={'/signup'}>Sign Up</Link></span></p>
+            {/* <p className="text-sm mt-8">Don't have an account? <span className="text-primary"><Link to={'/signup'}>Sign Up</Link></span></p> */}
         </>
     )
 }

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useNavigate, useLocation, Navigate } from "react-router-dom";
 import axios from "axios";
 import { useMutation } from "react-query";
 
@@ -17,7 +17,8 @@ const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
- 
+  const user = useAppStore(state => state.user);
+
   const setAccessToken = useAppStore((state) => state.setAccessToken);
   const setUser = useAppStore((state) => state.setUser);
   
@@ -41,7 +42,7 @@ const Layout = () => {
   // Load the user from the session storage into the application state
   const { mutate: getUser } = useMutation(async (accessToken: string) => {
     const headers = {
-      "OliviaAuthorization": "Bearer " + accessToken,
+      "Authorization": "Bearer " + accessToken,
     }
 
     const user : IUser = (await axios.post(`${import.meta.env.VITE_API_URL}/restoreuser`, null, { headers: { ...headers }, withCredentials: true })).data
@@ -107,7 +108,7 @@ const Layout = () => {
               {/* Content for the main container */}
               <div className={`w-full h-full`}>
                 <ErrorComponent />
-                <Outlet />
+                { user ? <Outlet /> : <Navigate  to={'/signin'}/>}
               </div>
             </div>
           </div>
