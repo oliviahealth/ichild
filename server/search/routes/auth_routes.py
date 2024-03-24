@@ -163,11 +163,14 @@ def updateUser():
         if(not user):
             return jsonify({ 'error', 'User Does Not Exist' }), 404
         
-        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        
 
         user.name = name
         user.email = email
-        user.password = hashed_password
+        
+        if password:
+            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+            user.password = hashed_password
 
         user.date_created = int(time.time() * 1000)
 
