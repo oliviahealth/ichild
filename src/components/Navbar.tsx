@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
     onSettled: () => {
       sessionStorage.removeItem('accessToken');
 
-      navigate(0);
+      navigate('/signin');
     }
   })
 
