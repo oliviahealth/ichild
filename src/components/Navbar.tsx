@@ -13,6 +13,7 @@ const Navbar: React.FC = () => {
   const user = useAppStore((state) => state.user);
   const accessToken = useAppStore((state) => state.accessToken);
 
+  const setUser = useAppStore(state => state.setUser);
 
   const { mutate: handleSignout } = useMutation(async () => {
     const headers = {
@@ -23,6 +24,7 @@ const Navbar: React.FC = () => {
   }, {
     onSettled: () => {
       sessionStorage.removeItem('accessToken');
+      setUser(null);
 
       navigate('/signin');
     }
