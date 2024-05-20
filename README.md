@@ -15,7 +15,7 @@ IntelligentCHILD (Community Health Information Local Database) is an semantic se
 
 ## Tech Stack  
 
-**Client:** TypeScript, React, React Query, Zod, Zustand
+**Client:** TypeScript, React, React Query, Zod, Zustand, TailwindCSS
 
 **Server:** Python, Flask, Flask-JWT, PostgreSQL, SQLAlchemy, PyTorch, Sentence-Transformers
 
