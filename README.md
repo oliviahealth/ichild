@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/oliviahealth/ichild/main/src/assets/logos/TAMU-ichild_logo.png?token=GHSAT0AAAAAACF66JDC6F6EGJY6EYA77HQ2ZSKOFZA" width="500px" height="150px"/>
+<img src="https://github.com/oliviahealth/ichild/assets/48499839/793bf4eb-18ee-4028-8d57-422aff598fd3" width="500px" height="150px"/>
 
 IntelligentCHILD (Community Health Information Local Database) is an semantic search engine indexing curated resources and content in an intuitive format for mothers, children and families.
 
@@ -7,12 +7,11 @@ IntelligentCHILD (Community Health Information Local Database) is an semantic se
 - Includes CRUD portal for admins to manage content
 
 ## Screenshots  
+<img src="https://github.com/oliviahealth/ichild/assets/48499839/e1b713bd-a3ae-4680-afb8-bdbaf8d80137" />
 
-<img src="https://raw.githubusercontent.com/oliviahealth/ichild/main/src/assets/screenshots/Screenshot%202024-05-19%20at%203.40.50%20PM.png?token=GHSAT0AAAAAACF66JDCZDABJJSIIGJAFVI6ZSKODQA" />
+<img src="https://github.com/oliviahealth/ichild/assets/48499839/9176c69d-7c5d-43fb-a01c-ddf966c33332" />
 
-<img src="https://raw.githubusercontent.com/oliviahealth/ichild/main/src/assets/screenshots/Screenshot%202024-05-19%20at%203.41.40%20PM.png?token=GHSAT0AAAAAACF66JDDMANSAMH4WGDYEXAQZSKOFMQ" />
-
-<img src="https://raw.githubusercontent.com/oliviahealth/ichild/main/src/assets/screenshots/Screenshot%202024-05-19%20at%203.42.46%20PM.png?token=GHSAT0AAAAAACF66JDDJMAWNP5X76YX7ON6ZSKOCBA" />
+<img src="https://github.com/oliviahealth/ichild/assets/48499839/f9bbdceb-8149-4206-bf0d-5af76b299e4c" />
 
 ## Tech Stack  
 
