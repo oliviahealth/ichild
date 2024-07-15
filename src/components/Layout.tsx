@@ -18,10 +18,11 @@ const Layout = () => {
   const location = useLocation();
 
   const user = useAppStore(state => state.user);
+  const setError = useAppStore(state => state.setError);
 
   const setAccessToken = useAppStore((state) => state.setAccessToken);
   const setUser = useAppStore((state) => state.setUser);
-  
+
   const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
   const setisSidePanelOpen = useAppStore((state) => state.setisSidePanelOpen);
 
@@ -45,17 +46,22 @@ const Layout = () => {
       "Authorization": "Bearer " + accessToken,
     }
 
-    const user : IUser = (await axios.post(`${import.meta.env.VITE_API_URL}/restoreuser`, null, { headers: { ...headers }, withCredentials: true })).data
+    const user: IUser = (await axios.post(`${import.meta.env.VITE_API_URL}/restoreuser`, null, { headers: { ...headers }, withCredentials: true })).data
 
     parseWithZod(user, UserSchema);
 
-    return { accessToken, user };  
-    }, {
+    return { accessToken, user };
+  }, {
     onSuccess: ({ accessToken, user }) => {
-        setAccessToken(accessToken);
-        setUser(user);
+      setAccessToken(accessToken);
+      setUser(user);
 
-        return navigate('/');
+      return navigate('/');
+    },
+    onError: () => {
+      setError("Please sign in again");
+
+      return navigate("/signin");
     }
   });
 
@@ -64,17 +70,21 @@ const Layout = () => {
     const fetchData = async () => {
       const accessToken = sessionStorage.getItem('accessToken');
 
-      if(accessToken) {
+      if (accessToken) {
         getUser(accessToken);
       }
     };
-  
-    fetchData();
+
+    try {
+      fetchData();
+    } catch (error) {
+      setError("Something went wrong! Please try again later")
+    }
   }, []);
 
 
   //Open the sidepanel when going from mobile to desktop
-  window.addEventListener('resize',() => {
+  window.addEventListener('resize', () => {
     const windowWidth = window.innerWidth;
 
     if (windowWidth >= 1024) {
@@ -96,8 +106,8 @@ const Layout = () => {
           <div className={`flex flex-col h-full ${location.pathname.includes('/settings') ? 'bg-opacity-100' : 'bg-opacity-80'} bg-gray-100 rounded-box`}>
             <div className={`flex items-center gap-4 md:hidden w-full px-4 py-2 bg-zinc-200  ${isSidePanelOpen ? "hidden" : ""}`} onClick={() => setisSidePanelOpen(!isSidePanelOpen)}>
               <span className="cursor-pointer text-lg" ><BsBoxArrowRight /></span>
-            
-              <p className="text-sm underline truncate">{ currentConversationTitle }</p>
+
+              <p className="text-sm underline truncate">{currentConversationTitle}</p>
             </div>
             <div className="flex h-full w-full">
               <div>
@@ -108,7 +118,7 @@ const Layout = () => {
               {/* Content for the main container */}
               <div className={`w-full h-full`}>
                 <ErrorComponent />
-                { user ? <Outlet /> : <Navigate  to={'/signin'}/>}
+                {user ? <Outlet /> : <Navigate to={'/signin'} />}
               </div>
             </div>
           </div>
