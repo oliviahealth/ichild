@@ -4,6 +4,9 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 import certifi
 import os
 import time
+import openai
+
+from route_handlers.query_handlers import search_direct_questions, search_location_questions, tools
 
 from search_controller import core_search, grab_info, create_address
 from database import Location
@@ -36,6 +39,49 @@ def msg():
 # API route for ICHILD frontend
 @search_routes_bp.route("/formattedresults", methods=['POST', 'GET'])
 @jwt_required()
+def formatted_db_search():
+    user_id = get_jwt_identity()
+
+    if(not user_id):
+        return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
+
+    search_query = request.form['data']
+
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user."},
+        {"role": "user", "content": search_query}
+    ]
+
+    response = openai.chat.completions.create(
+        model="gpt-4o",
+        messages=messages,
+        tools=tools,
+    )
+
+    refusal = response.choices[0].message.refusal
+
+    if(refusal):
+        return "Something went wrong: OpenAi Classification Refusal", 500
+
+    function_name = response.choices[0].message.tool_calls[0].function.name
+    
+    data = None
+    if(function_name == 'search_direct_questions'):
+        data = search_direct_questions(id, search_query)
+    elif(function_name == 'search_location_questions'):
+        data = search_location_questions(id, search_query)
+    else:
+        return "error"
+    
+    date_created = int(time.time() * 1000)
+
+    return {
+        'userQuery' : search_query,
+        'locations' : data['locations'],
+        'dateCreated': date_created
+    }
+
+'''
 def formatted_db_search():
     user_id = get_jwt_identity()
 
@@ -96,3 +142,4 @@ def formatted_db_search():
     }
 
     return jsonify(results)
+'''

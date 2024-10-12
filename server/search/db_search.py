@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+import langchain
 from datetime import timedelta
 
 from database import db, bcrypt, Location, User, revoked_tokens
@@ -70,6 +71,8 @@ def create_app():
     engine_sec = create_engine(os.getenv('ADMIN_POSTGRESQL_CONNECTION_STRING'))
     SessionSec = sessionmaker(bind=engine_sec)
     session_sec = SessionSec()
+
+    langchain.verbose = True
     
     CORS(app, supports_credentials=True)
     bcrypt.init_app(app)

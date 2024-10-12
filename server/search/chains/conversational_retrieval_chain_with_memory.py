@@ -9,7 +9,7 @@ def build_conversational_retrieval_chain_with_memory(llm, retriever, id):
     # To continue an existing conversation, pass in an existing session_id
     # To create a new conversation, pass in a new session_id
     memory = ConversationBufferMemory(
-        chat_memory=SQLChatMessageHistory(session_id=str(id), connection_string=os.getenv('DATABASE_URI')),
+        chat_memory=SQLChatMessageHistory(session_id=str(id), connection_string=os.getenv('POSTGRESQL_CONNECTION_STRING')),
         return_messages=True,
         memory_key="chat_history",
         output_key="answer"
