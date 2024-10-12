@@ -59,6 +59,7 @@ def create_app():
     app = Flask(__name__)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRESQL_CONNECTION_STRING')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['ADMIN_SQLALCHEMY_DATABASE_URI'] = os.getenv('ADMIN_POSTGRESQL_CONNECTION_STRING')
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)

@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.types import UserDefinedType
 from flask_bcrypt import Bcrypt
 from flask_login import UserMixin
 import uuid
@@ -7,6 +8,16 @@ import uuid
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 revoked_tokens = set()
+
+class Vector(UserDefinedType):
+    def get_col_spec(self):
+        return "VECTOR(1536)"
+
+    def bind_expression(self, bindvalue):
+        return bindvalue
+
+    def column_expression(self, col):
+        return col
 class Conversation(db.Model):
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     title = db.Column(db.String(), nullable=False)
@@ -17,7 +28,7 @@ class Conversation(db.Model):
     responses = db.relationship('Response', backref='conversation', lazy=True, cascade='all, delete-orphan')
 
 class Location(db.Model):
-    id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid4()))
     name = db.Column(db.String(), nullable=False, unique=True)
     address = db.Column(db.String(), nullable=False)
     city = db.Column(db.String(), nullable=False)
@@ -40,6 +51,7 @@ class Location(db.Model):
     address_link = db.Column(db.String(), nullable=False)
     website = db.Column(db.String(), nullable=False)
     resource_type = db.Column(db.String(), nullable=False)
+    embedding = db.Column(Vector(), nullable=True)
 
 class Response(db.Model):
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
