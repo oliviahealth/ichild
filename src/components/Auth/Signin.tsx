@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -86,7 +86,7 @@ const Signin: React.FC = () => {
                 </button>
             </form>
 
-            {/* <p className="text-sm mt-8">Don't have an account? <span className="text-primary"><Link to={'/signup'}>Sign Up</Link></span></p> */}
+            <p className="text-sm mt-8">Don't have an account? <span className="text-primary"><Link to={'/signup'}>Sign Up</Link></span></p>
         </>
     )
 }
