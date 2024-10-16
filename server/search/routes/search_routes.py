@@ -69,7 +69,16 @@ def formatted_db_search():
     data = None
     if(function_name == 'search_direct_questions'):
         response_type = 'direct'
-        data = search_direct_questions(id, search_query)
+        
+        response = search_direct_questions(id, search_query)
+
+        return {
+            'userQuery' : search_query,
+            'response' : response,
+            'responseType' : response_type,
+            'locations' : [],
+            'dateCreated' : date_created
+        }
     elif(function_name == 'search_location_questions'):
         response_type = 'location'
 
