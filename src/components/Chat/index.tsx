@@ -111,6 +111,8 @@ const ChatComponent = () => {
 
     const response: IAPIResponse = (await axios.post(`${import.meta.env.VITE_API_URL}/formattedresults`, formData, { headers: { ...headers }, withCredentials: true })).data;
 
+    console.log(response);
+
     const conversation: IConversation = (await axios.post(`${import.meta.env.VITE_API_URL}/conversations`, { id: currentConversationId, title: response.userQuery }, { headers: { ...headers }, withCredentials: true })).data;
     await axios.post(`${import.meta.env.VITE_API_URL}/response`, { ...response, conversationId: conversation.id }, { headers: { ...headers }, withCredentials: true });
 

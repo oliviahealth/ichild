@@ -46,6 +46,7 @@ def formatted_db_search():
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
 
     search_query = request.form['data']
+    date_created = int(time.time() * 1000)
 
     messages = [
         {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user."},
@@ -67,19 +68,25 @@ def formatted_db_search():
     
     data = None
     if(function_name == 'search_direct_questions'):
+        response_type = 'direct'
         data = search_direct_questions(id, search_query)
     elif(function_name == 'search_location_questions'):
+        response_type = 'location'
+
         data = search_location_questions(id, search_query)
+        
+        response = data.get("response")
+        locations = data.get("locations")
+        
+        return {
+            'userQuery' : search_query,
+            'response' : response,
+            'responseType' : response_type,
+            'locations' : locations,
+            'dateCreated': date_created
+        }
     else:
         return "error"
-    
-    date_created = int(time.time() * 1000)
-
-    return {
-        'userQuery' : search_query,
-        'locations' : data['locations'],
-        'dateCreated': date_created
-    }
 
 '''
 def formatted_db_search():
