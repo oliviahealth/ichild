@@ -24,9 +24,10 @@ export type ISavedLocation = z.infer<typeof SavedLocationSchema>
 export const APIResponseSchema = z.object({
     userQuery: z.string(),
     response: z.string(),
-    responseType: z.enum(["location", "direct"]),
+    response_type: z.enum(["location", "direct"]),
     locations: z.array(LocationSchema),
-    dateCreated: z.number()
+    dateCreated: z.number(),
+    conversationId: z.string()
 });
 export type IAPIResponse = z.infer<typeof APIResponseSchema>;
 

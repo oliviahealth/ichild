@@ -28,7 +28,7 @@ class Conversation(db.Model):
     responses = db.relationship('Response', backref='conversation', lazy=True, cascade='all, delete-orphan')
 
 class Location(db.Model):
-    id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid4()))
+    id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(), nullable=False, unique=True)
     address = db.Column(db.String(), nullable=False)
     city = db.Column(db.String(), nullable=False)
@@ -58,6 +58,8 @@ class Response(db.Model):
     user_query = db.Column(db.String(), nullable=False)
     locations = db.Column(db.ARRAY(db.String(), db.ForeignKey('location.id', ondelete='CASCADE')), nullable=False)
     date_created = db.Column(db.BigInteger(), nullable=False)
+    response_type = db.Column(db.String(), nullable=False)
+    response = db.Column(db.String(), nullable=False)
     conversation_id = db.Column(db.String(), db.ForeignKey('conversation.id', ondelete='CASCADE'), nullable=False)
     author = db.relationship('Conversation', backref='conversations')
 class User(UserMixin, db.Model):

@@ -48,7 +48,7 @@ def add_conversations():
     try:
         date_created = int(time.time() * 1000)
 
-        new_conversation = Conversation(title=title, user_id=user_id, date_created=date_created, date_updated=date_created)
+        new_conversation = Conversation(id=id, title=title, user_id=user_id, date_created=date_created, date_updated=date_created)
 
         db.session.add(new_conversation)
         db.session.commit()
@@ -129,8 +129,8 @@ def get_conversation():
     
         location_dict = {location.id: location for location in Location.query.all()}
         
-        saved_location_ids = [saved_location[0] for saved_location in SavedLocation.query.filter_by(
-        user_id=conversation.user_id).with_entities(SavedLocation.existing_location_id).all()]
+        # saved_location_ids = [saved_location[0] for saved_location in SavedLocation.query.filter_by(
+        # user_id=conversation.user_id).with_entities(SavedLocation.existing_location_id).all()]
 
     except Exception as error:
         db.session.rollback()
@@ -147,6 +147,8 @@ def get_conversation():
                 'id': response.id,
                 'conversationId': response.conversation_id,
                 'userQuery': response.user_query,
+                'response_type': response.response_type,
+                'response' : response.response,
                 'dateCreated': response.date_created,
             'locations': [
                     {
@@ -161,7 +163,7 @@ def get_conversation():
                         'phone': location.phone,
                         'hoursOfOperation': [{ "sunday": location.sunday_hours }, { "monday": location.monday_hours }, { "tuesday": location.tuesday_hours }, { "wednesday": location.wednesday_hours }, {  "thursday": location.thursday_hours }, { "friday": location.friday_hours }, { "saturday": location.saturday_hours }],
                         'rating': float(location.rating) if location.rating.isalnum() else None,
-                        'isSaved': location.id in saved_location_ids
+                        'isSaved': False
                     }
                     for id in response.locations
                     for location in [location_dict.get(id)]

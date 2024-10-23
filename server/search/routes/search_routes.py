@@ -5,6 +5,7 @@ import certifi
 import os
 import time
 import openai
+import uuid
 
 from route_handlers.query_handlers import search_direct_questions, search_location_questions, tools
 
@@ -46,7 +47,13 @@ def formatted_db_search():
         return jsonify({ 'Unauthorized': 'Unauthorized' }), 403
 
     search_query = request.form['data']
+    conversation_id = request.form['conversationId']
     date_created = int(time.time() * 1000)
+
+    if(not conversation_id or conversation_id=="null"):
+        conversation_id = uuid.uuid4()
+
+    print(conversation_id)
 
     messages = [
         {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user."},
@@ -70,19 +77,20 @@ def formatted_db_search():
     if(function_name == 'search_direct_questions'):
         response_type = 'direct'
         
-        response = search_direct_questions(id, search_query)
+        response = search_direct_questions(conversation_id, search_query)
 
         return {
             'userQuery' : search_query,
             'response' : response,
-            'responseType' : response_type,
+            'response_type' : response_type,
             'locations' : [],
-            'dateCreated' : date_created
+            'dateCreated' : date_created,
+            'conversationId': conversation_id
         }
     elif(function_name == 'search_location_questions'):
         response_type = 'location'
 
-        data = search_location_questions(id, search_query)
+        data = search_location_questions(conversation_id, search_query)
         
         response = data.get("response")
         locations = data.get("locations")
@@ -90,9 +98,10 @@ def formatted_db_search():
         return {
             'userQuery' : search_query,
             'response' : response,
-            'responseType' : response_type,
+            'response_type' : response_type,
             'locations' : locations,
-            'dateCreated': date_created
+            'dateCreated': date_created,
+            'conversationId': conversation_id
         }
     else:
         return "error"
