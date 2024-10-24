@@ -11,7 +11,7 @@ import json
 from route_handlers.query_handlers import search_direct_questions, search_location_questions, restore_conversation_history, tools
 
 from search_controller import core_search, grab_info, create_address
-from database import Location
+from database import Location, message_store
 
 search_routes_bp = Blueprint('search_routes', __name__)
 
@@ -58,13 +58,31 @@ def formatted_db_search():
     conversation_id = request.form['conversationId']
     date_created = int(time.time() * 1000)
 
-    if (not conversation_id or conversation_id == "null"):
-        conversation_id = uuid.uuid4()
-
     messages = [
         {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user."},
-        {"role": "user", "content": search_query}
     ]
+
+    if (not conversation_id or conversation_id == "null"):
+        conversation_id = uuid.uuid4()
+    else:
+        conversation_history = message_store.query.filter_by(session_id=conversation_id).all()
+
+        for history in conversation_history:
+            history = json.loads(history.message)
+            
+            print(history)
+            type = history["type"]
+            content = history["data"]["content"]
+
+            role = None
+            if(type == "human"):
+                role = "user"
+            elif(type == "ai"):
+                role = "assistant"
+
+            messages.append({ "role": role, "content": content })
+
+    messages.append({"role": "user", "content": search_query})
 
     response = openai.chat.completions.create(
         model="gpt-4o",
@@ -83,38 +101,6 @@ def formatted_db_search():
 
     data = None
 
-    if(function_name == 'restore_conversation_history'):
-        conversation_history = restore_conversation_history(conversation_id)
-
-        for history in conversation_history:
-            history = json.loads(history.message)
-            
-            print(history)
-            type = history["type"]
-            content = history["data"]["content"]
-
-            role = None
-            if(type == "human"):
-                role = "user"
-            elif(type == "ai"):
-                role = "assistant"
-
-            messages.append({ "role": role, "content": content })
-
-        response = openai.chat.completions.create(
-        model="gpt-4o",
-        messages=messages,
-        tools=tools,
-        )
-
-        refusal = response.choices[0].message.refusal
-
-        if (refusal):
-            return "Something went wrong: OpenAi Classification Refusal", 500
-
-        function_name = response.choices[0].message.tool_calls[0].function.name
-
-    
     if (function_name == 'search_direct_questions'):
         response_type = 'direct'
 

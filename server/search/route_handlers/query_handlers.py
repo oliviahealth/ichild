@@ -157,23 +157,5 @@ tools = [
                 "additionalProperties": False
             }
         }
-    },
-    {
-        "type": 'function',
-        "function": {
-            "name" : "restore_conversation_history",
-            "description" : "Restores the previous conversation context to provide continuity and enhance response accuracy. This is especially useful for follow-up questions where earlier context is needed. For example, if a user asks 'where can I find prenatal vitamins in Bryan?' and later asks 'what about in Corpus Christi?', this function will help retrieve the conversation history to understand that the user is still asking about prenatal vitamins. Use this whenever additional context is required to respond effectively.",
-            "parameters" : {
-                "type" : "object",
-                "properties" : {
-                    "conversation_id" : {
-                        "type" : "string",
-                        "description" : "The id of the conversation history to restore"
-                    }
-                },
-                "required": ["conversation_id"],
-                "additionalProperties": False
-            }
-        }
     }
 ]
