@@ -6,6 +6,8 @@ from langchain.chat_models import ChatOpenAI
 from vector_stores.pgvector import build_pg_vector_store
 from embeddings.openai import openai_embeddings
 
+from database import message_store
+
 from retrievers.TableColumnRetriever import build_table_column_retriever
 
 # Using OpenAI for LLM
@@ -105,6 +107,10 @@ def search_location_questions(id, search_query):
         "locations" : locations
     }
 
+def restore_conversation_history(conversation_id):
+    conversation_history = message_store.query.filter_by(session_id=conversation_id).all()
+
+    return conversation_history
 
 # Defining list of tools to use with OpenAI function calling
 tools = [
@@ -148,6 +154,24 @@ tools = [
                     }
                 },
                 "required": ["id", "query"],
+                "additionalProperties": False
+            }
+        }
+    },
+    {
+        "type": 'function',
+        "function": {
+            "name" : "restore_conversation_history",
+            "description" : "Restores the previous conversation context to provide continuity and enhance response accuracy. This is especially useful for follow-up questions where earlier context is needed. For example, if a user asks 'where can I find prenatal vitamins in Bryan?' and later asks 'what about in Corpus Christi?', this function will help retrieve the conversation history to understand that the user is still asking about prenatal vitamins. Use this whenever additional context is required to respond effectively.",
+            "parameters" : {
+                "type" : "object",
+                "properties" : {
+                    "conversation_id" : {
+                        "type" : "string",
+                        "description" : "The id of the conversation history to restore"
+                    }
+                },
+                "required": ["conversation_id"],
                 "additionalProperties": False
             }
         }

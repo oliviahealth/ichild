@@ -62,6 +62,12 @@ class Response(db.Model):
     response = db.Column(db.String(), nullable=False)
     conversation_id = db.Column(db.String(), db.ForeignKey('conversation.id', ondelete='CASCADE'), nullable=False)
     author = db.relationship('Conversation', backref='conversations')
+
+class message_store(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    session_id = db.Column(db.String(), nullable=False)
+    message = db.Column(db.String(), nullable=False)
+
 class User(UserMixin, db.Model):
     id = db.Column(db.String(), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(), nullable=False)
