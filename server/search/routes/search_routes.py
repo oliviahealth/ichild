@@ -17,10 +17,10 @@ search_routes_bp = Blueprint('search_routes', __name__)
 
 # Executes when first user accesses site
 
-
 @search_routes_bp.before_app_first_request
 def connection_and_setup():
     model_path = os.getenv('MODEL_PATH')
+    print(model_path)
 
     global embedder
     embedder = SentenceTransformer(model_path)
@@ -97,7 +97,14 @@ def formatted_db_search():
     if (refusal):
         return "Something went wrong: OpenAi Classification Refusal", 500
 
-    function_name = response.choices[0].message.tool_calls[0].function.name
+    # function_name = response.choices[0].message.tool_calls[0].function.name
+
+    #changed here 
+    tool_calls = response.choices[0].message.tool_calls
+    if tool_calls and len(tool_calls) > 0:
+        function_name = tool_calls[0].function.name
+    else:
+        return "No tool calls found in the response", 500
 
     data = None
 

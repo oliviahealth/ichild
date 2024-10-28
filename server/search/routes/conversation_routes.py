@@ -120,6 +120,7 @@ def get_conversation():
     conversation_id = request.args.get('id')
     user_id = get_jwt_identity()
 
+
     try:
         conversation = Conversation.query.filter_by(id=conversation_id).first()
         conversation_user_id = str(conversation.user_id).strip()
