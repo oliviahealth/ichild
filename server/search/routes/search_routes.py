@@ -11,7 +11,7 @@ import json
 from route_handlers.query_handlers import search_direct_questions, search_location_questions, restore_conversation_history, tools
 
 from search_controller import core_search, grab_info, create_address
-from database import Location, message_store
+from database import Location, message_store, db
 
 search_routes_bp = Blueprint('search_routes', __name__)
 
@@ -44,8 +44,6 @@ def msg():
     return render_template('index.html')
 
 # API route for ICHILD frontend
-
-
 @search_routes_bp.route("/formattedresults", methods=['POST', 'GET'])
 @jwt_required()
 def formatted_db_search():
@@ -65,24 +63,26 @@ def formatted_db_search():
     if (not conversation_id or conversation_id == "null"):
         conversation_id = uuid.uuid4()
     else:
-        conversation_history = message_store.query.filter_by(session_id=conversation_id).all()
+        conversation_history = message_store.query.filter_by(
+            session_id=conversation_id).all()
 
         for history in conversation_history:
             history = json.loads(history.message)
-            
-            print(history)
+
             type = history["type"]
             content = history["data"]["content"]
 
             role = None
-            if(type == "human"):
+            if (type == "human"):
                 role = "user"
-            elif(type == "ai"):
+            elif (type == "ai"):
                 role = "assistant"
 
-            messages.append({ "role": role, "content": content })
+            messages.append({"role": role, "content": content})
 
     messages.append({"role": "user", "content": search_query})
+
+    print(messages)
 
     response = openai.chat.completions.create(
         model="gpt-4o",
@@ -97,7 +97,34 @@ def formatted_db_search():
     if (refusal):
         return "Something went wrong: OpenAi Classification Refusal", 500
 
-    function_name = response.choices[0].message.tool_calls[0].function.name
+    if (response.choices[0].message.tool_calls):
+        function_name = response.choices[0].message.tool_calls[0].function.name
+    else:
+        content = response.choices[0].message.content
+
+        new_user_message = message_store(
+            session_id=conversation_id,
+            message=f'{{"type": "human", "data": {{"content": "{search_query}"}}}}'
+        )
+        
+        new_response_message = message_store(
+            session_id=conversation_id,
+            message=f'{{"type": "ai", "data": {{"content": "{content}"}}}}'
+        )
+
+        db.session.add(new_user_message)
+        db.session.add(new_response_message)
+
+        db.session.commit()
+
+        return {
+            'userQuery': search_query,
+            'response': content,
+            'response_type': 'direct',
+            'locations': [],
+            'dateCreated': date_created,
+            'conversationId': conversation_id
+        }
 
     data = None
 
