@@ -99,13 +99,12 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                 <div className="w-full h-full">
                     <ChatBubble isResponse={true}>
-                        <p className="mb-2">I've found {apiResponse.locations.length} location{apiResponse.locations.length >= 2 || apiResponse.locations.length === 0 ? "s" : ""} for you</p>
+                        <p className="mb-2">{apiResponse.response}</p>
                     </ChatBubble>
 
-
-                    <div className="max-w-[29rem] h-48 p-3 bg-white rounded-xl">
+                    {/* <div className="max-w-[29rem] h-48 p-3 bg-white rounded-xl">
                         <InteractiveMap locations={apiResponse.locations} />
-                    </div>
+                    </div> */}
 
                     <div className="hidden xl:flex flex-row-reverse">
                         {focusedLocation && (

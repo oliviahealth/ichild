@@ -29,6 +29,8 @@ def add_response():
     locations = data.get('locations')
     user_query = data.get('userQuery')
     conversation_id = data.get('conversationId')
+    response_type = data.get("response_type")
+    response = data.get("response")
     date_created = data.get('dateCreated')
 
     user_id = get_jwt_identity()
@@ -49,7 +51,7 @@ def add_response():
     locationsArr = [Location.query.filter_by(id=location.get('id')).first().id for location in locations] # This array will hold only the id of the locations that are then stored as a column on the response record. Do not store entire location objects. 
 
     try:    
-        new_response = Response(user_query=user_query, conversation_id=conversation_id, locations=locationsArr, date_created=date_created)
+        new_response = Response(user_query=user_query, conversation_id=conversation_id, locations=locationsArr, response_type=response_type, response=response, date_created=date_created)
 
         db.session.add(new_response)
         db.session.commit()
