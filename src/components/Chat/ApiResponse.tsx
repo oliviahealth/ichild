@@ -11,7 +11,6 @@ import { IAPIResponse, ILocation } from "../../utils/interfaces";
 
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
-import InteractiveMap from "./InteractiveMap";
 import LocationInfoPanel from "./LocationInfoPanel";
 
 
