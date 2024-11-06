@@ -9,6 +9,7 @@ from embeddings.openai import openai_embeddings
 from database import message_store
 
 from retrievers.TableColumnRetriever import build_table_column_retriever
+import time
 
 # Using OpenAI for LLM
 llm = ChatOpenAI()
@@ -31,12 +32,17 @@ def search_direct_questions(id, search_query):
     if not id:
         id = uuid4()
 
+    start_time = time.time()
+
     # Build the retrieval QA chain with SQL memory
     # Must pass in the session_id from the message_store table
     retrieval_qa_chain = build_conversational_retrieval_chain_with_memory(
         llm, pg_vector_retriever, id)
 
     result = retrieval_qa_chain.run(search_query)
+
+    end_time = time.time()
+    print(f"\x1B[96m[TEST]\x1B[m Direct question took {end_time - start_time} seconds")
 
     return result
 
@@ -95,11 +101,16 @@ def search_location_questions(id, search_query):
             "website": website
         })
 
+    start_time = time.time()
+
     # Using same conversational retrieval chain with SQL memory just with different retriever
     retrieval_qa_chain = build_conversational_retrieval_chain_with_memory(llm, table_column_retriever, id)
 
     # Get the LLM response
     response = retrieval_qa_chain.run(search_query)
+
+    end_time = time.time()
+    print(f"\x1B[96m[TEST]\x1B[m Location question took {end_time - start_time} seconds")
 
     # Return the LLM response and the JSON
     return {

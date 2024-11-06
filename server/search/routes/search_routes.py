@@ -84,17 +84,25 @@ def formatted_db_search():
 
     print(messages)
 
+    start_time = time.time()
+    
     response = openai.chat.completions.create(
         model="gpt-4o",
         messages=messages,
         tools=tools,
     )
+    
+    end_time = time.time()
+    print(f"\x1B[96m[TEST]\x1B[m Choosing function took {end_time - start_time} seconds")
 
     print(response)
+    if (response.choices[0].message.tool_calls):
+        print(f"\x1B[96m[TEST]\x1B[m Chosen function: {response.choices[0].message.tool_calls[0].function.name}")
 
     refusal = response.choices[0].message.refusal
 
     if (refusal):
+        printf("\x1B[96m[TEST] \x1B[91m[ERROR]\x1B[m OpenAI Classification Refusal")
         return "Something went wrong: OpenAi Classification Refusal", 500
 
     if (response.choices[0].message.tool_calls):
