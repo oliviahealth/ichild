@@ -220,7 +220,7 @@ const ChatComponent = () => {
           <input placeholder="Ask me a question" className="input w-full py-6 bg-white focus:outline-none border-none rounded-box rounded-r-none text-black" {...register("query")} />
           <button className="btn btn-square h-full bg-white border-none hover:bg-primary active:bg-primary-focus rounded-box rounded-l-none hover:text-white">
             <p>
-              <svg width="32" height="34" viewBox="0 0 32 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="24" height="26" viewBox="0 0 32 34" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path id="Subtract" d="M0.655396 34L31.263 17L0.655396 0L4.89595 13.1308L21.2664 17L4.89595 21.2815L0.655396 34Z" className="fill-current" />
               </svg>
             </p>
