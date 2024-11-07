@@ -111,7 +111,7 @@ const SidePanel: React.FC = () => {
                 <div className="w-[275px] p-4 h-full flex flex-col justify-between">
                     <div>
                         <div className="flex gap-2 justify-between items-center">
-                            <Link to={'/'} className="btn rounded-xl md:w-full bg-white border-none text-black shadow-md hover:bg-gray-100" onClick={createNewConversation}>
+                            <Link to={'/'} className="btn rounded-xl md:w-full bg-white border-none text-xl text-black shadow-md hover:bg-gray-100" onClick={createNewConversation}>
                                 <FiPlus className="text-xl" /> New Chat
                             </Link>
 
@@ -120,12 +120,12 @@ const SidePanel: React.FC = () => {
                             </button>
                         </div>
 
-                        <p className="text-sm text-black my-4 mt-6 font-semibold">Recent Activity</p>
+                        <p className="text-xl text-black my-4 mt-6 font-semibold">Recent Activity</p>
 
                         {user ? (
                             <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-28rem)]">
                                 {conversationPreviews.map((conversationDetail, index) => (
-                                    <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversationDetail.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                                    <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 text-base rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversationDetail.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                         <div className="flex items-center">
                                             <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
                                             <p className="ml-4">{conversationDetail.title}</p>
@@ -139,21 +139,21 @@ const SidePanel: React.FC = () => {
                             </div>
                         ) : (
                             <div>
-                                <p className="mb-4 text-sm text-gray-500">You must be signed in to see your conversation history</p>
+                                <p className="mb-4 text-base text-gray-500">You must be signed in to see your conversation history</p>
                             </div>
                         )}
                     </div>
 
                     {user && (<div>
                         <div className="pb-6">
-                            <p className="text-sm text-black font-medium my-4">Saved</p>
+                            <p className="text-xl text-black font-medium my-4">Saved</p>
 
-                            <Link to={'/savedlocations'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <Link to={'/savedlocations'} className={`my-2 p-2 text-base rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><IoLocationOutline /></p>
                                 <p className="ml-4">Locations</p>
                             </Link>
 
-                            {/* <Link to={'/savedchats'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedchats' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            {/* <Link to={'/savedchats'} className={`my-2 p-2 text-base rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedchats' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
                                 <p className="ml-4">Chats</p>
                             </Link> */}
@@ -162,17 +162,17 @@ const SidePanel: React.FC = () => {
                         <hr />
 
                         <div>
-                            <Link to={'/settings/user'} className={`my-2 p-2 text-sm rounded-lg flex items-center ${location.pathname === '/settings/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <Link to={'/settings/user'} className={`my-2 p-2 text-xl rounded-lg flex items-center ${location.pathname === '/settings/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><CgProfile /></p>
                                 <p className="ml-4">{user.name}</p>
                             </Link>
 
-                            {user.isAdmin && (<a href={`${import.meta.env.VITE_API_URL}/admin`} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
+                            {user.isAdmin && (<a href={`${import.meta.env.VITE_API_URL}/admin`} className={`my-2 p-2 text-xl rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
                                 <p className="text-lg"><RiAdminLine /></p>
                                 <p className="ml-4">Admin</p>
                             </a>)}
 
-                            <span onClick={() => handleSignout()} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
+                            <span onClick={() => handleSignout()} className={`my-2 p-2 text-xl rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
                                 <p className="text-lg"><RxExit /></p>
                                 <p className="ml-4">Sign out</p>
                             </span>

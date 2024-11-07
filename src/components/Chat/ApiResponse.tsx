@@ -129,14 +129,14 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                                     <p className="text-3xl text-primary">{String.fromCharCode(65 + index)}</p>
 
                                                     <div className="w-full">
-                                                        <p className="font-semibold">{location.name}</p>
+                                                        <p className="text-xl font-semibold">{location.name}</p>
 
                                                         <div className="flex gap-2 my-3">
                                                             <a href={location.website} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Website</a>
                                                             <a href={location.addressLink} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Directions</a>
                                                         </div>
 
-                                                        <p className="text-sm">{location.address}</p>
+                                                        <p className="text-base">{location.address}</p>
                                                     </div>
                                                 </div>
 

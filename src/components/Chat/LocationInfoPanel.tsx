@@ -65,7 +65,7 @@ const LocationInfoPanel: React.FC<Props> = ({ location, locationToSave, isDelete
                 </div>
             </div>
 
-            <div className="collapse collapse-arrow bg-opacity-50 bg-gray-200 text-sm">
+            <div className="collapse collapse-arrow bg-opacity-50 bg-gray-200 text-base">
                 <input type="checkbox" className="peer" />
                 <div className="collapse-title flex justify-between items-center font-semibold">
                     <p>{["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][currentDayOfWeek]}</p>
@@ -87,7 +87,7 @@ const LocationInfoPanel: React.FC<Props> = ({ location, locationToSave, isDelete
                 </div>
             </div>
 
-            <p className={`text-sm ${!descriptionExpanded ? "line-clamp-4" : ""}`} onClick={() => setDescriptionExpanded(!descriptionExpanded)} >{location.description}</p>
+            <p className={`text-base ${!descriptionExpanded ? "line-clamp-4" : ""}`} onClick={() => setDescriptionExpanded(!descriptionExpanded)} >{location.description}</p>
 
             <div className="flex gap-x-1 items-center">
                 <p className="font-semibold">Website: </p>

@@ -168,9 +168,9 @@ const ChatComponent = () => {
                   </ChatBubble>
 
                   <ChatBubble isResponse={true}>
-                    <p className="font-bold pb-4">Quick Responses</p>
+                    <p className="font-bold pb-4 text-xl">Quick Responses</p>
 
-                    <div className="space-y-3 text-sm pb-3">
+                    <div className="space-y-3 text-base pb-3">
                       {quickResponses.map((quickResponse, index) => (
                         <div key={index} className="flex justify-between items-center space-x-5 text-primary cursor-pointer" onClick={() => handleQuickResponse(quickResponse)}>
                           <p>{quickResponse}</p>

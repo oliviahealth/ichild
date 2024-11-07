@@ -43,15 +43,15 @@ const Navbar: React.FC = () => {
           <label tabIndex={0} className="btn btn-ghost btn-circle">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
           </label>
-          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52">
-            {user ? (<li><span onClick={() => handleSignout()}>Sign Out</span></li>) : <li><Link to={'/signin'}>Sign In</Link></li>}
-            <li><a href="http://www.oliviahealth.org" target="_blank">OliviaHealth</a></li>
+          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52 text-base" style={{display: "block !important"}}>
+            {user ? (<li><span className="text-[length:inherit]" onClick={() => handleSignout()}>Sign Out</span></li>) : <li><Link className="text-[length:inherit]" to={'/signin'}>Sign In</Link></li>}
+            <li><a className="text-[length:inherit]" href="http://www.oliviahealth.org" target="_blank">OliviaHealth</a></li>
           </ul>
         </div>
 
       </div>
       <div className="navbar-end hidden lg:flex">
-        <ul className="menu menu-horizontal">
+        <ul className="menu menu-horizontal text-base">
           <li><a href="http://www.oliviahealth.org" target="_blank">OliviaHealth</a></li>
           {user ? (<li><span onClick={() => handleSignout()}>Sign Out</span></li>) : <li><Link to={'/signin'}>Sign In</Link></li>}
         </ul>
