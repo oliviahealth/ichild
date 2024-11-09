@@ -120,9 +120,10 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                         <div>
                             {apiResponse.locations.map((location, index) => {
+                                const isFocused = location === focusedLocation;
                                 return (
                                     <div key={`API Response: ${index}`} onClick={() => setFocusedLocation(location)} className="cursor-pointer">
-                                        <ChatBubble isResponse={true} isFocused={location === focusedLocation}>
+                                        <ChatBubble isResponse={true} isFocused={isFocused} isLocationResponse={true}>
                                             <div className="flex justify-between items-center p-1 sm:w-[27rem]">
                                                 <div className="flex items-center gap-6 w-full">
                                                     {/* Render the letters of the alphabet starting with 'A' */}
