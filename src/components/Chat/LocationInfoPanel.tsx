@@ -24,7 +24,7 @@ const LocationInfoPanel: React.FC<Props> = ({ location, locationToSave, isDelete
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
     return (
-        <div className="my-4 flex flex-col gap-4 bg-[#F8F5F5] p-3 rounded-xl">
+        <div className="my-4 flex flex-col gap-4 bg-white p-3 rounded-xl">
             <div className="h-80">
                 <InteractiveMap locations={[location]} />
             </div>

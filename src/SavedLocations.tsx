@@ -105,7 +105,7 @@ const SavedLocations: React.FC = () => {
                                         <div className="flex justify-between items-center p-1 sm:w-[27rem]">
                                             <div className="flex items-center gap-6 w-full">
                                                 {/* Render the letters of the alphabet starting with 'A' */}
-                                                <p className="text-3xl text-primary">{String.fromCharCode(65 + index)}</p>
+                                                <p className={`text-3xl text-${isFocused ? "primary font-bold" : "black"}`}>{String.fromCharCode(65 + index)}</p>
 
                                                 <div className="w-full">
                                                     <p className="font-semibold">{location.name}</p>

@@ -105,13 +105,13 @@ const SidePanel: React.FC = () => {
         <>
             <input id="sidepanel" type="checkbox" className="drawer-toggle" />
 
-            <div className="drawer-side h-full md:rounded-box bg-white bg-opacity-50 text-base-neutral" style={{ borderBottomRightRadius: "0px" }}>
+            <div className="drawer-side h-full md:rounded-box bg-white text-base-neutral" style={{ borderBottomRightRadius: "0px" }}>
                 <label htmlFor="my-drawer" className="drawer-overlay"></label>
 
                 <div className="w-[275px] py-4 px-0 [&>*>*]:px-4 h-full flex flex-col justify-between">
                     <div>
                         <div className="flex gap-2 justify-between items-center">
-                            <Link to={'/'} className="btn rounded-xl md:w-full bg-white border-none text-xl text-black shadow-md hover:bg-gray-100" onClick={createNewConversation}>
+                            <Link to={'/'} className="btn rounded-xl md:w-full bg-gray-100 border-none shadow-none text-xl text-black hover:bg-gray-200" onClick={createNewConversation}>
                                 <FiPlus className="text-xl" /> New Chat
                             </Link>
 
@@ -126,7 +126,7 @@ const SidePanel: React.FC = () => {
                             <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-28rem)] !px-0">
                                 {conversationPreviews.map((conversationDetail, index) => {
                                     const isSelected = conversationDetail.id === currentConversationId;
-                                    return <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 mx-4 text-base rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${isSelected ? "bg-white hover:bg-white text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40 !mx-0 px-[24px] rounded-none shadow-[inset_5px_0_0_0_var(--tw-shadow-color)] shadow-primary" : ""}`}>
+                                    return <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 mx-0 text-base rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 px-[24px] rounded-none ${isSelected ? "bg-[#E8E0E0] hover:bg-[#D8D0D0] text-primary font-semibold shadow-[inset_5px_0_0_0_var(--tw-shadow-color)] shadow-primary" : ""}`}>
                                         <div className="flex items-center">
                                             <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
                                             <p className="ml-4">{conversationDetail.title}</p>

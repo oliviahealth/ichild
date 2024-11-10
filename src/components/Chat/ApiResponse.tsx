@@ -108,10 +108,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                     <div className="hidden xl:flex flex-row-reverse">
                         {focusedLocation && (
-                            <div className="flex w-full h-full bg-[#F8F5F5] rounded-xl">
-                                <div className="w-2 bg-primary rounded-l-lg" >
-                                </div>
-
+                            <div className="flex w-full h-full rounded-xl">
                                 <div className="w-full h-full p-3 object-container">
                                     <LocationInfoPanel location={focusedLocation} locationToSave={locationToSave} isSaveLoading={isSaveLoading} isDeleteLoading={isDeleteLoading} saveLocation={saveLocation} deleteSavedLocation={deleteSavedLocation} />
                                 </div>
@@ -127,14 +124,14 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                             <div className="flex justify-between items-center p-1 sm:w-[27rem]">
                                                 <div className="flex items-center gap-6 w-full">
                                                     {/* Render the letters of the alphabet starting with 'A' */}
-                                                    <p className="text-3xl text-primary">{String.fromCharCode(65 + index)}</p>
+                                                    <p className={`text-3xl text-${isFocused ? "primary font-bold" : "black"} min-w-[30.15px] max-w-[30.15px] text-center`}>{String.fromCharCode(65 + index)}</p>
 
                                                     <div className="w-full">
                                                         <p className="text-xl font-semibold">{location.name}</p>
 
                                                         <div className="flex gap-2 my-3">
-                                                            <a href={location.website} target="_blank" className={`btn btn-xs border-none ${isFocused ? "bg-[#E8DDDD] text-primary hover:bg-[#D8CCCC]" : "bg-gray-200 text-black hover:bg-gray-300"}`}>Website</a>
-                                                            <a href={location.addressLink} target="_blank" className={`btn btn-xs border-none ${isFocused ? "bg-[#E8DDDD] text-primary hover:bg-[#D8CCCC]" : "bg-gray-200 text-black hover:bg-gray-300"}`}>Directions</a>
+                                                            <a href={location.website} target="_blank" className={`btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300`}>Website</a>
+                                                            <a href={location.addressLink} target="_blank" className={`btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300`}>Directions</a>
                                                         </div>
 
                                                         <p className="text-base">{location.address}</p>
