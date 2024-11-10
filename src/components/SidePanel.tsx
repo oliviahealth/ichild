@@ -108,7 +108,7 @@ const SidePanel: React.FC = () => {
             <div className="drawer-side h-full md:rounded-box bg-white bg-opacity-50 text-base-neutral" style={{ borderBottomRightRadius: "0px" }}>
                 <label htmlFor="my-drawer" className="drawer-overlay"></label>
 
-                <div className="w-[275px] p-4 h-full flex flex-col justify-between">
+                <div className="w-[275px] py-4 px-0 [&>*>*]:px-4 h-full flex flex-col justify-between">
                     <div>
                         <div className="flex gap-2 justify-between items-center">
                             <Link to={'/'} className="btn rounded-xl md:w-full bg-white border-none text-xl text-black shadow-md hover:bg-gray-100" onClick={createNewConversation}>
@@ -123,19 +123,20 @@ const SidePanel: React.FC = () => {
                         <p className="text-xl text-black my-4 mt-6 font-semibold">Recent Activity</p>
 
                         {user ? (
-                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-28rem)]">
-                                {conversationPreviews.map((conversationDetail, index) => (
-                                    <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 text-base rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversationDetail.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-28rem)] !px-0">
+                                {conversationPreviews.map((conversationDetail, index) => {
+                                    const isSelected = conversationDetail.id === currentConversationId;
+                                    return <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 mx-4 text-base rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${isSelected ? "bg-white hover:bg-white text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40 !mx-0 px-[24px] rounded-none shadow-[inset_5px_0_0_0_var(--tw-shadow-color)] shadow-primary" : ""}`}>
                                         <div className="flex items-center">
                                             <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
                                             <p className="ml-4">{conversationDetail.title}</p>
                                         </div>
 
-                                        <button onClick={() => deleteConversation(conversationDetail.id)} className={`btn btn-ghost btn-sm ${!(conversationDetail.id === currentConversationId) ? "hidden" : ""}`}>
+                                        <button onClick={() => deleteConversation(conversationDetail.id)} className={`btn btn-ghost btn-sm ${!isSelected ? "hidden" : ""}`}>
                                             {isDeleteLoading ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-lg" />)}
                                         </button>
                                     </Link>
-                                ))}
+                                })}
                             </div>
                         ) : (
                             <div>
