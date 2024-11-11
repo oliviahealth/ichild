@@ -128,8 +128,7 @@ const SidePanel: React.FC = () => {
                                     const isSelected = conversationDetail.id === currentConversationId;
                                     return <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 mx-0 text-base rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 px-[24px] rounded-none ${isSelected ? "bg-[#E8E0E0] hover:bg-[#D8D0D0] text-primary font-semibold shadow-[inset_5px_0_0_0_var(--tw-shadow-color)] shadow-primary" : ""}`}>
                                         <div className="flex items-center">
-                                            <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
-                                            <p className="ml-4">{conversationDetail.title}</p>
+                                            <p>{conversationDetail.title}</p>
                                         </div>
 
                                         <button onClick={() => deleteConversation(conversationDetail.id)} className={`btn btn-ghost btn-sm ${!isSelected ? "hidden" : ""}`}>
