@@ -123,7 +123,7 @@ const SidePanel: React.FC = () => {
                         <p className="text-xl text-black my-4 mt-6 font-semibold">Recent Activity</p>
 
                         {user ? (
-                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-28rem)] !px-0">
+                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-33.5rem)] !px-0">
                                 {conversationPreviews.map((conversationDetail, index) => {
                                     const isSelected = conversationDetail.id === currentConversationId;
                                     return <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 mx-0 text-base rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 px-[24px] rounded-none ${isSelected ? "bg-[#E8E0E0] hover:bg-[#D8D0D0] text-primary font-semibold shadow-[inset_5px_0_0_0_var(--tw-shadow-color)] shadow-primary" : ""}`}>
