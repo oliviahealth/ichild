@@ -152,7 +152,7 @@ const ChatComponent = () => {
   return (
     <div className="flex w-full flex-col h-full">
       <div className={`h-full p-4 flex flex-col ${!isLoading ? 'justify-end' : 'justify-start'}`}>
-        <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-14rem)] ">
+        <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-16rem)]">
 
           {isLoading ? (<ChatLoadingSkeleton />) : (
             <>
