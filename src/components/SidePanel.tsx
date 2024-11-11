@@ -148,7 +148,7 @@ const SidePanel: React.FC = () => {
                         <div className="pb-6">
                             <p className="text-xl text-black font-medium my-4 px-4">Saved</p>
 
-                            <Link to={'/savedlocations'} className={`my-2 py-2 px-6 text-base cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <Link to={'/savedlocations'} className={`my-2 py-2 px-6 text-base cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "text-primary bg-[#E8E0E0] hover:bg-[#D8D0D0] font-semibold shadow-[inset_5px_0_0_0_var(--tw-shadow-color)] shadow-primary" : ""}`}>
                                 <p className="text-lg"><IoLocationOutline /></p>
                                 <p className="ml-4">Locations</p>
                             </Link>
@@ -162,7 +162,7 @@ const SidePanel: React.FC = () => {
                         <hr />
 
                         <div>
-                            <Link to={'/settings/user'} className={`my-2 py-2 px-6 text-xl flex items-center hover:bg-gray-100 ${location.pathname === '/settings/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <Link to={'/settings/user'} className={`my-2 py-2 px-6 text-xl flex items-center hover:bg-gray-100 ${location.pathname === '/settings/user' ? "text-primary bg-[#E8E0E0] hover:bg-[#D8D0D0] font-semibold shadow-[inset_5px_0_0_0_var(--tw-shadow-color)] shadow-primary" : ""}`}>
                                 <p className="text-lg"><CgProfile /></p>
                                 <p className="ml-4">{user.name}</p>
                             </Link>
