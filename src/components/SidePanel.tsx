@@ -132,7 +132,7 @@ const SidePanel: React.FC = () => {
                                         </div>
 
                                         <button onClick={() => deleteConversation(conversationDetail.id)} className={`btn btn-ghost btn-sm ${!isSelected ? "hidden" : ""}`}>
-                                            {isDeleteLoading ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-lg" />)}
+                                            {isDeleteLoading ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-lg opacity-50 hover:opacity-100 transition-opacity duration-100" />)}
                                         </button>
                                     </Link>
                                 })}
