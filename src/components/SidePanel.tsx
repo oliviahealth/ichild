@@ -108,9 +108,9 @@ const SidePanel: React.FC = () => {
             <div className="drawer-side h-full md:rounded-box bg-white text-base-neutral" style={{ borderBottomRightRadius: "0px" }}>
                 <label htmlFor="my-drawer" className="drawer-overlay"></label>
 
-                <div className="w-[275px] py-4 px-0 [&>*>*]:px-4 h-full flex flex-col justify-between">
+                <div className="w-[275px] py-4 px-0 h-full flex flex-col justify-between">
                     <div>
-                        <div className="flex gap-2 justify-between items-center">
+                        <div className="flex gap-2 justify-between items-center px-4">
                             <Link to={'/'} className="btn rounded-xl md:w-full bg-gray-100 border-none shadow-none text-xl text-black hover:bg-gray-200" onClick={createNewConversation}>
                                 <FiPlus className="text-xl" /> New Chat
                             </Link>
@@ -120,10 +120,10 @@ const SidePanel: React.FC = () => {
                             </button>
                         </div>
 
-                        <p className="text-xl text-black my-4 mt-6 font-semibold">Recent Activity</p>
+                        <p className="text-xl text-black my-4 mt-6 font-semibold px-4">Recent Activity</p>
 
                         {user ? (
-                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-33.5rem)] !px-0">
+                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-33.5rem)]">
                                 {conversationPreviews.map((conversationDetail, index) => {
                                     const isSelected = conversationDetail.id === currentConversationId;
                                     return <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 mx-0 text-base rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 px-[24px] rounded-none ${isSelected ? "bg-[#E8E0E0] hover:bg-[#D8D0D0] text-primary font-semibold shadow-[inset_5px_0_0_0_var(--tw-shadow-color)] shadow-primary" : ""}`}>
@@ -146,9 +146,9 @@ const SidePanel: React.FC = () => {
 
                     {user && (<div>
                         <div className="pb-6">
-                            <p className="text-xl text-black font-medium my-4">Saved</p>
+                            <p className="text-xl text-black font-medium my-4 px-4">Saved</p>
 
-                            <Link to={'/savedlocations'} className={`my-2 p-2 text-base rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <Link to={'/savedlocations'} className={`my-2 py-2 px-6 text-base cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><IoLocationOutline /></p>
                                 <p className="ml-4">Locations</p>
                             </Link>
@@ -162,17 +162,17 @@ const SidePanel: React.FC = () => {
                         <hr />
 
                         <div>
-                            <Link to={'/settings/user'} className={`my-2 p-2 text-xl rounded-lg flex items-center ${location.pathname === '/settings/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <Link to={'/settings/user'} className={`my-2 py-2 px-6 text-xl flex items-center hover:bg-gray-100 ${location.pathname === '/settings/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><CgProfile /></p>
                                 <p className="ml-4">{user.name}</p>
                             </Link>
 
-                            {user.isAdmin && (<a href={`${import.meta.env.VITE_API_URL}/admin`} className={`my-2 p-2 text-xl rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
+                            {user.isAdmin && (<a href={`${import.meta.env.VITE_API_URL}/admin`} className={`my-2 py-2 px-6 text-xl cursor-pointer flex items-center hover:bg-gray-100`}>
                                 <p className="text-lg"><RiAdminLine /></p>
                                 <p className="ml-4">Admin</p>
                             </a>)}
 
-                            <span onClick={() => handleSignout()} className={`my-2 p-2 text-xl rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
+                            <span onClick={() => handleSignout()} className={`my-2 py-2 px-6 text-xl cursor-pointer flex items-center hover:bg-gray-100`}>
                                 <p className="text-lg"><RxExit /></p>
                                 <p className="ml-4">Sign out</p>
                             </span>
