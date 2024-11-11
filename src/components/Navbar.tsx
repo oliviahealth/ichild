@@ -55,8 +55,8 @@ const Navbar: React.FC = () => {
           {/* - Set menu item width explicitly to prevent bold font on hover from changing width
             * - Use justify-content instead of text-align because <a>/<span> seems to have display: grid; from Tailwind
             */}
-            <li><a href="http://www.oliviahealth.org" target="_blank" className="w-[124.98px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">OliviaHealth</a></li>
-          {user ? (<li><span onClick={() => handleSignout()} className="w-[97.55px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">Sign Out</span></li>) : <li><Link to={'/signin'} className="w-[84.27px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">Sign In</Link></li>}
+            <li><a href="http://www.oliviahealth.org" target="_blank" className="w-[125px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">OliviaHealth</a></li>
+          {user ? (<li><span onClick={() => handleSignout()} className="w-[98px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">Sign Out</span></li>) : <li><Link to={'/signin'} className="w-[85px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">Sign In</Link></li>}
         </ul>
       </div>
     </div>

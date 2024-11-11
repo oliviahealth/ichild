@@ -124,7 +124,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                             <div className="flex justify-between items-center p-1 sm:w-[27rem]">
                                                 <div className="flex items-center gap-6 w-full">
                                                     {/* Render the letters of the alphabet starting with 'A' */}
-                                                    <p className={`text-3xl text-${isFocused ? "primary font-bold" : "black"} min-w-[30.15px] max-w-[30.15px] text-center`}>{String.fromCharCode(65 + index)}</p>
+                                                    <p className={`text-3xl text-${isFocused ? "primary font-bold" : "black"} min-w-[31px] max-w-[31px] text-center`}>{String.fromCharCode(65 + index)}</p>
 
                                                     <div className="w-full">
                                                         <p className="text-xl font-semibold">{location.name}</p>
