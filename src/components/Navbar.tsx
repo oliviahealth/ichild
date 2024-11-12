@@ -43,17 +43,20 @@ const Navbar: React.FC = () => {
           <label tabIndex={0} className="btn btn-ghost btn-circle">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
           </label>
-          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52">
-            {user ? (<li><span onClick={() => handleSignout()}>Sign Out</span></li>) : <li><Link to={'/signin'}>Sign In</Link></li>}
-            <li><a href="http://www.oliviahealth.org" target="_blank">OliviaHealth</a></li>
+          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52 text-base" style={{display: "block !important"}}>
+            {user ? (<li><span className="text-[length:inherit] outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100" onClick={() => handleSignout()}>Sign Out</span></li>) : <li><Link className="text-[length:inherit] outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100" to={'/signin'}>Sign In</Link></li>}
+            <li><a className="text-[length:inherit] outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100" href="http://www.oliviahealth.org" target="_blank">OliviaHealth</a></li>
           </ul>
         </div>
 
       </div>
       <div className="navbar-end hidden lg:flex">
-        <ul className="menu menu-horizontal">
-          <li><a href="http://www.oliviahealth.org" target="_blank">OliviaHealth</a></li>
-          {user ? (<li><span onClick={() => handleSignout()}>Sign Out</span></li>) : <li><Link to={'/signin'}>Sign In</Link></li>}
+        <ul className="menu menu-horizontal text-base">
+          {/* - Set menu item width explicitly to prevent bold font on hover from changing width
+            * - Use justify-content instead of text-align because <a>/<span> seems to have display: grid; from Tailwind
+            */}
+            <li><a href="http://www.oliviahealth.org" target="_blank" className="w-[125px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">OliviaHealth</a></li>
+          {user ? (<li><span onClick={() => handleSignout()} className="w-[100px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">Sign Out</span></li>) : <li><Link to={'/signin'} className="w-[85px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">Sign In</Link></li>}
         </ul>
       </div>
     </div>

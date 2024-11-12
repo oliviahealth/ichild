@@ -152,7 +152,7 @@ const ChatComponent = () => {
   return (
     <div className="flex w-full flex-col h-full">
       <div className={`h-full p-4 flex flex-col ${!isLoading ? 'justify-end' : 'justify-start'}`}>
-        <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-14rem)] ">
+        <div ref={containerRef} className="overflow-y-auto max-h-[calc(100vh-16rem)]">
 
           {isLoading ? (<ChatLoadingSkeleton />) : (
             <>
@@ -168,9 +168,9 @@ const ChatComponent = () => {
                   </ChatBubble>
 
                   <ChatBubble isResponse={true}>
-                    <p className="font-bold pb-4">Quick Responses</p>
+                    <p className="font-bold pb-4 text-xl">Quick Responses</p>
 
-                    <div className="space-y-3 text-sm pb-3">
+                    <div className="space-y-3 text-base pb-3">
                       {quickResponses.map((quickResponse, index) => (
                         <div key={index} className="flex justify-between items-center space-x-5 text-primary cursor-pointer" onClick={() => handleQuickResponse(quickResponse)}>
                           <p>{quickResponse}</p>
@@ -215,19 +215,19 @@ const ChatComponent = () => {
       </div>
 
       { /* input field with the submit button */}
-      <form className="form-control shadow-2xl" onSubmit={handleSubmit((data) => getResponse(data as unknown as { query: string }))}>
-        <div className="input-group flex">
-          <input placeholder="Ask me a question" className="input w-full py-6 bg-white focus:outline-none" {...register("query")} style={{ "borderRadius": 0 }} />
-          <button className="btn btn-square h-full bg-white border-none hover:bg-primary active:bg-primary-focus rounded-l-none">
+      <form className="form-control mb-8" onSubmit={handleSubmit((data) => getResponse(data as unknown as { query: string }))}>
+        <div className="input-group flex self-center w-[90%] rounded-box shadow-2xl group opacity-80 scale-100 focus-within:opacity-100 focus-within:scale-101 transition-all duration-300 text-lightgrey focus-within:text-primary">
+          <input placeholder="Ask me a question" className="input w-full py-6 bg-white focus:outline-none border-none rounded-box rounded-r-none text-black" {...register("query")} />
+          <button className="btn btn-square h-full bg-white border-none hover:bg-primary active:bg-primary-focus rounded-box rounded-l-none hover:text-white">
             <p>
-              <svg width="32" height="34" viewBox="0 0 32 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path id="Subtract" d="M0.655396 34L31.263 17L0.655396 0L4.89595 13.1308L21.2664 17L4.89595 21.2815L0.655396 34Z" fill="lightGrey" />
+              <svg width="24" height="26" viewBox="0 0 32 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path id="Subtract" d="M0.655396 34L31.263 17L0.655396 0L4.89595 13.1308L21.2664 17L4.89595 21.2815L0.655396 34Z" className="fill-current" />
               </svg>
             </p>
           </button>
         </div>
       </form>
-    </div >
+    </div>
   );
 };
 

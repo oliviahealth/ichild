@@ -8,6 +8,12 @@ export default {
     extend: {
       fontFamily: {
         tungsten: ['Tungsten', 'sans-serif']
+      },
+      scale: {
+        '101': '1.01'
+      },
+      colors: {
+        lightgrey: '#d3d3d3'
       }
     },
   },
@@ -18,7 +24,7 @@ export default {
         mytheme: {
           "primary": "#661429",
           "secondary": "#003c71",
-          "neutral": "#3D4451",
+          "neutral": "#3d4451",
         }
       }
     ]

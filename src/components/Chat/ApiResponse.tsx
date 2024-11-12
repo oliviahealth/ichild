@@ -108,10 +108,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                     <div className="hidden xl:flex flex-row-reverse">
                         {focusedLocation && (
-                            <div className="flex w-full h-full bg-[#F8F5F5] rounded-xl">
-                                <div className="w-2 bg-primary rounded-l-lg" >
-                                </div>
-
+                            <div className="flex w-full h-full rounded-xl">
                                 <div className="w-full h-full p-3 object-container">
                                     <LocationInfoPanel location={focusedLocation} locationToSave={locationToSave} isSaveLoading={isSaveLoading} isDeleteLoading={isDeleteLoading} saveLocation={saveLocation} deleteSavedLocation={deleteSavedLocation} />
                                 </div>
@@ -120,23 +117,24 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                         <div>
                             {apiResponse.locations.map((location, index) => {
+                                const isFocused = location === focusedLocation;
                                 return (
                                     <div key={`API Response: ${index}`} onClick={() => setFocusedLocation(location)} className="cursor-pointer">
-                                        <ChatBubble isResponse={true} isFocused={location === focusedLocation}>
+                                        <ChatBubble isResponse={true} isFocused={isFocused} isLocationResponse={true}>
                                             <div className="flex justify-between items-center p-1 sm:w-[27rem]">
                                                 <div className="flex items-center gap-6 w-full">
                                                     {/* Render the letters of the alphabet starting with 'A' */}
-                                                    <p className="text-3xl text-primary">{String.fromCharCode(65 + index)}</p>
+                                                    <p className={`text-3xl text-${isFocused ? "primary font-bold" : "black"} min-w-[31px] max-w-[31px] text-center`}>{String.fromCharCode(65 + index)}</p>
 
                                                     <div className="w-full">
-                                                        <p className="font-semibold">{location.name}</p>
+                                                        <p className="text-xl font-semibold">{location.name}</p>
 
                                                         <div className="flex gap-2 my-3">
-                                                            <a href={location.website} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Website</a>
-                                                            <a href={location.addressLink} target="_blank" className="btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300">Directions</a>
+                                                            <a href={location.website} target="_blank" className={`btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300`}>Website</a>
+                                                            <a href={location.addressLink} target="_blank" className={`btn btn-xs border-none bg-gray-200 text-black hover:bg-gray-300`}>Directions</a>
                                                         </div>
 
-                                                        <p className="text-sm">{location.address}</p>
+                                                        <p className="text-base">{location.address}</p>
                                                     </div>
                                                 </div>
 
