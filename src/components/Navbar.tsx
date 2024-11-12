@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
             * - Use justify-content instead of text-align because <a>/<span> seems to have display: grid; from Tailwind
             */}
             <li><a href="http://www.oliviahealth.org" target="_blank" className="w-[125px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">OliviaHealth</a></li>
-          {user ? (<li><span onClick={() => handleSignout()} className="w-[98px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">Sign Out</span></li>) : <li><Link to={'/signin'} className="w-[85px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">Sign In</Link></li>}
+          {user ? (<li><span onClick={() => handleSignout()} className="w-[100px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">Sign Out</span></li>) : <li><Link to={'/signin'} className="w-[85px] justify-center outline-none hover:bg-[#E8DDDD] hover:!text-primary active:!text-primary hover:font-bold hover:underline active:!bg-[#D8CDCD] transition-all duration-100">Sign In</Link></li>}
         </ul>
       </div>
     </div>
