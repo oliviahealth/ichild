@@ -75,9 +75,13 @@ def search_location_questions(id, search_query):
         confidence = 1
         hours_of_operation = [{ "sunday": sunday_hours }, { "monday": monday_hours }, { "tuesday": tuesday_hours }, { "wednesday": wednesday_hours }, { "thursday": thursday_hours }, { "friday": friday_hours }, { "saturday": saturday_hours }]
         is_saved = False
-        latitude = float(latitude.strip())
-        longitude = float(longitude.strip())
-        rating = float(rating.strip())
+        
+        try:
+            latitude = float(latitude.strip())
+            longitude = float(longitude.strip())
+            rating = float(rating.strip())
+        except:
+            pass
 
         locations.append({
             "address": unified_address,

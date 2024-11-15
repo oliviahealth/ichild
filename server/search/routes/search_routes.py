@@ -57,7 +57,7 @@ def formatted_db_search():
     date_created = int(time.time() * 1000)
 
     messages = [
-        {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user."},
+        {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user. If you do not know the answer to a question, just say 'i dont know'. If the answers you generate aren't relevant to the question, just say 'i dont know'"},
     ]
 
     if (not conversation_id or conversation_id == "null"):
