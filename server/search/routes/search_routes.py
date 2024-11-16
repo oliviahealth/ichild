@@ -1,23 +1,19 @@
 from flask import Blueprint, render_template, request, jsonify
 from sentence_transformers import SentenceTransformer
 from flask_jwt_extended import get_jwt_identity, jwt_required
-import certifi
 import os
 import time
 import openai
 import uuid
 import json
 
-from route_handlers.query_handlers import search_direct_questions, search_location_questions, restore_conversation_history, tools
+from route_handlers.query_handlers import search_direct_questions, search_location_questions, determine_search_type, tools
 
-from search_controller import core_search, grab_info, create_address
 from database import Location, message_store, db
 
 search_routes_bp = Blueprint('search_routes', __name__)
 
 # Executes when first user accesses site
-
-
 @search_routes_bp.before_app_first_request
 def connection_and_setup():
     model_path = os.getenv('MODEL_PATH')
@@ -56,51 +52,17 @@ def formatted_db_search():
     conversation_id = request.form['conversationId']
     date_created = int(time.time() * 1000)
 
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user.'"},
-    ]
+    determine_search_type_response = determine_search_type(search_query, conversation_id)
 
-    if (not conversation_id or conversation_id == "null"):
-        conversation_id = uuid.uuid4()
+    if (determine_search_type_response.choices[0].message.tool_calls):
+        function_name = determine_search_type_response.choices[0].message.tool_calls[0].function.name
     else:
-        conversation_history = message_store.query.filter_by(
-            session_id=conversation_id).all()
-
-        for history in conversation_history:
-            history = json.loads(history.message)
-
-            history_type = history["type"]
-            content = history["data"]["content"]
-
-            role = None
-            if (history_type == "human"):
-                role = "user"
-            elif (history_type == "ai"):
-                role = "assistant"
-
-            messages.append({"role": role, "content": content})
-
-    messages.append({"role": "user", "content": search_query})
-
-    print(messages)
-
-    response = openai.chat.completions.create(
-        model="gpt-4o",
-        messages=messages,
-        tools=tools,
-    )
-
-    print(response)
-
-    refusal = response.choices[0].message.refusal
-
-    if (refusal):
-        return "Something went wrong: OpenAi Classification Refusal", 500
-
-    if (response.choices[0].message.tool_calls):
-        function_name = response.choices[0].message.tool_calls[0].function.name
-    else:
-        content = response.choices[0].message.content
+        '''
+        Follow up question is needed for more information.
+        Need to manually add the user query and ai response to the db
+        '''
+        
+        content = determine_search_type_response.choices[0].message.content
 
         new_user_message = message_store(
             session_id=conversation_id,
@@ -126,8 +88,6 @@ def formatted_db_search():
             'conversationId': conversation_id
         }
 
-    data = None
-
     if (function_name == 'search_direct_questions'):
         response_type = 'direct'
 
@@ -141,6 +101,7 @@ def formatted_db_search():
             'dateCreated': date_created,
             'conversationId': conversation_id
         }
+    
     elif (function_name == 'search_location_questions'):
         response_type = 'location'
 
@@ -157,5 +118,6 @@ def formatted_db_search():
             'dateCreated': date_created,
             'conversationId': conversation_id
         }
+    
     else:
         return "error"
