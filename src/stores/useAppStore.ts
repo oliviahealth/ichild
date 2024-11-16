@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { v4 as uuid } from "uuid";
 
 import { IUser, IConversationPreview } from "../utils/interfaces";
 
@@ -34,7 +35,7 @@ const useAppStore = create<AppState>()((set) => ({
     isSidePanelOpen: true,
     setisSidePanelOpen: (isSidePanelOpen) => set(() => ({ isSidePanelOpen })),
 
-    currentConversationId: null,
+    currentConversationId: uuid(),
     setCurrentConversationId: (currentConversationId => set({ currentConversationId })),
 
     conversationPreviews: [],
