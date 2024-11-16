@@ -89,7 +89,7 @@ const LocationInfoPanel: React.FC<Props> = ({ location, locationToSave, isDelete
 
             <p className={`text-base ${!descriptionExpanded ? "line-clamp-4" : ""}`} onClick={() => setDescriptionExpanded(!descriptionExpanded)} >{location.description}</p>
 
-            <div className="flex gap-x-1 items-center">
+            <div className="flex gap-x-1 items-center flex-wrap">
                 <p className="font-semibold">Website: </p>
                 <a className="text-primary" href={location.website} target="_blank">{location.website}</a>
             </div>
