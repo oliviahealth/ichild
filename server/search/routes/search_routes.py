@@ -57,7 +57,7 @@ def formatted_db_search():
     date_created = int(time.time() * 1000)
 
     messages = [
-        {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user. If you do not know the answer to a question, just say 'i dont know'. If the answers you generate aren't relevant to the question, just say 'i dont know'"},
+        {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user.'"},
     ]
 
     if (not conversation_id or conversation_id == "null"):
@@ -69,13 +69,13 @@ def formatted_db_search():
         for history in conversation_history:
             history = json.loads(history.message)
 
-            type = history["type"]
+            history_type = history["type"]
             content = history["data"]["content"]
 
             role = None
-            if (type == "human"):
+            if (history_type == "human"):
                 role = "user"
-            elif (type == "ai"):
+            elif (history_type == "ai"):
                 role = "assistant"
 
             messages.append({"role": role, "content": content})
@@ -106,7 +106,7 @@ def formatted_db_search():
             session_id=conversation_id,
             message=f'{{"type": "human", "data": {{"content": "{search_query}"}}}}'
         )
-        
+
         new_response_message = message_store(
             session_id=conversation_id,
             message=f'{{"type": "ai", "data": {{"content": "{content}"}}}}'

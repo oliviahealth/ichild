@@ -14,7 +14,7 @@ from retrievers.TableColumnRetriever import build_table_column_retriever
 llm = ChatOpenAI()
 
 # Build vector store and retriever
-collection_name = "2024-09-02 00:44:49"
+collection_name = "2024-11-15 12:59:57"
 pg_vector_store = build_pg_vector_store(
     embeddings_model=openai_embeddings, collection_name=collection_name, connection_uri=os.getenv('POSTGRESQL_CONNECTION_STRING'))
 pg_vector_retriever = pg_vector_store.as_retriever(search_type="mmr")
@@ -50,6 +50,7 @@ def search_location_questions(id, search_query):
 
     Examples of location questions: 'Dental Services in Corpus Christi', 'Where can I get mental health support in Bryan'
     '''
+    
     if not id:
         id = uuid4()
 
