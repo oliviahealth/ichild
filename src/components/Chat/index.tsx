@@ -98,7 +98,7 @@ const ChatComponent = () => {
 
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
-  const { mutate: getResponse, isLoading: isResponseLoading } = useMutation(async (data: { query: string }) => {
+  const { mutate: getResponse, isLoading: isResponseLoading } = useMutation(async (data: { query: string }) => {  
     if (data.query === "") return
     if (!currentConversationId) return;
 
