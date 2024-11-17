@@ -81,6 +81,8 @@ def signup():
 
         # Create a JWT to store in the frontend
         access_token = create_access_token(identity=new_user.id)
+
+        # print("Access Token:", access_token)
     except Exception as error:
         db.session.rollback()
         print(error)
@@ -121,6 +123,8 @@ def signin():
         
         login_user(user)
         access_token = create_access_token(identity=user.id)
+
+        # print("Access Token:", access_token)
     
     except Exception as error:
         db.session.rollback()
