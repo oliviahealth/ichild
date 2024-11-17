@@ -91,7 +91,7 @@ const LocationInfoPanel: React.FC<Props> = ({ location, locationToSave, isDelete
 
             <div className="flex gap-x-1 items-center">
                 <p className="font-semibold">Website: </p>
-                <a className="text-primary" href={location.website} target="_blank">{location.website}</a>
+                <a className="text-primary break-all" href={location.website} target="_blank">{location.website}</a>
             </div>
 
             <div className="flex gap-x-1 items-center">
