@@ -28,6 +28,9 @@ const ChatComponent = () => {
   const user = useAppStore((state) => state.user);
   const accessToken = useAppStore((state) => state.accessToken);
 
+  // When the user submits a query, this will hold what they asked temporarily
+  const [submittedQuery, setSubmittedQuery] = useState<null | string>(null);
+
   // The actual response from the api including the locations the api suggests
   const [apiResponses, setApiResponses] = useState<IAPIResponse[]>([]);
 
@@ -42,7 +45,7 @@ const ChatComponent = () => {
 
   // Using react-hook-form to manage the state of the input field
   // https://www.react-hook-form.com/
-  const { register, handleSubmit, reset, getValues, setValue } = useForm();
+  const { register, handleSubmit, reset, setValue } = useForm();
 
   // Creates the auto scroll when the api responds
   const containerRef = useRef<HTMLDivElement>(null);
@@ -99,8 +102,9 @@ const ChatComponent = () => {
 
   // Call the backend with the user entered query to get a response
   // https://tanstack.com/query/v4/docs/react/guides/mutations
-  const { mutate: getResponse, isLoading: isResponseLoading } = useMutation(async (data: { query: string }) => {
+  const { mutate: getResponse, isLoading: isResponseLoading } = useMutation(async (data: { query: string }) => {  
     if (data.query === "") return
+    if (!currentConversationId) return;
 
     const formData = new FormData();
     formData.append("data", data.query);
@@ -141,11 +145,17 @@ const ChatComponent = () => {
       if (error.request.status === 403) {
         navigate('/signin');
       }
+    },
+    onSettled: () => {
+      setSubmittedQuery(null);
     }
   });
 
   const handleQuickResponse = (query: string) => {
     setValue("query", query);
+    setSubmittedQuery(query);
+    
+    reset();
 
     handleSubmit(() => getResponse({ query }))();
   }
@@ -200,7 +210,7 @@ const ChatComponent = () => {
               { /* Render loading dots while fetching api response */}
               {isResponseLoading ? (<>
                 <ChatBubble isResponse={false}>
-                  <p>{getValues("query")}</p>
+                  <p>{submittedQuery}</p>
                 </ChatBubble>
 
                 <div className="flex gap-4">
@@ -216,7 +226,7 @@ const ChatComponent = () => {
       </div>
 
       { /* input field with the submit button */}
-      <form className="form-control mb-8" onSubmit={handleSubmit((data) => getResponse(data as unknown as { query: string }))}>
+      <form className="form-control mb-8" onSubmit={handleSubmit((data) => handleQuickResponse(data.query))}>
         <div className="input-group flex self-center w-[90%] rounded-box shadow-2xl group opacity-80 scale-100 focus-within:opacity-100 focus-within:scale-101 transition-all duration-300 text-lightgrey focus-within:text-primary">
           <input placeholder="Ask me a question" className="input w-full py-6 bg-white focus:outline-none border-none rounded-box rounded-r-none text-black" {...register("query")} />
           <button className="btn btn-square h-full bg-white border-none hover:bg-primary active:bg-primary-focus rounded-box rounded-l-none hover:text-white">

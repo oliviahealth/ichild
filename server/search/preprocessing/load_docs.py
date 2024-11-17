@@ -2,7 +2,7 @@ import os
 import glob
 from datetime import datetime
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter, NLTKTextSplitter
 from langchain.document_loaders import TextLoader
 from langchain_postgres import PGVector
 from langchain_postgres.vectorstores import PGVector
@@ -20,8 +20,7 @@ def load_docs(embeddings_model, documents_path, collection_name, database_uri):
           Ideally, the vector database should only need to be loaded initially and whenever we have new data
     '''
     
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=200, chunk_overlap=0)
+    text_splitter = NLTKTextSplitter()
 
     file_paths = glob.glob(os.path.join(documents_path, '**', '*.txt'), recursive=True)
 
