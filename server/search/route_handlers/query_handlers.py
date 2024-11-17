@@ -82,12 +82,16 @@ def search_location_questions(id, search_query):
         hours_of_operation = [{"sunday": sunday_hours}, {"monday": monday_hours}, {"tuesday": tuesday_hours}, {
             "wednesday": wednesday_hours}, {"thursday": thursday_hours}, {"friday": friday_hours}, {"saturday": saturday_hours}]
         is_saved = False
-
         # latitude, longitude, rating may be represented numerically
         try:
             latitude = float(latitude.strip())
             longitude = float(longitude.strip())
             rating = float(rating.strip())
+            rating = rating.strip()
+            if rating == "":
+                rating = -1.0
+            else:
+                rating = float(rating)
         except:
             pass
 

@@ -52,11 +52,12 @@ const ChatComponent = () => {
 
   // Scroll to the bottom of the container with smooth animation
   useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTo({
-        top: containerRef.current.scrollHeight,
-        behavior: "smooth",
-      })
+    const elems = containerRef.current?.querySelectorAll("[data-is-scroll-target]");
+    if (elems && elems.length > 0) {
+      const elem = elems[elems.length - 1];
+      elem.scrollIntoView({
+        behavior: "smooth"
+      });
     }
   });
 
@@ -214,7 +215,7 @@ const ChatComponent = () => {
 
                 <div className="flex gap-4">
                   <OllieAvatar />
-                  <ChatBubble isResponse={true}>
+                  <ChatBubble isResponse={true} isScrollTarget={true}>
                     <span className="loading loading-dots loading-md"></span>
                   </ChatBubble>
                 </div>

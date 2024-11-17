@@ -97,7 +97,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                 </div>
 
                 <div className="w-full h-full">
-                    <ChatBubble isResponse={true}>
+                    <ChatBubble isResponse={true} isScrollTarget={true}>
                         <p className="mb-2">{apiResponse.response}</p>
                     </ChatBubble>
 
