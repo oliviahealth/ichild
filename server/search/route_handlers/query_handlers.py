@@ -22,7 +22,6 @@ pg_vector_store = build_pg_vector_store(
     embeddings_model=openai_embeddings, collection_name=collection_name, connection_uri=os.getenv('POSTGRESQL_CONNECTION_STRING'))
 pg_vector_retriever = pg_vector_store.as_retriever(search_type="mmr")
 
-
 def search_direct_questions(id, search_query):
     '''
     Direct question handler searches OliviaHealth.org knowledge base for most relevant data relating to user query
@@ -44,7 +43,6 @@ def search_direct_questions(id, search_query):
     result = retrieval_qa_chain.run(search_query)
 
     return result
-
 
 def search_location_questions(id, search_query):
     '''
@@ -119,7 +117,7 @@ def search_location_questions(id, search_query):
     """
 
     prompt = PromptTemplate(
-        input_variables=["query", "locations"],
+        input_variables=["search_query", "locations"],
         template=prompt_template
     )
 
@@ -141,39 +139,13 @@ def search_location_questions(id, search_query):
     }
 
 
-def determine_search_type(search_query, conversation_id):
+def determine_search_type(messages):
     '''
     Given a search query, determine weather its a location-based or direct-answer question or if more information is needed.
     Reconstruct the entire conversation history, then prompt OpenAI with tools to make the determination
     Need to provide an array of tools so OpenAI can make the reccomendation. See: https://platform.openai.com/docs/assistants/tools/function-calling
     '''
-    
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user.'"},
-    ]
 
-    if (not conversation_id or conversation_id == "null"):
-        conversation_id = uuid()
-
-    # Reconstruct the conversation history given the conversation_id
-    conversation_history = message_store.query.filter_by(
-        session_id=conversation_id).all()
-
-    for history in conversation_history:
-        history = json.loads(history.message)
-
-        history_type = history["type"]
-        content = history["data"]["content"]
-
-        role = None
-        if (history_type == "human"):
-            role = "user"
-        elif (history_type == "ai"):
-            role = "assistant"
-
-        messages.append({"role": role, "content": content})
-    messages.append({"role": "user", "content": search_query})
-    
     # Prompt OpenAI to make determination
     response = openai.chat.completions.create(
         model="gpt-4o",

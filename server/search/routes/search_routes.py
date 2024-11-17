@@ -7,6 +7,8 @@ import openai
 import uuid
 import json
 
+from langchain.chat_models import ChatOpenAI
+from langchain import LLMChain, PromptTemplate
 from route_handlers.query_handlers import search_direct_questions, search_location_questions, determine_search_type, tools
 
 from database import Location, message_store, db
@@ -32,8 +34,8 @@ def connection_and_setup():
     encoding_dict["Encodings"] = embeddings
     print("*******END PREPROCESS********")
 
-# Render json search page
-
+# Using OpenAI for LLM
+llm = ChatOpenAI()
 
 @search_routes_bp.route("/", methods=['POST', 'GET'])
 def msg():
@@ -52,7 +54,53 @@ def formatted_db_search():
     conversation_id = request.form['conversationId']
     date_created = int(time.time() * 1000)
 
-    determine_search_type_response = determine_search_type(search_query, conversation_id)
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user.'"},
+    ]
+
+    # Reconstruct the conversation history given the conversation_id
+    conversation_history = message_store.query.filter_by(
+        session_id=conversation_id).all()
+
+    for history in conversation_history:
+        history = json.loads(history.message)
+
+        history_type = history["type"]
+        content = history["data"]["content"]
+
+        role = None
+        if (history_type == "human"):
+            role = "user"
+        elif (history_type == "ai"):
+            role = "assistant"
+
+        messages.append({"role": role, "content": content})
+    messages.append({"role": "user", "content": search_query})
+
+    prompt_template = """
+    User query: {search_query}
+
+    The following is the chat history for this conversation:
+    {messages}
+
+    Please summarize the user's request. Use the supplied tools to assist the user.
+    """
+
+    prompt = PromptTemplate(
+        input_variables=["search_query", "messages"],
+        template=prompt_template
+    )
+
+    chain = LLMChain(llm=llm, prompt=prompt)
+
+    search_query = chain.run({
+        "search_query": search_query,
+        "messages": messages
+    })
+
+    print(search_query)
+
+    determine_search_type_response = determine_search_type(messages)
 
     if (determine_search_type_response.choices[0].message.tool_calls):
         function_name = determine_search_type_response.choices[0].message.tool_calls[0].function.name
