@@ -130,8 +130,6 @@ def search_location_questions(id, search_query):
         "locations": formatted_locations
     })
 
-    print(response)
-
     # Return the LLM response and the JSON
     return {
         "response": response,

@@ -55,7 +55,7 @@ def formatted_db_search():
     date_created = int(time.time() * 1000)
 
     messages = [
-        {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user.'"},
+        {"role": "system", "content": "You are a helpful assistant. First, summarize the conversation history. Then determine if the user's query is location-based, direct-answer, or requires more information. Provide the summary explicitly."},
     ]
 
     # Reconstruct the conversation history given the conversation_id
@@ -77,32 +77,10 @@ def formatted_db_search():
         messages.append({"role": role, "content": content})
     messages.append({"role": "user", "content": search_query})
 
-    prompt_template = """
-    User query: {search_query}
-
-    The following is the chat history for this conversation:
-    {messages}
-
-    Please summarize the user's request. Use the supplied tools to assist the user.
-    """
-
-    prompt = PromptTemplate(
-        input_variables=["search_query", "messages"],
-        template=prompt_template
-    )
-
-    chain = LLMChain(llm=llm, prompt=prompt)
-
-    search_query = chain.run({
-        "search_query": search_query,
-        "messages": messages
-    })
-
-    print(search_query)
-
     determine_search_type_response = determine_search_type(messages)
+    tool_calls = determine_search_type_response.choices[0].message.tool_calls
 
-    if (determine_search_type_response.choices[0].message.tool_calls):
+    if (tool_calls):
         function_name = determine_search_type_response.choices[0].message.tool_calls[0].function.name
     else:
         '''
@@ -135,11 +113,14 @@ def formatted_db_search():
             'dateCreated': date_created,
             'conversationId': conversation_id
         }
+    
+    arguments = json.loads(tool_calls[0].function.arguments)
+    summarized_query = json.loads(tool_calls[0].function.arguments)['query']
 
     if (function_name == 'search_direct_questions'):
         response_type = 'direct'
 
-        response = search_direct_questions(conversation_id, search_query)
+        response = search_direct_questions(conversation_id, summarized_query)
 
         return {
             'userQuery': search_query,
@@ -153,7 +134,7 @@ def formatted_db_search():
     elif (function_name == 'search_location_questions'):
         response_type = 'location'
 
-        data = search_location_questions(conversation_id, search_query)
+        data = search_location_questions(conversation_id, summarized_query)
 
         response = data.get("response")
         locations = data.get("locations")
