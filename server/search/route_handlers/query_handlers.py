@@ -77,7 +77,11 @@ def search_location_questions(id, search_query):
         is_saved = False
         latitude = float(latitude.strip())
         longitude = float(longitude.strip())
-        rating = float(rating.strip())
+        rating = rating.strip()
+        if rating == "":
+            rating = -1.0
+        else:
+            rating = float(rating)
 
         locations.append({
             "address": unified_address,

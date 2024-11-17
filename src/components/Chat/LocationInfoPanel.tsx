@@ -55,13 +55,13 @@ const LocationInfoPanel: React.FC<Props> = ({ location, locationToSave, isDelete
 
             <div className="flex gap-x-1 items-center">
                 <div className="rating rating-md rating-half flex items-center gap-2">
-                    {location.rating && (<>
+                    {(location.rating && location.rating != -1) ? (<>
                         <div>
                             {Array.from({ length: Math.round(location.rating * 2) }).map((_, elm) => (
                                 <span key={`Rating: ${elm}`}>{(elm * 0.5) === Math.floor(elm * 0.5) ? <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-1" /> : <input type="radio" name="rating-10" className="bg-yellow-500 mask mask-star-2 mask-half-2" />}</span>
                             ))}
                         </div>
-                        <span>({location.rating})</span></>)}
+                        <span>({location.rating})</span></>) : <span>(No rating)</span>}
                 </div>
             </div>
 
