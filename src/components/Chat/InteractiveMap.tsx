@@ -16,7 +16,7 @@ interface Props {
     center?: { lat: number, lng: number }
 }
 
-const InteractiveMap: React.FC<Props> = ({ locations, center }) => {
+const InteractiveMap: React.FC<Props> = ({ locations }) => {
     const { isLoaded: isGoogleApiLoaded } = useLoadScript({
         version: '3.55',
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_API_KEY,
