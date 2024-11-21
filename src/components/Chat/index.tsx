@@ -106,18 +106,14 @@ const ChatComponent = () => {
 
 
   useEffect(() => {
-    socket.on("connect", () => {
-      console.log("Connected to server");
-    });
-
     socket.on("stream_data", (data) => {
-        setTemporaryMessage((prev) => {
-          if(prev === null) {
-            return data
-          }
+      setTemporaryMessage((prev) => {
+        if (prev === null) {
+          return data
+        }
 
-          return prev + data;
-        });
+        return prev + data;
+      });
     });
 
     socket.on('stream_start', () => {
@@ -146,7 +142,7 @@ const ChatComponent = () => {
 
     const response: IAPIResponse = (await axios.post(`${import.meta.env.VITE_API_URL}/formattedresults`, formData, { headers: { ...headers }, withCredentials: true })).data;
 
-    setCurrentConversationId(response.conversationId);
+    // setCurrentConversationId(response.conversationId);
 
     const conversation: IConversation = (await axios.post(`${import.meta.env.VITE_API_URL}/conversations`, { id: response.conversationId, title: response.userQuery }, { headers: { ...headers }, withCredentials: true })).data;
     await axios.post(`${import.meta.env.VITE_API_URL}/response`, { ...response, conversationId: conversation.id }, { headers: { ...headers }, withCredentials: true });
@@ -245,9 +241,11 @@ const ChatComponent = () => {
 
                 <div className="flex gap-4">
                   <OllieAvatar />
-                  <ChatBubble isResponse={true} isScrollTarget={true}>
+                  {temporaryMessage == null ? (<ChatBubble isResponse={true} isScrollTarget={true}>
+                    <span className="loading loading-dots loading-md"></span>
+                  </ChatBubble>) : (<ChatBubble isResponse={true} isScrollTarget={true}>
                     {temporaryMessage}
-                  </ChatBubble>
+                  </ChatBubble>)}
                 </div>
               </>) : ""}
 

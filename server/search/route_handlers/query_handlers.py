@@ -1,7 +1,6 @@
 import json
 import os
 import openai
-from uuid import uuid4 as uuid
 
 from socketio_instance import socketio
 from langchain import LLMChain, PromptTemplate
@@ -50,9 +49,6 @@ def search_direct_questions(id, search_query):
     Examples of direct questions: 'Newborn nutritonal advice', 'How do hormonal IUDs prevent pregnancy', 'What is mastitis treated with'
     '''
 
-    if not id:
-        id = uuid()
-
     # Build the retrieval QA chain with SQL memory
     # Must pass in the session_id from the message_store table
     retrieval_qa_chain = build_conversational_retrieval_chain_with_memory(
@@ -63,7 +59,7 @@ def search_direct_questions(id, search_query):
 
     return result
 
-def search_location_questions(id, search_query):
+def search_location_questions(search_query):
     '''
     Location question handler searches Locations table for most relevant locations relating to user query
     Data is converted to JSON array of locations
@@ -73,9 +69,6 @@ def search_location_questions(id, search_query):
 
     Examples of location questions: 'Dental Services in Corpus Christi', 'Where can I get mental health support in Bryan'
     '''
-
-    if not id:
-        id = uuid()
 
     locations = []
 

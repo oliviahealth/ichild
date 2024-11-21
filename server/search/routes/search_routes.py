@@ -4,7 +4,6 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 import os
 import time
 import openai
-import uuid
 import json
 
 from socketio_instance import socketio
@@ -51,9 +50,11 @@ def formatted_db_search():
     if (not user_id):
         return jsonify({'Unauthorized': 'Unauthorized'}), 403
 
-    search_query = request.form['data']
-    conversation_id = request.form['conversationId']
+    search_query = request.form.get('data').strip()
+    conversation_id = request.form.get('conversationId').strip()
     date_created = int(time.time() * 1000)
+
+    print(conversation_id)
 
     messages = [
         {"role": "system", "content": "You are a helpful assistant. First, summarize the conversation history. Then determine if the user's query is location-based, direct-answer, or requires more information. Provide the summary explicitly."},
@@ -62,7 +63,7 @@ def formatted_db_search():
     # Reconstruct the conversation history given the conversation_id
     conversation_history = message_store.query.filter_by(
         session_id=conversation_id).all()
-
+    
     for history in conversation_history:
         history = json.loads(history.message)
 
@@ -116,7 +117,7 @@ def formatted_db_search():
         }
     
     arguments = json.loads(tool_calls[0].function.arguments)
-    summarized_query = json.loads(tool_calls[0].function.arguments)['query']
+    summarized_query = arguments['query']
 
     if (function_name == 'search_direct_questions'):
         response_type = 'direct'
@@ -135,10 +136,18 @@ def formatted_db_search():
     elif (function_name == 'search_location_questions'):
         response_type = 'location'
 
-        data = search_location_questions(conversation_id, summarized_query)
+        data = search_location_questions(summarized_query)
 
         response = data.get("response")
         locations = data.get("locations")
+
+        new_response_message = message_store(
+            session_id=conversation_id,
+            message=f'{{"type": "ai", "data": {{"content": "{response}"}}}}'
+        )
+
+        db.session.add(new_response_message)
+        db.session.commit()
 
         return {
             'userQuery': search_query,

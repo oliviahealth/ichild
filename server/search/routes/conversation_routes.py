@@ -162,7 +162,7 @@ def get_conversation():
                         'name': location.name,
                         'phone': location.phone,
                         'hoursOfOperation': [{ "sunday": location.sunday_hours }, { "monday": location.monday_hours }, { "tuesday": location.tuesday_hours }, { "wednesday": location.wednesday_hours }, {  "thursday": location.thursday_hours }, { "friday": location.friday_hours }, { "saturday": location.saturday_hours }],
-                        'rating': float(location.rating) if location.rating.isalnum() else None,
+                        'rating': float(location.rating) if (location.rating and location.rating.isalnum()) else None,
                         'isSaved': False
                     }
                     for id in response.locations
