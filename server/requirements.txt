@@ -59,7 +59,7 @@ nltk==3.8.1
 numpy==1.24.2
 openai==1.8.0
 orjson==3.10.7
-packaging==23.1
+packaging==24.2
 pandas==2.0.3
 passlib==1.7.4
 pgvector==0.2.5
