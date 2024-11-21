@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, Response
 from sentence_transformers import SentenceTransformer
 from flask_jwt_extended import get_jwt_identity, jwt_required
 import os
@@ -7,6 +7,7 @@ import openai
 import uuid
 import json
 
+from socketio_instance import socketio
 from langchain.chat_models import ChatOpenAI
 from langchain import LLMChain, PromptTemplate
 from route_handlers.query_handlers import search_direct_questions, search_location_questions, determine_search_type, tools

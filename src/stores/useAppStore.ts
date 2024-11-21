@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { v4 as uuid } from "uuid";
+import { io, Socket } from "socket.io-client";
 
 import { IUser, IConversationPreview } from "../utils/interfaces";
 
@@ -9,6 +10,8 @@ interface AppState {
 
     accessToken: string | null
     setAccessToken: (accessToken: string | null) => void
+
+    socket : Socket
 
     isSidePanelOpen: boolean
     setisSidePanelOpen: (isSidePanelOpen: boolean) => void
@@ -31,6 +34,8 @@ const useAppStore = create<AppState>()((set) => ({
 
     accessToken: null,
     setAccessToken: (accessToken) => set(() => ({ accessToken })),
+
+    socket: io('http://localhost:5000/'),
 
     isSidePanelOpen: true,
     setisSidePanelOpen: (isSidePanelOpen) => set(() => ({ isSidePanelOpen })),

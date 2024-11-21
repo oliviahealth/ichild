@@ -3,18 +3,37 @@ import os
 import openai
 from uuid import uuid4 as uuid
 
+from socketio_instance import socketio
 from langchain import LLMChain, PromptTemplate
 from chains.conversational_retrieval_chain_with_memory import build_conversational_retrieval_chain_with_memory
 from langchain.chat_models import ChatOpenAI
 from vector_stores.pgvector import build_pg_vector_store
 from embeddings.openai import openai_embeddings
 
-from database import message_store
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 from retrievers.TableColumnRetriever import build_table_column_retriever
 
+class CustomCallbackHandler(StreamingStdOutCallbackHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def on_chain_start(self, serialized, prompts, **kwargs) -> None:
+        socketio.emit('stream_start')
+        
+    def on_llm_new_token(self, token, **kwargs) -> None:
+        # Implement here your streaming logic
+        print(token, end='', flush=True)
+        socketio.emit('stream_data', token)
+
+    def on_chain_end(self, response, **kwargs) -> None:
+        socketio.emit('stream_end')
+
 # Using OpenAI for LLM
-llm = ChatOpenAI()
+llm = ChatOpenAI(
+    streaming=True,
+    callbacks=[CustomCallbackHandler()]
+)
 
 # Build vector store and retriever
 collection_name = "2024-11-15 12:59:57"
