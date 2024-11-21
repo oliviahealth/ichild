@@ -59,7 +59,7 @@ def search_direct_questions(id, search_query):
 
     return result
 
-def search_location_questions(search_query):
+def search_location_questions(id, search_query):
     '''
     Location question handler searches Locations table for most relevant locations relating to user query
     Data is converted to JSON array of locations
@@ -70,8 +70,6 @@ def search_location_questions(search_query):
     Examples of location questions: 'Dental Services in Corpus Christi', 'Where can I get mental health support in Bryan'
     '''
 
-    locations = []
-
     # Creating a TableColumnRetriever to index all of the columns for the location table when retrieving documents
     table_column_retriever = build_table_column_retriever(
         connection_uri=os.getenv('POSTGRESQL_CONNECTION_STRING'),
@@ -81,71 +79,17 @@ def search_location_questions(search_query):
         embedding_column_name="embedding"
     )
 
-    # Get the raw list of relevant locations
-    doc_list = table_column_retriever.get_relevant_documents(search_query)
-
-    # loop through the doc_list and for each doc add a json representation in the locations array
-    for doc in doc_list:
-        doc_id, name, address, city, state, country, zip_code, latitude, longitude, description, phone, sunday_hours, monday_hours, tuesday_hours, wednesday_hours, thursday_hours, friday_hours, saturday_hours, rating, address_link, website, resource_type, county = doc.page_content.split(
-            "##")
-
-        unified_address = f"{address}, {city}, {state} {zip_code}"
-        confidence = 1
-        hours_of_operation = [{"sunday": sunday_hours}, {"monday": monday_hours}, {"tuesday": tuesday_hours}, {
-            "wednesday": wednesday_hours}, {"thursday": thursday_hours}, {"friday": friday_hours}, {"saturday": saturday_hours}]
-        is_saved = False
-        # latitude, longitude, rating may be represented numerically
-        
-        try:
-            latitude = float(latitude.strip())
-            longitude = float(longitude.strip())
-            rating = float(rating.strip())
-        except:
-            pass
-
-        locations.append({
-            "address": unified_address,
-            "addressLink": address_link,
-            "confidence": confidence,
-            "description": description,
-            "hoursOfOperation": hours_of_operation,
-            "id": doc_id,
-            "isSaved": is_saved,
-            "latitude": latitude,
-            "longitude": longitude,
-            "name": name,
-            "phone": phone,
-            "rating": rating,
-            "website": website
-        })
-
-    prompt_template = """
-    User query: {search_query}
-
-    The following are relevant locations based on the query:
-    {locations}
-
-    Please summarize the most relevant locations for the user's request.
-    """
-
-    prompt = PromptTemplate(
-        input_variables=["search_query", "locations"],
-        template=prompt_template
-    )
-
-    chain = LLMChain(llm=llm, prompt=prompt)
-
-    formatted_locations = "\n".join([f"- {loc['name']} at {loc['address']} ({loc['description']})" for loc in locations])
-
-    response = chain.run({
-        "search_query": search_query,
-        "locations": formatted_locations
-    })
+    retrieval_qa_chain = build_conversational_retrieval_chain_with_memory(
+        llm, table_column_retriever, id)
+    
+    response = retrieval_qa_chain.invoke(search_query)
+    answer = response.get('answer')
+    source_documents = response.get('source_documents')
 
     # Return the LLM response and the JSON
     return {
-        "response": response,
-        "locations": locations
+        "response": answer,
+        "locations": [json.loads(doc.page_content) for doc in source_documents]
     }
 
 

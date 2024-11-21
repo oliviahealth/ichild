@@ -19,5 +19,6 @@ def build_conversational_retrieval_chain_with_memory(llm, retriever, id):
         llm=llm,
         memory=memory,
         retriever=retriever,
-        condense_question_llm=llm
+        condense_question_llm=llm,
+        return_source_documents=True
     )

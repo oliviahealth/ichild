@@ -136,18 +136,10 @@ def formatted_db_search():
     elif (function_name == 'search_location_questions'):
         response_type = 'location'
 
-        data = search_location_questions(summarized_query)
+        data = search_location_questions(conversation_id, summarized_query)
 
         response = data.get("response")
         locations = data.get("locations")
-
-        new_response_message = message_store(
-            session_id=conversation_id,
-            message=f'{{"type": "ai", "data": {{"content": "{response}"}}}}'
-        )
-
-        db.session.add(new_response_message)
-        db.session.commit()
 
         return {
             'userQuery': search_query,
