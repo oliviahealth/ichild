@@ -82,11 +82,11 @@ def formatted_db_search():
 
     end_time = time.time()
     print(f"\x1B[96m[TEST]\x1B[m Choosing function took {end_time - start_time} seconds")
-    print(f"\x1B[96m[TEST]\x1B[m Chosen function: {tool_calls[0].function.name}")
 
-    if (message.refusal):
-        printf("\x1B[96m[TEST] \x1B[91m[ERROR]\x1B[m OpenAI Classification Refusal")
-        return "Something went wrong: OpenAi Classification Refusal", 500
+    if (tool_calls):
+        print(f"\x1B[96m[TEST]\x1B[m Chosen function: {tool_calls[0].function.name}")
+    else:
+        print("\x1B[96m[TEST] \x1B[91m[WARN]\x1B[m OpenAI Classification Refusal")
 
     if (tool_calls):
         function_name = tool_calls[0].function.name
