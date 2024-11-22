@@ -35,7 +35,7 @@ const useAppStore = create<AppState>()((set) => ({
     accessToken: null,
     setAccessToken: (accessToken) => set(() => ({ accessToken })),
 
-    socket: io('http://localhost:5000/'),
+    socket: io(import.meta.env.VITE_API_URL),
 
     isSidePanelOpen: true,
     setisSidePanelOpen: (isSidePanelOpen) => set(() => ({ isSidePanelOpen })),
