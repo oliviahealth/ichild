@@ -95,6 +95,6 @@ def build_table_column_retriever(connection_uri, table_name, column_names, embed
     openai_embeddings = OpenAIEmbeddings()
 
     # Create the retriever with OpenAI embeddings
-    retriever = TableColumnRetriever(documents=documents, embeddings=embeddings, k=4, openai_embeddings=openai_embeddings)
+    retriever = TableColumnRetriever(documents=documents, embeddings=embeddings, k=5, openai_embeddings=openai_embeddings)
 
     return retriever
