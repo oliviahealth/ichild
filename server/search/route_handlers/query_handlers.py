@@ -36,9 +36,6 @@ def search_direct_questions(conversation_id, search_query):
     Examples of direct questions: 'Newborn nutritonal advice', 'How do hormonal IUDs prevent pregnancy', 'What is mastitis treated with'
     '''
 
-    if not id:
-        id = uuid4()
-
     start_time = time.time()
 
     # Build the retrieval QA chain with SQL memory
@@ -65,6 +62,8 @@ def search_location_questions(conversation_id, search_query):
 
     Examples of location questions: 'Dental Services in Corpus Christi', 'Where can I get mental health support in Bryan'
     '''
+
+    start_time = time.time()
 
     retrieval_qa_chain = build_conversational_retrieval_chain_with_memory(
         llm, table_column_retriever, conversation_id, connection_uri, socketio)
