@@ -1,8 +1,5 @@
-import os
-import requests
 import torch
 from sentence_transformers import util
-import urllib.parse
 
 from database import Location
 

@@ -6,10 +6,9 @@ import { ILocation } from "../../utils/interfaces";
 interface MapMarkerProps {
     latitude: number
     longitude: number
-    text: string
 }
-const MapMarker: React.FC<MapMarkerProps> = ({ latitude, longitude, text }) => {
-    return <MarkerF position={{ lat: latitude, lng: longitude }} label={{ text, color: "#fff" }} />
+const MapMarker: React.FC<MapMarkerProps> = ({ latitude, longitude }) => {
+    return <MarkerF position={{ lat: latitude, lng: longitude }}  />
 }
 
 interface Props {
@@ -17,7 +16,7 @@ interface Props {
     center?: { lat: number, lng: number }
 }
 
-const InteractiveMap: React.FC<Props> = ({ locations, center }) => {
+const InteractiveMap: React.FC<Props> = ({ locations }) => {
     const { isLoaded: isGoogleApiLoaded } = useLoadScript({
         version: '3.55',
         googleMapsApiKey: import.meta.env.VITE_GOOGLE_API_KEY,
@@ -25,11 +24,11 @@ const InteractiveMap: React.FC<Props> = ({ locations, center }) => {
 
     return (
         <>
-            {isGoogleApiLoaded && (<GoogleMap mapContainerClassName="map-container" center={center || { lat: 30.6280, lng: -96.3344 }} zoom={11} options={{ streetViewControl: false, mapTypeControl: false}}>
+            {isGoogleApiLoaded && (<GoogleMap mapContainerClassName="map-container" center={{ lat: locations![0].latitude ?? 30.6280, lng: locations![0].longitude ?? -96.3344 }} zoom={15} options={{ streetViewControl: false, mapTypeControl: false}}>
                 {locations?.map((location, index) => {
                     if(location.latitude && location.longitude) {
                         return (
-                            <MapMarker key={`Map Marker: ${index}`} latitude={location.latitude} longitude={location.longitude} text={String.fromCharCode(65 + index)} />
+                            <MapMarker key={`Map Marker: ${index}`} latitude={location.latitude} longitude={location.longitude} />
                         )
                     }
                 })}

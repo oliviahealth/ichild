@@ -12,6 +12,7 @@ from sqlalchemy import create_engine
 import langchain
 from datetime import timedelta
 
+from socketio_instance import socketio
 from database import db, bcrypt, Location, User, revoked_tokens
 from routes.search_routes import search_routes_bp
 from routes.auth_routes import auth_routes_bp
@@ -68,11 +69,11 @@ def create_app():
     app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Change this
 
-    engine_sec = create_engine(os.getenv('ADMIN_POSTGRESQL_CONNECTION_STRING'))
+    engine_sec = create_engine(os.getenv('POSTGRESQL_CONNECTION_STRING'))
     SessionSec = sessionmaker(bind=engine_sec)
     session_sec = SessionSec()
 
-    langchain.verbose = True
+    langchain.verbose = False
     
     CORS(app, supports_credentials=True)
     bcrypt.init_app(app)
@@ -113,6 +114,11 @@ def setup_database(app):
 
 app = create_app()
 setup_database(app)
+socketio.init_app(app)
+
+@socketio.on('connect')
+def handle_connect():
+    print("Client connected")
 
 if __name__ == '__main__':
     app.run()

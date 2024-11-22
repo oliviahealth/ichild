@@ -8,7 +8,6 @@ import useAppStore from "../stores/useAppStore";
 import parseWithZod from "../utils/parseWithZod";
 import { IConversationPreview, ConversationPreviewSchema } from "../utils/interfaces";
 
-import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { BsTrash, BsBoxArrowInLeft } from "react-icons/bs";
 import { FiPlus } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
@@ -105,13 +104,13 @@ const SidePanel: React.FC = () => {
         <>
             <input id="sidepanel" type="checkbox" className="drawer-toggle" />
 
-            <div className="drawer-side h-full md:rounded-box bg-white bg-opacity-50 text-base-neutral" style={{ borderBottomRightRadius: "0px" }}>
+            <div className="drawer-side h-full md:rounded-box bg-white text-base-neutral">
                 <label htmlFor="my-drawer" className="drawer-overlay"></label>
 
-                <div className="w-[275px] p-4 h-full flex flex-col justify-between">
+                <div className="w-[275px] py-4 px-0 h-full flex flex-col justify-between">
                     <div>
-                        <div className="flex gap-2 justify-between items-center">
-                            <Link to={'/'} className="btn rounded-xl md:w-full bg-white border-none text-black shadow-md hover:bg-gray-100" onClick={createNewConversation}>
+                        <div className="flex gap-2 justify-between items-center px-4">
+                            <Link to={'/'} className="btn rounded-xl md:w-full bg-gray-100 border-none shadow-none text-xl text-black hover:bg-gray-200" onClick={createNewConversation}>
                                 <FiPlus className="text-xl" /> New Chat
                             </Link>
 
@@ -120,40 +119,40 @@ const SidePanel: React.FC = () => {
                             </button>
                         </div>
 
-                        <p className="text-sm text-black my-4 mt-6 font-semibold">Recent Activity</p>
+                        <p className="text-xl text-black my-4 mt-6 font-semibold px-4">Recent Activity</p>
 
                         {user ? (
-                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-28rem)]">
-                                {conversationPreviews.map((conversationDetail, index) => (
-                                    <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex justify-between items-center hover:bg-gray-100 ${conversationDetail.id === currentConversationId ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-33.5rem)]">
+                                {conversationPreviews.map((conversationDetail, index) => {
+                                    const isSelected = conversationDetail.id === currentConversationId;
+                                    return <Link to={"/"} onClick={() => setCurrentConversationId(conversationDetail.id)} key={index} className={`my-2 p-2 mx-0 text-base rounded-lg cursor-pointer flex justify-between items-center px-[24px] rounded-none ${isSelected ? "bg-[#E8E0E0] hover:bg-[#D8D0D0] text-primary font-semibold shadow-[inset_5px_0_0_0_var(--tw-shadow-color)] shadow-primary" : "hover:bg-gray-100"}`}>
                                         <div className="flex items-center">
-                                            <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
-                                            <p className="ml-4">{conversationDetail.title}</p>
+                                            <p>{conversationDetail.title}</p>
                                         </div>
 
-                                        <button onClick={() => deleteConversation(conversationDetail.id)} className={`btn btn-ghost btn-sm ${!(conversationDetail.id === currentConversationId) ? "hidden" : ""}`}>
-                                            {isDeleteLoading ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-lg" />)}
+                                        <button onClick={() => deleteConversation(conversationDetail.id)} className={`btn btn-ghost btn-sm ${!isSelected ? "hidden" : ""}`}>
+                                            {isDeleteLoading ? (<span className="loading loading-spinner loading-sm"></span>) : (<BsTrash className="text-lg opacity-50 hover:opacity-100 transition-opacity duration-100" />)}
                                         </button>
                                     </Link>
-                                ))}
+                                })}
                             </div>
                         ) : (
                             <div>
-                                <p className="mb-4 text-sm text-gray-500">You must be signed in to see your conversation history</p>
+                                <p className="mb-4 text-base text-gray-500">You must be signed in to see your conversation history</p>
                             </div>
                         )}
                     </div>
 
                     {user && (<div>
                         <div className="pb-6">
-                            <p className="text-sm text-black font-medium my-4">Saved</p>
+                            <p className="text-xl text-black font-medium my-4 px-4">Saved</p>
 
-                            <Link to={'/savedlocations'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedlocations' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <Link to={'/savedlocations'} className={`my-2 py-2 px-6 text-base cursor-pointer flex items-center ${location.pathname === '/savedlocations' ? "text-primary bg-[#E8E0E0] hover:bg-[#D8D0D0] font-semibold shadow-[inset_5px_0_0_0_var(--tw-shadow-color)] shadow-primary" : "hover:bg-gray-100"}`}>
                                 <p className="text-lg"><IoLocationOutline /></p>
                                 <p className="ml-4">Locations</p>
                             </Link>
 
-                            {/* <Link to={'/savedchats'} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedchats' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            {/* <Link to={'/savedchats'} className={`my-2 p-2 text-base rounded-lg cursor-pointer flex items-center hover:bg-gray-100 ${location.pathname === '/savedchats' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
                                 <p className="text-lg"><HiOutlineChatBubbleOvalLeft /></p>
                                 <p className="ml-4">Chats</p>
                             </Link> */}
@@ -162,17 +161,17 @@ const SidePanel: React.FC = () => {
                         <hr />
 
                         <div>
-                            <Link to={'/settings/user'} className={`my-2 p-2 text-sm rounded-lg flex items-center ${location.pathname === '/settings/user' ? "bg-primary text-primary bg-opacity-30 font-semibold hover:bg-primary hover:bg-opacity-40" : ""}`}>
+                            <Link to={'/settings/user'} className={`my-2 py-2 px-6 text-xl flex items-center ${location.pathname === '/settings/user' ? "text-primary bg-[#E8E0E0] hover:bg-[#D8D0D0] font-semibold shadow-[inset_5px_0_0_0_var(--tw-shadow-color)] shadow-primary" : "hover:bg-gray-100"}`}>
                                 <p className="text-lg"><CgProfile /></p>
                                 <p className="ml-4">{user.name}</p>
                             </Link>
 
-                            {user.isAdmin && (<a href={`${import.meta.env.VITE_API_URL}/admin`} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
+                            {user.isAdmin && (<a href={`${import.meta.env.VITE_API_URL}/admin`} className={`my-2 py-2 px-6 text-xl cursor-pointer flex items-center hover:bg-gray-100`}>
                                 <p className="text-lg"><RiAdminLine /></p>
                                 <p className="ml-4">Admin</p>
                             </a>)}
 
-                            <span onClick={() => handleSignout()} className={`my-2 p-2 text-sm rounded-lg cursor-pointer flex items-center hover:bg-gray-100`}>
+                            <span onClick={() => handleSignout()} className={`my-2 py-2 px-6 text-xl cursor-pointer flex items-center hover:bg-gray-100`}>
                                 <p className="text-lg"><RxExit /></p>
                                 <p className="ml-4">Sign out</p>
                             </span>
