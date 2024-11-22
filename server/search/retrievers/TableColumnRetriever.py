@@ -2,7 +2,6 @@ import ast
 import json
 from typing import List
 from langchain_core.documents import Document
-from langchain_core.callbacks import CallbackManagerForRetrieverRun
 from langchain_core.retrievers import BaseRetriever
 from psycopg2 import connect
 import numpy as np

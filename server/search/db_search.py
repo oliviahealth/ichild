@@ -69,7 +69,7 @@ def create_app():
     app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # Change this
 
-    engine_sec = create_engine(os.getenv('ADMIN_POSTGRESQL_CONNECTION_STRING'))
+    engine_sec = create_engine(os.getenv('POSTGRESQL_CONNECTION_STRING'))
     SessionSec = sessionmaker(bind=engine_sec)
     session_sec = SessionSec()
 
