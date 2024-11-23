@@ -10,8 +10,13 @@ interface Props {
 
 const ChatBubble: React.FC<Props> = ({ children, isResponse, isLocationResponse: isLocation, isFocused: focused, isScrollTarget }) => {
     return (
-        <div className={`chat ${isResponse ? "chat-start max-w-2xl w-max" : "chat-end"}`} data-is-scroll-target={isScrollTarget}>
-            <div className={`flex rounded-box whitespace-pre-wrap ${ !isResponse ? "max-w-[80%] bg-primary text-white" : "bg-white" } ${focused ? "" : "bg-opacity-80"} text-black`}>
+        <div className={`chat ${isResponse ? "chat-start" : "chat-end"}`} data-is-scroll-target={isScrollTarget}>
+            <div 
+                className={`flex rounded-box whitespace-pre-wrap 
+                ${!isResponse ? "bg-primary text-white" : "bg-white"} 
+                ${focused ? "" : "bg-opacity-80"} 
+                text-black max-w-full md:max-w-2xl`}
+            >
                 <div className={`w-2 bg-${focused ? "primary" : "transparent"} rounded-l-lg`} hidden={!isLocation}>
                 </div>
 
@@ -20,7 +25,8 @@ const ChatBubble: React.FC<Props> = ({ children, isResponse, isLocationResponse:
                 </div>
             </div>
         </div>
-    )
+    );
 };
+
 
 export default ChatBubble;
