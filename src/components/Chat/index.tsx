@@ -30,6 +30,8 @@ const ChatComponent = () => {
 
   const socket = useAppStore(state => state.socket);
 
+  const isSidePanelOpen = useAppStore(state => state.isSidePanelOpen);
+
   // When the user submits a query, this will hold what they asked temporarily
   const [submittedQuery, setSubmittedQuery] = useState<null | string>(null);
 
@@ -56,6 +58,8 @@ const ChatComponent = () => {
 
   // Scroll to the bottom of the container with smooth animation
   useEffect(() => {
+    if(isSidePanelOpen) return;
+    
     const elems = containerRef.current?.querySelectorAll("[data-is-scroll-target]");
     if (elems && elems.length > 0) {
       const elem = elems[elems.length - 1];
