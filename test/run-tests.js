@@ -1,5 +1,5 @@
 const BASE_URL = 'http://localhost:5000';
-const TEST_THRESHOLD = 0.5;
+const TEST_THRESHOLD = 0.25;
 
 function genUUIDv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
