@@ -32,7 +32,7 @@ const tests = [
   },
   {
     question: 'What are some tips for maintaining a healthy pregnancy?',
-    text: ['nutrition', 'exercise', 'prenatal care', 'hydration', 'sleep'],
+    text: ['exercise', 'vitamin', 'smoking', 'meat'],
     locations: []
   },
   {
