@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request
 from sentence_transformers import SentenceTransformer
-from flask_jwt_extended import get_jwt_identity, jwt_required
 import os
 import time
 import json
@@ -38,13 +37,7 @@ def msg():
 # API route for ICHILD frontend
 # Takes in a search_query and conversation_id to generate a response
 @search_routes_bp.route("/formattedresults", methods=['POST', 'GET'])
-@jwt_required()
 def formatted_db_search():
-    user_id = get_jwt_identity()
-
-    if (not user_id):
-        return jsonify({'Unauthorized': 'Unauthorized'}), 403
-
     search_query = request.form.get('data')
     conversation_id = request.form.get('conversationId')
     date_created = int(time.time() * 1000)
