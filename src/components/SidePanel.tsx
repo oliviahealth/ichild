@@ -120,7 +120,7 @@ const SidePanel: React.FC = () => {
                             </button>
                         </div>
 
-                        <p className="text-xl text-black my-4 mt-6 font-semibold px-4">Recent Activity</p>
+                        <p className="text-xl text-center text-black my-4 mt-6 font-semibold px-4">Recent Activity</p>
 
                         {user ? (
                             <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-33.5rem)]">
@@ -139,7 +139,7 @@ const SidePanel: React.FC = () => {
                             </div>
                         ) : (
                             <div>
-                                <p className="mb-4 text-base text-gray-500">You must be signed in to see your conversation history</p>
+                                <p className="mb-4 text-base text-center text-gray-500">You must be signed in to see your conversation history</p>
                             </div>
                         )}
                     </div>
