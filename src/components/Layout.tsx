@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useNavigate, useLocation, Navigate } from "react-router-dom";
 import axios from "axios";
 import { useMutation } from "react-query";
 
@@ -20,6 +20,8 @@ const Layout = () => {
   const setError = useAppStore(state => state.setError);
 
   const setAccessToken = useAppStore((state) => state.setAccessToken);
+  
+  const user = useAppStore(state => state.user);
   const setUser = useAppStore((state) => state.setUser);
 
   const isSidePanelOpen = useAppStore((state) => state.isSidePanelOpen);
@@ -118,7 +120,7 @@ const Layout = () => {
               <div className={`w-full h-full`}>
                 <ErrorComponent />
 
-                <Outlet />
+                { !user ? <Navigate to='/signin' /> : <Outlet /> }
               </div>
             </div>
           </div>
