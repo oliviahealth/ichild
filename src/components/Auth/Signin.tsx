@@ -34,15 +34,15 @@ const Signin: React.FC = () => {
         interface ISignupResponse extends IUser {
             accessToken: string
         }
-        
-        const user: ISignupResponse = (await axios.post(`${import.meta.env.VITE_API_URL}/signin`, data, { withCredentials: true })).data;
+
+        const user: ISignupResponse = (await axios.post(`${import.meta.env.VITE_API_URL}/signin`, { ...data, email: data.email.toLowerCase() }, { withCredentials: true })).data;
 
         parseWithZod(user, UserSchema);
 
         return user
     }, {
         onSuccess: (response) => {
-            if (response) {        
+            if (response) {
                 setAccessToken(response.accessToken);
 
                 sessionStorage.setItem('accessToken', response.accessToken);
@@ -60,7 +60,7 @@ const Signin: React.FC = () => {
                 <p className="font-semibold text-2xl">Welcome Back!</p>
                 <p className="text-sm">Sign in to your account</p>
 
-                { errorDetected && (<p className="text-sm text-red-500">Something went wrong. Please try again</p>) }
+                {errorDetected && (<p className="text-sm text-red-500">Something went wrong. Please try again</p>)}
             </div>
 
             <form onSubmit={handleSignin((data) => signinUser(data))} className="form-control w-full">
