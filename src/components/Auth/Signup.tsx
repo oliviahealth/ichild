@@ -39,8 +39,8 @@ const Auth: React.FC = () => {
         interface ISignupResponse extends IUser {
             accessToken: string
         }
-        
-        const user : ISignupResponse = (await axios.post(`${import.meta.env.VITE_API_URL}/signup`, data, { withCredentials: true })).data
+
+        const user: ISignupResponse = (await axios.post(`${import.meta.env.VITE_API_URL}/signup`, { ...data, email: data.email.toLowerCase() }, { withCredentials: true })).data
 
         parseWithZod(user, UserSchema);
 
@@ -68,7 +68,7 @@ const Auth: React.FC = () => {
                 <p className="font-semibold text-2xl">Get Started</p>
                 <p className="text-sm">Create your account now</p>
 
-                { errorDetected && (<p className="text-sm text-red-500">Something went wrong. Please try again</p>) }
+                {errorDetected && (<p className="text-sm text-red-500">Something went wrong. Please try again</p>)}
             </div>
 
             <form onSubmit={handleSignup((data) => signupUser(data))} className="form-control w-full py-4">
