@@ -5,6 +5,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
+import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 
 import useAppStore from "../../stores/useAppStore";
 import parseWithZod from "../../utils/parseWithZod";
@@ -17,6 +18,9 @@ const Auth: React.FC = () => {
     const setUser = useAppStore((state) => state.setUser);
     const setAccessToken = useAppStore((state) => state.setAccessToken);
     const [errorDetected, setErrorDetected] = useState(false);
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     // Use zod to validate the form before submission
     // https://zod.dev/
@@ -76,32 +80,94 @@ const Auth: React.FC = () => {
                     <label className="label">
                         <span className="label-text text-black font-medium">Name</span>
                     </label>
-                    <input {...registerSignup('name')} type="text" className="input w-full border-gray-200 focus:border-primary focus:outline-none" />
-                    {signupErrors.name && <span className="label-text-alt text-red-500">{signupErrors.name.message}</span>}
+                    <div className="flex w-full items-center border border-gray-200 rounded-xl p-1">
+                        <input
+                            {...registerSignup('name')}
+                            type="text"
+                            className="input flex-1 border-0 focus:border-transparent focus:ring-0 focus:outline-none"
+                            placeholder="Your name"
+                        />
+                    </div>
+                    {signupErrors.name && (
+                        <span className="label-text-alt text-red-500">
+                            {signupErrors.name.message}
+                        </span>
+                    )}
                 </div>
 
                 <div className="my-1">
                     <label className="label">
                         <span className="label-text text-black font-medium">Email</span>
                     </label>
-                    <input {...registerSignup('email')} type="email" className="input w-full border-gray-200 focus:border-primary focus:outline-none" />
-                    {signupErrors.email && <span className="label-text-alt text-red-500">{signupErrors.email.message}</span>}
+                    <div className="flex w-full items-center border border-gray-200 rounded-xl p-1">
+                        <input
+                            {...registerSignup('email')}
+                            type="email"
+                            className="input flex-1 border-0 focus:border-transparent focus:ring-0 focus:outline-none"
+                            placeholder="you@example.com"
+                        />
+                    </div>
+                    {signupErrors.email && (
+                        <span className="label-text-alt text-red-500">
+                            {signupErrors.email.message}
+                        </span>
+                    )}
                 </div>
 
                 <div className="my-1">
                     <label className="label">
                         <span className="label-text text-black font-medium">Password</span>
                     </label>
-                    <input {...registerSignup('password')} type="password" className="input w-full border-gray-200 focus:border-primary focus:outline-none" />
-                    {signupErrors.password && <span className="label-text-alt text-red-500">{signupErrors.password.message}</span>}
+                    <div className="flex w-full items-center gap-2 border border-gray-200 rounded-xl p-1">
+                        <input
+                            {...registerSignup('password')}
+                            type={showPassword ? 'text' : 'password'}
+                            className="input flex-1 border-0 focus:border-transparent focus:ring-0 focus:outline-none"
+                            placeholder="Password"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            className="text-gray-500 text-sm px-2"
+                            aria-label="Toggle password visibility"
+                        >
+                            {showPassword ? <RiEyeFill /> : <RiEyeOffFill />}
+                        </button>
+                    </div>
+
+                    {signupErrors.password && (
+                        <span className="label-text-alt text-red-500">
+                            {signupErrors.password.message}
+                        </span>
+                    )}
                 </div>
 
                 <div className="my-1">
                     <label className="label">
                         <span className="label-text text-black font-medium">Confirm Password</span>
                     </label>
-                    <input {...registerSignup('confirmPassword')} type="password" className="input w-full border-gray-200 focus:border-primary focus:outline-none" />
-                    {signupErrors.confirmPassword && <span className="label-text-alt text-red-500">{signupErrors.confirmPassword.message}</span>}
+                    <div className="flex w-full items-center gap-2 border border-gray-200 rounded-xl p-1">
+                        <input
+                            {...registerSignup('confirmPassword')}
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            className="input flex-1 border-0 focus:border-transparent focus:ring-0 focus:outline-none"
+                            placeholder="Confirm password"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword((prev) => !prev)}
+                            className="text-gray-500 text-sm px-2"
+                            aria-label="Toggle password visibility"
+                        >
+                            {showConfirmPassword ? <RiEyeFill /> : <RiEyeOffFill />}
+                        </button>
+                    </div>
+
+                    {signupErrors.confirmPassword && (
+                        <span className="label-text-alt text-red-500">
+                            {signupErrors.confirmPassword.message}
+                        </span>
+                    )}
                 </div>
 
                 <button className="btn btn-primary w-full mt-6" disabled={isLoading}>
