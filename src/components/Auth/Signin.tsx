@@ -9,6 +9,7 @@ import axios from "axios";
 import useAppStore from "../../stores/useAppStore";
 import parseWithZod from "../../utils/parseWithZod";
 import { UserSchema, IUser } from "../../utils/interfaces";
+import { RiEyeFill, RiEyeOffFill } from "react-icons/ri";
 
 
 const Signin: React.FC = () => {
@@ -17,6 +18,8 @@ const Signin: React.FC = () => {
     const setUser = useAppStore((state) => state.setUser);
     const setAccessToken = useAppStore((state) => state.setAccessToken);
     const [errorDetected, setErrorDetected] = useState(false);
+
+    const [showPassword, setShowPassword] = useState(false);
 
     // Use zod to validate the form before submission
     // https://zod.dev/
@@ -68,18 +71,48 @@ const Signin: React.FC = () => {
                     <label className="label">
                         <span className="label-text text-black font-medium">Email</span>
                     </label>
-                    <input {...registerSignin('email')} type="email" className="input w-full border-gray-200 focus:border-primary focus:outline-none" />
-                    {signinErrors.email && <span className="label-text-alt text-red-500">{signinErrors.email.message}</span>}
+                    <div className="flex w-full items-center border border-gray-200 rounded-xl p-1">
+                        <input
+                            {...registerSignin('email')}
+                            type="email"
+                            className="input flex-1 border-0 focus:border-transparent focus:ring-0 focus:outline-none"
+                            placeholder="you@example.com"
+                        />
+                    </div>
+                    {signinErrors.email && (
+                        <span className="label-text-alt text-red-500">
+                            {signinErrors.email.message}
+                        </span>
+                    )}
                 </div>
 
                 <div className="my-1">
                     <label className="label">
                         <span className="label-text text-black font-medium">Password</span>
                     </label>
-                    <input {...registerSignin('password')} type="password" className="input w-full border-gray-200 focus:border-primary focus:outline-none" />
-                    {signinErrors.password && <span className="label-text-alt text-red-500">{signinErrors.password.message}</span>}
-                </div>
+                    <div className="flex w-full items-center gap-2 border border-gray-200 rounded-xl p-1">
+                        <input
+                            {...registerSignin('password')}
+                            type={showPassword ? 'text' : 'password'}
+                            className="input flex-1 border-0 focus:border-transparent focus:ring-0 focus:outline-none"
+                            placeholder="Password"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            className="text-gray-500 text-sm px-2"
+                            aria-label="Toggle password visibility"
+                        >
+                            {showPassword ? <RiEyeFill /> : <RiEyeOffFill />}
+                        </button>
+                    </div>
 
+                    {signinErrors.password && (
+                        <span className="label-text-alt text-red-500">
+                            {signinErrors.password.message}
+                        </span>
+                    )}
+                </div>
                 <button className="btn btn-primary w-full mt-6" disabled={isLoading}>
                     {isLoading && (<span className="loading loading-spinner loading-sm"></span>)}
                     Sign In
