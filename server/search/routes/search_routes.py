@@ -45,10 +45,21 @@ def formatted_db_search():
         messages.append({"role": role, "content": content})
     messages.append({"role": "user", "content": search_query})
 
+    start_time = time.time()
+
     # Determine weather search_query is a direct question or location based
     # Select which tool to invoke (search_direct_question for direct questions, search_location_question for location based question)
     determine_search_type_response = determine_search_type(messages)
-    tool_calls = determine_search_type_response.choices[0].message.tool_calls
+    message = determine_search_type_response.choices[0].message
+    tool_calls = message.tool_calls
+
+    end_time = time.time()
+    print(f"\x1B[96m[TEST]\x1B[m Choosing function took {end_time - start_time} seconds")
+
+    if (tool_calls):
+        print(f"\x1B[96m[TEST]\x1B[m Chosen function: {tool_calls[0].function.name}")
+    else:
+        print("\x1B[96m[TEST] \x1B[91m[WARN]\x1B[m OpenAI Classification Refusal")
 
     if (tool_calls):
         function_name = tool_calls[0].function.name
