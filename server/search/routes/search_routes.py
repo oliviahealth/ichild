@@ -11,7 +11,7 @@ from database import Location, message_store, db
 search_routes_bp = Blueprint('search_routes', __name__)
 
 # Executes when first user accesses site
-@search_routes_bp.before_app_first_request
+@search_routes_bp.before_app_request
 def connection_and_setup():
     model_path = os.getenv('MODEL_PATH')
 
