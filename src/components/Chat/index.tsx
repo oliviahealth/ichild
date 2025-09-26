@@ -283,7 +283,7 @@ const ChatComponent = () => {
             </button>
           </div>
 
-          <div className="flex px-4 py-2">
+          <div className="flex items-center px-4 py-2">
             <button
               type="button"
               onClick={toggleSearchActive}
@@ -305,7 +305,7 @@ const ChatComponent = () => {
                 size={20}
                 className={searchActive ? "text-white" : "text-gray-300"}
               />
-              <span>Include Web Results</span>
+              <p>Include Web Results</p>
             </button>
 
           </div>
