@@ -10,6 +10,7 @@ from flask_jwt_extended import JWTManager
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import langchain
+from sentence_transformers import SentenceTransformer
 from datetime import timedelta
 
 from socketio_instance import socketio
@@ -56,6 +57,23 @@ class LocationView(ModelView):
     def get_count_query(self):
         # Use the second connection string for the count query
         return super(LocationView, self).get_count_query()
+
+def connection_and_setup():
+    model_path = os.getenv('MODEL_PATH')
+
+    global embedder
+    embedder = SentenceTransformer(model_path)
+
+    global corpus
+    # Get all the location records from PSQL
+    corpus = [location.description for location in Location.query.all()]
+
+    print("******BEGINNING PREPROCESS*******")
+    embeddings = embedder.encode(corpus, convert_to_tensor=True)
+    global encoding_dict
+    encoding_dict = {}
+    encoding_dict["Encodings"] = embeddings
+    print("*******END PREPROCESS********")
 
 def create_app():
     app = Flask(__name__)
@@ -110,6 +128,7 @@ def register_blueprints(app):
 
 def setup_database(app):
     with app.app_context():
+        connection_and_setup()
         db.create_all()
 
 app = create_app()

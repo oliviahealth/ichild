@@ -1,33 +1,12 @@
 from flask import Blueprint, render_template, request
-from sentence_transformers import SentenceTransformer
-import os
 import time
 import json
 
 from route_handlers.query_handlers import search_direct_questions, search_location_questions, determine_search_type
 
-from database import Location, message_store, db
+from database import message_store, db
 
 search_routes_bp = Blueprint('search_routes', __name__)
-
-# Executes when first user accesses site
-@search_routes_bp.before_app_request
-def connection_and_setup():
-    model_path = os.getenv('MODEL_PATH')
-
-    global embedder
-    embedder = SentenceTransformer(model_path)
-
-    global corpus
-    # Get all the location records from PSQL
-    corpus = [location.description for location in Location.query.all()]
-
-    print("******BEGINNING PREPROCESS*******")
-    embeddings = embedder.encode(corpus, convert_to_tensor=True)
-    global encoding_dict
-    encoding_dict = {}
-    encoding_dict["Encodings"] = embeddings
-    print("*******END PREPROCESS********")
 
 # Old ichild homepage
 @search_routes_bp.route("/", methods=['POST', 'GET'])
