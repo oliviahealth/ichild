@@ -10,6 +10,7 @@ import parseWithZod from "../../utils/parseWithZod";
 import { APIResponseSchema, ConversationSchema, IAPIResponse, IConversation } from "../../utils/interfaces";
 
 import { FaAngleRight } from "react-icons/fa6";
+import { CiGlobe } from "react-icons/ci";
 
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
@@ -31,6 +32,8 @@ const ChatComponent = () => {
   const socket = useAppStore(state => state.socket);
 
   const isSidePanelOpen = useAppStore(state => state.isSidePanelOpen);
+
+  const [searchActive, setSearchActive] = useState(false);
 
   // When the user submits a query, this will hold what they asked temporarily
   const [submittedQuery, setSubmittedQuery] = useState<null | string>(null);
@@ -58,8 +61,8 @@ const ChatComponent = () => {
 
   // Scroll to the bottom of the container with smooth animation
   useEffect(() => {
-    if(isSidePanelOpen) return;
-    
+    if (isSidePanelOpen) return;
+
     const elems = containerRef.current?.querySelectorAll("[data-is-scroll-target]");
     if (elems && elems.length > 0) {
       const elem = elems[elems.length - 1];
@@ -138,7 +141,7 @@ const ChatComponent = () => {
     const formData = new FormData();
     formData.append("data", data.query);
     formData.append("conversationId", currentConversationId);
-    
+
     const headers = {
       "Authorization": "Bearer " + accessToken,
       "userId": user?.id,
@@ -148,7 +151,7 @@ const ChatComponent = () => {
 
     // setCurrentConversationId(response.conversationId);
 
-    if(user) {
+    if (user) {
       const conversation: IConversation = (await axios.post(`${import.meta.env.VITE_API_URL}/conversations`, { id: response.conversationId, title: response.userQuery }, { headers: { ...headers }, withCredentials: true })).data;
       await axios.post(`${import.meta.env.VITE_API_URL}/response`, { ...response, conversationId: conversation.id }, { headers: { ...headers }, withCredentials: true });
 
@@ -157,7 +160,7 @@ const ChatComponent = () => {
         setConversationPreviews([{ id: conversation.id ?? uuid(), title: response.userQuery }, ...ConversationPreviews])
       }
     }
-    
+
     // Parse the response and make sure it complies with the expected API Response
     parseWithZod(response, APIResponseSchema);
 
@@ -190,6 +193,10 @@ const ChatComponent = () => {
     reset();
 
     handleSubmit(() => getResponse({ query }))();
+  }
+
+  const toggleSearchActive = () => {
+    setSearchActive(!searchActive)
   }
 
   return (
@@ -263,15 +270,44 @@ const ChatComponent = () => {
 
       { /* input field with the submit button */}
       <form className="form-control mb-8" onSubmit={handleSubmit((data) => handleQuickResponse(data.query))}>
-        <div className="input-group flex self-center w-[90%] rounded-box shadow-2xl group opacity-80 scale-100 focus-within:opacity-100 focus-within:scale-101 transition-all duration-300 text-lightgrey focus-within:text-primary">
-          <input placeholder="Ask me a question" className="input w-full py-6 bg-white focus:outline-none border-none rounded-box rounded-r-none text-black" {...register("query")} />
-          <button className="btn btn-square h-full bg-white border-none hover:bg-primary active:bg-primary-focus rounded-box rounded-l-none hover:text-white">
-            <p>
-              <svg width="24" height="26" viewBox="0 0 32 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path id="Subtract" d="M0.655396 34L31.263 17L0.655396 0L4.89595 13.1308L21.2664 17L4.89595 21.2815L0.655396 34Z" className="fill-current" />
-              </svg>
-            </p>
-          </button>
+        <div className="input-group bg-white self-center w-[90%] rounded-box shadow-2xl group opacity-80 scale-100 focus-within:opacity-100 focus-within:scale-101 transition-all duration-300 text-lightgrey focus-within:text-primary">
+          <div className="flex">
+            <input placeholder="Ask me a question" className="input w-full py-6 bg-white focus:outline-none border-none rounded-box rounded-r-none text-black" {...register("query")} />
+            <button className="btn btn-square h-full bg-white border-none hover:bg-primary active:bg-primary-focus rounded-box rounded-l-none hover:text-white">
+              <p>
+                <svg width="24" height="26" viewBox="0 0 32 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path id="Subtract" d="M0.655396 34L31.263 17L0.655396 0L4.89595 13.1308L21.2664 17L4.89595 21.2815L0.655396 34Z" className="fill-current" />
+                </svg>
+              </p>
+            </button>
+          </div>
+
+          <div className="flex px-4 py-2">
+            <button
+              type="button"
+              onClick={toggleSearchActive}
+              className={`
+                flex items-center gap-2
+                px-2 py-1
+                rounded-lg
+                text-sm
+                font-medium
+                shadow-sm
+                transition-all duration-200
+                border
+                ${searchActive
+                              ? "bg-blue-500 text-white border-blue-500"
+                              : "bg-white text-gray-300 border-gray-300"}
+              `}
+            >
+              <CiGlobe
+                size={20}
+                className={searchActive ? "text-white" : "text-gray-300"}
+              />
+              <span>Include Web Results</span>
+            </button>
+
+          </div>
         </div>
       </form>
     </div>
