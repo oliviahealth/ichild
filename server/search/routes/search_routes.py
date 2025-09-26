@@ -92,8 +92,6 @@ def formatted_db_search():
     if (function_name == 'search_direct_questions'):
         response_type = 'direct'
 
-        print(allow_external, type(allow_external))
-
         if(allow_external):
             response = search_direct_questions(conversation_id, summarized_query, True)
         else:
