@@ -26,7 +26,7 @@ table_column_retriever = build_table_column_retriever(
     embedding_column_name="embedding"
 )
 
-def search_direct_questions(conversation_id, search_query):
+def search_direct_questions(conversation_id, search_query, allow_external):
     '''
     Direct question handler searches OliviaHealth.org knowledge base for most relevant data relating to user query
     Data is passed to LLM to generate output
@@ -38,7 +38,7 @@ def search_direct_questions(conversation_id, search_query):
     # Build the retrieval QA chain with SQL memory
     # Must pass in the session_id from the message_store table
     retrieval_qa_chain = build_conversational_retrieval_chain_with_memory(
-        llm, pg_vector_retriever, conversation_id, connection_uri, socketio)
+        llm, pg_vector_retriever, conversation_id, connection_uri, socketio, allow_external)
 
     # Invoke RAG process
     response = retrieval_qa_chain.invoke(search_query)

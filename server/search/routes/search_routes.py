@@ -19,6 +19,7 @@ def msg():
 def formatted_db_search():
     search_query = request.form.get('data')
     conversation_id = request.form.get('conversationId')
+    allow_external = True if request.form.get('allow_external') == "true" else False
     date_created = int(time.time() * 1000)
 
     # Reconstruct the conversation history given the conversation_id
@@ -91,7 +92,12 @@ def formatted_db_search():
     if (function_name == 'search_direct_questions'):
         response_type = 'direct'
 
-        response = search_direct_questions(conversation_id, summarized_query)
+        print(allow_external, type(allow_external))
+
+        if(allow_external):
+            response = search_direct_questions(conversation_id, summarized_query, True)
+        else:
+            response = search_direct_questions(conversation_id, summarized_query, False)
 
         return {
             'userQuery': search_query,

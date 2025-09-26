@@ -79,7 +79,7 @@ class ContextDecidingRetriever(BaseRetriever):
 
     base_retriever: BaseRetriever
     conversation_id: str = None
-    allow_external: bool = True
+    allow_external: bool = False
     socket: any = None
 
     def _get_relevant_documents(self, query: str, *, run_manager = None):
@@ -90,6 +90,8 @@ class ContextDecidingRetriever(BaseRetriever):
         sufficient = judge_context(query, kb_docs)
         if sufficient or not self.allow_external:
             return kb_docs
+        
+        print("fetching additional context")
 
         extra = (fetch_external_context( self.conversation_id, query) or "").strip()
         if extra:

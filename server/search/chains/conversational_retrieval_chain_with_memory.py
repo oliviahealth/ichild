@@ -26,7 +26,7 @@ class StreamCallbackHandler(StreamingStdOutCallbackHandler):
             self.socketio.emit('stream_end')
 
 
-def build_conversational_retrieval_chain_with_memory( llm, retriever: BaseRetriever, conversation_id, connection_string, socket=None, allow_external: bool = True ):
+def build_conversational_retrieval_chain_with_memory( llm, retriever: BaseRetriever, conversation_id, connection_string, socket=None, allow_external: bool = False ):
     """
     Build a standard ConversationalRetrievalChain, but pass a retriever that
     decides (and augments) context before the chain composes the answer.

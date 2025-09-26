@@ -141,6 +141,7 @@ const ChatComponent = () => {
     const formData = new FormData();
     formData.append("data", data.query);
     formData.append("conversationId", currentConversationId);
+    formData.append("allow_external", searchActive.toString());
 
     const headers = {
       "Authorization": "Bearer " + accessToken,
