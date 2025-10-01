@@ -9,6 +9,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from socketio_instance import socketio
 from retrievers.PGVectorRetriever import build_pg_vector_retriever
 from retrievers.TableColumnRetriever import build_table_column_retriever
+import time
 
 llm = ChatOpenAI()
 openai_embeddings = OpenAIEmbeddings()
@@ -35,6 +36,8 @@ def search_direct_questions(conversation_id, search_query, allow_external):
     Examples of direct questions: 'Newborn nutritonal advice', 'How do hormonal IUDs prevent pregnancy', 'What is mastitis treated with'
     '''
 
+    start_time = time.time()
+
     # Build the retrieval QA chain with SQL memory
     # Must pass in the session_id from the message_store table
     retrieval_qa_chain = build_conversational_retrieval_chain_with_memory(
@@ -43,6 +46,9 @@ def search_direct_questions(conversation_id, search_query, allow_external):
     # Invoke RAG process
     response = retrieval_qa_chain.invoke(search_query)
     answer = response.get('answer')
+
+    end_time = time.time()
+    print(f"\x1B[96m[TEST]\x1B[m Direct question took {end_time - start_time} seconds")
 
     return answer
 
@@ -57,12 +63,17 @@ def search_location_questions(conversation_id, search_query):
     Examples of location questions: 'Dental Services in Corpus Christi', 'Where can I get mental health support in Bryan'
     '''
 
+    start_time = time.time()
+
     retrieval_qa_chain = build_conversational_retrieval_chain_with_memory(
         llm, table_column_retriever, conversation_id, connection_uri, socketio)
     
     response = retrieval_qa_chain.invoke(search_query)
     answer = response.get('answer')
     source_documents = response.get('source_documents')
+
+    end_time = time.time()
+    print(f"\x1B[96m[TEST]\x1B[m Location question took {end_time - start_time} seconds")
 
     # Return the LLM response and the JSON
     return {
