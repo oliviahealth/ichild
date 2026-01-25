@@ -12,7 +12,7 @@ from retrievers.TableColumnRetriever import build_table_column_retriever
 
 llm = ChatOpenAI()
 openai_embeddings = OpenAIEmbeddings()
-connection_uri = os.getenv('POSTGRESQL_CONNECTION_STRING')
+connection_uri = os.getenv("POSTGRES_DSN")
 
 # Create a retriever for the default langchain_pg_embedding table (direct questions)
 pg_vector_retriever = build_pg_vector_retriever('2024-11-15 12:59:57', openai_embeddings, connection_uri)
