@@ -30,7 +30,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       { /* Use React Router to handle client side routing between the auth page and the home page
           https://reactrouter.com/en/main
     */ }
-      <BrowserRouter basename="/ichild">
+      <BrowserRouter basename="/">
         <Routes>
           { /* Wrap all elements with the Layout component
                 https://reactrouter.com/en/main/start/concepts#layout-routes
