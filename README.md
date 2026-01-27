@@ -25,77 +25,62 @@ Contact @sumitnalavade for details
 **Frontend:** `VITE_API_URL` `VITE_GOOGLE_API_KEY`  
 **Backend:** `POSTGRESQL_CONNECTION_STRING` `ADMIN_POSTGRESQL_CONNECTION_STRING` `GOOGLE_API_KEY` `MODEL_PATH` `SECRET_KEY`
 
-## Run Locally
-**Clone the project**
-~~~bash  
-  git clone https://github.com/oliviahealth/ichild.git
-~~~
+## iChild Local Deployment Guide
+This guide covers the necessary dependencies and steps to run the iChild application locally.
 
-**Go to the project directory**
-~~~bash  
-  cd ichild
-~~~
+The application runs using two Docker containers:
+- Frontend: React application
+- Backend: Flask application
 
-**Install frontend dependencies**
-~~~bash
-cd frontend
-~~~
+### Prerequisites
 
-~~~bash  
-npm install
-~~~
+Ensure you have the following installed:
 
-**Add frontend environment variables**
-~~~bash  
+- Docker
+- Git
+
+### 1. Clone the Repository
+``` bash
+git clone https://github.com/oliviahealth/ichild.git
+cd ichild
+```
+
+### 2. Create Environment Variables
+In the root of the repository, create a file named `.env`:
+``` bash
 touch .env
-~~~
+```
 
-~~~bash  
-`VITE_API_URL`
+Add the following contents:
+``` bash
+VITE_API_URL='http://localhost:5000'
+VITE_GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'
 
-`VITE_GOOGLE_API_KEY`
-~~~
+POSTGRESQL_CONNECTION_STRING='postgresql+psycopg2://ichild:ichild@db:5432/ichild'
+ADMIN_POSTGRESQL_CONNECTION_STRING='postgresql+psycopg2://ichild:ichild@db:5432/ichild'
+POSTGRES_DSN='postgresql://ichild:ichild@db:5432/ichild'
 
-**Start client**
-~~~bash  
-npm run dev
-~~~
+GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'
+OPENAI_API_KEY='YOUR_OPENAI_API_KEY'
 
-**Install backend dependencies**
-~~~bash  
-cd backend
-~~~
+MODEL_PATH='/app/models/model1'
+SECRET_KEY='YOUR_SECRET_KEY'
 
-~~~bash
-cd server
-~~~
+```
 
-~~~bash  
-pip install -r requirements.txt
-~~~
+### 3. Build and Run Containers
+From the root directory:
+```
+docker compose up
+```
+Docker will:
+- Pull required images
+- Build frontend and backend
+- Start PostgreSQL
+- Install dependencies
 
-**Add backend environment variables**
-~~~bash  
-touch .env
-~~~
-
-~~~bash  
-`POSTGRESQL_CONNECTION_STRING`
-
-`ADMIN_POSTGRESQL_CONNECTION_STRING`
-
-`GOOGLE_API_KEY`
-
-`MODEL_PATH`
-
-`SECRET_KEY`
-~~~
-
-**Start server**
-~~~bash  
-cd search
-~~~
-
-~~~bash  
-flask run
-~~~
+You should see logs indicating:
+- Frontend build completion
+- Backend startup
+- PostgreSQL initialization
+- Location data seeded from location_rows.csv
