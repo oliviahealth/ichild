@@ -1,8 +1,7 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
-import time
 
-from database import Conversation, db, Response, Location
+from database import Conversation, db, Response
 
 response_routes_bp = Blueprint('response_routes', __name__)
 
@@ -48,7 +47,7 @@ def add_response():
     except:
         return jsonify({ 'error': 'Something went wrong!' }), 500
     
-    locationsArr = [Location.query.filter_by(id=location.get('id')).first().id for location in locations] # This array will hold only the id of the locations that are then stored as a column on the response record. Do not store entire location objects. 
+    locationsArr = [location['id'] for location in locations] # This array will hold only the id of the locations that are then stored as a column on the response record. Do not store entire location objects. 
 
     try:    
         new_response = Response(user_query=user_query, conversation_id=conversation_id, locations=locationsArr, response_type=response_type, response=response, date_created=date_created)

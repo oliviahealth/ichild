@@ -60,10 +60,6 @@ POSTGRESQL_CONNECTION_STRING='postgresql+psycopg2://ichild:ichild@db:5432/ichild
 ADMIN_POSTGRESQL_CONNECTION_STRING='postgresql+psycopg2://ichild:ichild@db:5432/ichild'
 POSTGRES_DSN='postgresql://ichild:ichild@db:5432/ichild'
 
-GOOGLE_API_KEY='YOUR_GOOGLE_API_KEY'
-OPENAI_API_KEY='YOUR_OPENAI_API_KEY'
-
-MODEL_PATH='/app/models/model1'
 SECRET_KEY='YOUR_SECRET_KEY'
 
 ```

@@ -26,8 +26,6 @@ services:
         condition: service_healthy
     volumes:
       - ./server/data/location_rows.csv:/seed/location_rows.csv:ro
-      - ./server/data/langchain_pg_collection_rows.csv:/seed/langchain_pg_collection_rows.csv:ro
-      - ./server/data/langchain_pg_embedding_rows.csv:/seed/langchain_pg_embedding_rows.csv:ro
     command: ["python", "init_db.py"]
     restart: "no"
 

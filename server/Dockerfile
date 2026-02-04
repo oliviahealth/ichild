@@ -20,12 +20,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # ---- app code ----
 COPY . /app
 
-# ---- copy sentence-transformers model into image ----
-# Make sure this path exists: server/models/model1 on your host.
-# After COPY . /app, it should be at /app/models/model1 if it’s in server/models/model1.
-# If your structure is different, adjust the path below.
-ENV MODEL_PATH=/app/models/model1
-
 # Flask/Gunicorn settings (optional)
 ENV PYTHONUNBUFFERED=1
 ENV PORT=5000

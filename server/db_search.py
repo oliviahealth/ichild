@@ -10,11 +10,10 @@ from flask_jwt_extended import JWTManager
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import langchain
-from sentence_transformers import SentenceTransformer
 from datetime import timedelta
 
 from socketio_instance import socketio
-from database import db, bcrypt, Location, User, revoked_tokens
+from database import db, bcrypt, User, revoked_tokens
 from routes.search_routes import search_routes_bp
 from routes.auth_routes import auth_routes_bp
 from routes.conversation_routes import conversation_routes_bp
@@ -42,7 +41,7 @@ class IndexAdminView(AdminIndexView):
 
         return user.is_admin
     
-class LocationView(ModelView):
+class AdminView(ModelView):
     def is_accessible(self):
         if not current_user.is_authenticated:
             return False
@@ -52,28 +51,11 @@ class LocationView(ModelView):
 
     def get_query(self):
         # The Location model is now bound to 'second_db'
-        return super(LocationView, self).get_query()
+        return super(AdminView, self).get_query()
 
     def get_count_query(self):
         # Use the second connection string for the count query
-        return super(LocationView, self).get_count_query()
-
-def connection_and_setup():
-    model_path = os.getenv('MODEL_PATH')
-
-    global embedder
-    embedder = SentenceTransformer(model_path)
-
-    global corpus
-    # Get all the location records from PSQL
-    corpus = [location.description for location in Location.query.all()]
-
-    print("******BEGINNING PREPROCESS*******")
-    embeddings = embedder.encode(corpus, convert_to_tensor=True)
-    global encoding_dict
-    encoding_dict = {}
-    encoding_dict["Encodings"] = embeddings
-    print("*******END PREPROCESS********")
+        return super(AdminView, self).get_count_query()
 
 def create_app():
     app = Flask(__name__)
@@ -101,7 +83,7 @@ def create_app():
     register_blueprints(app)
 
     admin = Admin(app, index_view=IndexAdminView(name='iCHILD Admin'), template_mode='bootstrap3')
-    admin.add_view(LocationView(Location, session_sec))
+    admin.add_view(AdminView(User, session_sec))
 
     login_manager = LoginManager()
     login_manager.init_app(app)
@@ -128,7 +110,6 @@ def register_blueprints(app):
 
 def setup_database(app):
     with app.app_context():
-        connection_and_setup()
         db.create_all()
 
 app = create_app()
