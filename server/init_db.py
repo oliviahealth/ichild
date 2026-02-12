@@ -12,9 +12,6 @@ load_dotenv()
 # POSTGRES_DSN=postgresql://ichild:ichild@db:5432/ichild
 DATABASE_URL = os.getenv("POSTGRES_DSN")
 
-# Seed CSVs are mounted into the init container at /seed/*
-LOCATION_CSV_PATH = "/seed/location_rows.csv"
-
 def create_minimal_app():
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
@@ -55,15 +52,9 @@ def reset_tables():
     print("truncating seed tables...", flush=True)
 
     # Truncate all in one statement to satisfy FK constraints
-    run_psql('TRUNCATE TABLE "location" RESTART IDENTITY CASCADE;')
+    run_psql('TRUNCATE TABLE "conversation", "response", "saved_location", "user" RESTART IDENTITY CASCADE;')
 
     print("✅ Truncated tables", flush=True)
-
-
-def seed_location():
-    # location is quoted in case it conflicts with reserved words or casing
-    psql_copy('"location"', LOCATION_CSV_PATH)
-
 
 if __name__ == "__main__":
     if not DATABASE_URL:
@@ -76,9 +67,6 @@ if __name__ == "__main__":
 
         print("==> Creating app tables (SQLAlchemy models)...")
         db.create_all()
-        reset_tables()
-
-        print("==> Seeding location table...")
-        seed_location()
+        # reset_tables()
 
     print("init_db complete")
