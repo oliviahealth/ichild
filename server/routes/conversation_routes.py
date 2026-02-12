@@ -129,6 +129,15 @@ def get_conversation_previews():
 @conversation_routes_bp.route('/conversation', methods=['GET'])
 @jwt_required()
 def get_conversation():
+    def resolve_documents(document_ids):
+        resolved_documents = []
+
+        for doc_id in document_ids:
+            if doc_id in resource_index:
+                resolved_documents.append(resource_index[doc_id])
+
+        return resolved_documents
+
     conversation_id = request.args.get('id')
     user_id = get_jwt_identity()
     try:
@@ -140,6 +149,28 @@ def get_conversation():
         conversation_user_id = str(conversation.user_id).strip()
         if not (user_id == conversation_user_id):
             return jsonify({'Unauthorized': 'Unauthorized'}), 403
+
+        resources = requests.get(
+            "https://oliviahealth.org/wp-content/uploads/resources.json",
+            timeout=5
+        )
+        resources.raise_for_status()  # Raises error if request failed
+
+        resources_json = resources.json()
+
+        # Build index once
+        resource_index = {}
+
+        for section_name, section_value in resources_json.items():
+            if not isinstance(section_value, list):
+                continue
+
+            for item in section_value:
+                if isinstance(item, dict) and "id" in item:
+                    resource_index[item["id"]] = {
+                        **item,
+                        "resource_type": section_name
+                    }
 
         final = {
             'id': conversation.id,
@@ -165,6 +196,10 @@ def get_conversation():
                 f'{OLLIE_API_URL}/locations',
                 data={'location_ids': response.locations}
             )
+
+            # Resolve the complete source documents from the response.documents array
+            resolved_documents = resolve_documents(response.documents)
+            res['resolved_documents'] = resolved_documents
 
             if locations_response.status_code == 200:
                 # Parse JSON response

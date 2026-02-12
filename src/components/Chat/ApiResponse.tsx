@@ -109,7 +109,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                                     Sources ({apiResponse.resolved_documents.length})
                                 </div>
 
-                                <div className="flex flex-col gap-1.5">
+                                <div className="flex flex-col gap-1">
                                     {apiResponse.resolved_documents.map((s: any, idx: number) => (
                                         <a
                                             key={s.id ?? idx}
@@ -125,11 +125,11 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                                             {/* External Link Icon */}
                                             <span
-                                                className=" ml-2 flex items-center justify-center w-6 h-6 rounded-md bg-white/50 group-hover:bg-white/80 transition"
+                                                className="flex items-center justify-center w-4 h-4 rounded-md bg-white/50 group-hover:bg-white/80 transition"
                                             >
                                                 <FiExternalLink
                                                     size={12}
-                                                    className="text-[#800020] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                                                    className="text-[#800020]"
                                                 />
                                             </span>
                                         </a>
