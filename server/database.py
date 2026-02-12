@@ -34,6 +34,7 @@ class Response(db.Model):
     date_created = db.Column(db.BigInteger(), nullable=False)
     response_type = db.Column(db.String(), nullable=False)
     response = db.Column(db.String(), nullable=False)
+    documents = db.Column(db.String(), nullable=False)
     conversation_id = db.Column(db.String(), db.ForeignKey('conversation.id', ondelete='CASCADE'), nullable=False)
     author = db.relationship('Conversation', backref='conversations')
 

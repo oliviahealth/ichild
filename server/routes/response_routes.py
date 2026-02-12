@@ -26,6 +26,7 @@ response_routes_bp = Blueprint('response_routes', __name__)
 def add_response():
     data = request.get_json()
     locations = data.get('locations')
+    documents = data.get('documents')
     user_query = data.get('userQuery')
     conversation_id = data.get('conversationId')
     response_type = data.get("response_type")
@@ -50,7 +51,7 @@ def add_response():
     locationsArr = [location['id'] for location in locations] # This array will hold only the id of the locations that are then stored as a column on the response record. Do not store entire location objects. 
 
     try:    
-        new_response = Response(user_query=user_query, conversation_id=conversation_id, locations=locationsArr, response_type=response_type, response=response, date_created=date_created)
+        new_response = Response(user_query=user_query, conversation_id=conversation_id, locations=locationsArr, documents=documents, response_type=response_type, response=response, date_created=date_created)
 
         db.session.add(new_response)
         db.session.commit()
