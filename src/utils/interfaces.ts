@@ -16,6 +16,13 @@ export const LocationSchema = z.object({
 });
 export type ILocation = z.infer<typeof LocationSchema>
 
+export const DocumentSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    url: z.string()
+})
+export type IDocument = z.infer<typeof DocumentSchema>
+
 export const SavedLocationSchema = LocationSchema.extend({
     dateCreated: z.number()
 })
@@ -26,6 +33,7 @@ export const APIResponseSchema = z.object({
     response: z.string(),
     response_type: z.enum(["location", "direct"]),
     locations: z.array(LocationSchema),
+    resolved_documents: z.array(DocumentSchema),
     dateCreated: z.number(),
     conversationId: z.string()
 });

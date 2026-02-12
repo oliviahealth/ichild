@@ -12,6 +12,7 @@ import { IAPIResponse, ILocation } from "../../utils/interfaces";
 import OllieAvatar from "./OllieAvatar";
 import ChatBubble from "./ChatBubble";
 import LocationInfoPanel from "./LocationInfoPanel";
+import { FiExternalLink } from "react-icons/fi";
 
 
 interface Props {
@@ -19,12 +20,14 @@ interface Props {
 }
 
 const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
+    console.log(apiResponse);
+
     const navigate = useNavigate();
     const setError = useAppStore(state => state.setError);
-    
+
     const user = useAppStore(state => state.user);
     const accessToken = useAppStore(state => state.accessToken);
-    
+
     const [focusedLocation, setFocusedLocation] = useState(apiResponse.locations[0] ?? null);
     const [locationToSave, setLocationToSave] = useState<null | ILocation>(null);
 
@@ -60,7 +63,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
         onError: (error: AxiosError) => {
             setError(error.message);
 
-            if(error.request.status === 403) {
+            if (error.request.status === 403) {
                 navigate('/signin');
             }
         }
@@ -72,7 +75,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
             "userId": user?.id,
         };
 
-        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?id=${savedLocation.id}`, { headers: { ...headers }, withCredentials: true });        
+        await axios.delete(`${import.meta.env.VITE_API_URL}/savedlocations?id=${savedLocation.id}`, { headers: { ...headers }, withCredentials: true });
 
         return savedLocation;
     }, {
@@ -82,8 +85,8 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
         },
         onError: (error: AxiosError) => {
             setError(error.message);
-            
-            if(error.request.status === 403) {
+
+            if (error.request.status === 403) {
                 navigate('/signin');
             }
         }
@@ -99,6 +102,41 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
                 <div className="w-full h-full">
                     <ChatBubble isResponse={true} isScrollTarget={true}>
                         <p className="mb-2">{apiResponse.response}</p>
+
+                        {apiResponse.resolved_documents?.length > 0 && (
+                            <div className="mt-3 pt-2 border-t border-black/10">
+                                <div className="text-xs font-medium text-black/60 mb-2">
+                                    Sources ({apiResponse.resolved_documents.length})
+                                </div>
+
+                                <div className="flex flex-col gap-1.5">
+                                    {apiResponse.resolved_documents.map((s: any, idx: number) => (
+                                        <a
+                                            key={s.id ?? idx}
+                                            href={s.url ?? "#"}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="group flex items-center justify-between rounded-lg px-3 py-2 bg-[#800020]/8 hover:bg-[#800020]/15 transition duration-150"
+                                        >
+                                            {/* Title */}
+                                            <span className="text-xs font-medium text-[#5a0015] truncate">
+                                                {s.title ?? `Document ${idx + 1}`}
+                                            </span>
+
+                                            {/* External Link Icon */}
+                                            <span
+                                                className=" ml-2 flex items-center justify-center w-6 h-6 rounded-md bg-white/50 group-hover:bg-white/80 transition"
+                                            >
+                                                <FiExternalLink
+                                                    size={12}
+                                                    className="text-[#800020] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                                                />
+                                            </span>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </ChatBubble>
 
                     {/* <div className="max-w-[29rem] h-48 p-3 bg-white rounded-xl">
@@ -177,7 +215,7 @@ const ApiResponse: React.FC<Props> = ({ apiResponse }) => {
 
                                     {apiResponse.locations.map((location, index) => (
                                         <div key={`Slide: ${index}`} className="embla__slide p-3 mr-1 bg-white rounded-box space-y-3" >
-                                             <LocationInfoPanel location={location} locationToSave={locationToSave} isSaveLoading={isSaveLoading} isDeleteLoading={isDeleteLoading} saveLocation={saveLocation} deleteSavedLocation={deleteSavedLocation} />
+                                            <LocationInfoPanel location={location} locationToSave={locationToSave} isSaveLoading={isSaveLoading} isDeleteLoading={isDeleteLoading} saveLocation={saveLocation} deleteSavedLocation={deleteSavedLocation} />
                                         </div>
                                     ))}
                                 </div>
