@@ -52,7 +52,7 @@ def reset_tables():
     print("truncating seed tables...", flush=True)
 
     # Truncate all in one statement to satisfy FK constraints
-    run_psql('DROP TABLE "conversation", "response", "saved_location", "user" RESTART IDENTITY CASCADE;')
+    run_psql('DROP TABLE "conversation", "response", "saved_location", "user" CASCADE;')
 
     print("✅ Truncated tables", flush=True)
 
