@@ -18,8 +18,8 @@ export type ILocation = z.infer<typeof LocationSchema>
 
 export const DocumentSchema = z.object({
     id: z.string(),
-    title: z.string(),
-    url: z.string()
+    title: z.string().optional(),
+    url: z.string().optional()
 })
 export type IDocument = z.infer<typeof DocumentSchema>
 

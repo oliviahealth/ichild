@@ -15,7 +15,7 @@ const parseWithZod = async (dataToParse: any, zodSchema: ZodSchema) => {
         }
     } catch (error: any) {        
         useAppStore.setState({ error: 'Something went wrong!' });
-        throw error
+    throw error
     }
 }
 
