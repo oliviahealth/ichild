@@ -66,13 +66,44 @@ const Layout = () => {
     }
   });
 
+  // Auto-signin with demo credentials for demo mode
+  const { mutate: autoDemoSignin } = useMutation(async () => {
+    interface ISigninResponse extends IUser {
+      accessToken: string
+    }
+
+    const response: ISigninResponse = (await axios.post(`${import.meta.env.VITE_API_URL}/signin`, { 
+      email: "oliviahealth@tamu.edu", 
+      password: "Ol1v1aStud3nt!2023" 
+    }, { withCredentials: true })).data;
+
+    parseWithZod(response, UserSchema);
+
+    return response;
+  }, {
+    onSuccess: (response) => {
+      setAccessToken(response.accessToken);
+      sessionStorage.setItem('accessToken', response.accessToken);
+      setUser(response);
+      return navigate('/');
+    },
+    onError: () => {
+      setError("Demo signin failed. Please try again.");
+      return navigate("/signin");
+    }
+  });
+
   // If we have a user stored in session storage, load the user into the application state
+  // Otherwise, automatically sign in with demo credentials
   useEffect(() => {
     const fetchData = async () => {
       const accessToken = sessionStorage.getItem('accessToken');
 
       if (accessToken) {
         getUser(accessToken);
+      } else {
+        // Auto-signin with demo credentials
+        autoDemoSignin();
       }
     };
 
