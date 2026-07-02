@@ -27,4 +27,4 @@ ENV PORT=5000
 EXPOSE 5000
 
 # Default command for the server container (init container will override command)
-CMD ["gunicorn", "-k", "eventlet", "-w", "1", "-b", "0.0.0.0:5000", "db_search:app"]
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:5000", "db_search:app"]
