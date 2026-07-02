@@ -45,7 +45,7 @@ def formatted_db_search():
             "form": request.form
         },
         {
-            "url": "https://oliviahealth.org/wp-content/uploads/resources.json",
+            "url": f"{OLLIE_API_URL}/resources.json",
             "request_type": "GET",
         }
     ]
