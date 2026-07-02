@@ -151,7 +151,7 @@ def get_conversation():
             return jsonify({'Unauthorized': 'Unauthorized'}), 403
 
         resources = requests.get(
-            "https://oliviahealth.org/wp-content/uploads/resources.json",
+            f"{OLLIE_API_URL}/resources.json",
             timeout=5
         )
         resources.raise_for_status()  # Raises error if request failed
