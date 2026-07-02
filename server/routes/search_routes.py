@@ -45,7 +45,7 @@ def formatted_db_search():
             "form": request.form
         },
         {
-            "url": f"{OLLIE_API_URL}/resources.json",
+            "url": f"{OLLIE_API_URL}/resources",
             "request_type": "GET",
         }
     ]
